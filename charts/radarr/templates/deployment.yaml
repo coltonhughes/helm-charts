@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-radarr
+spec:
+  replicas: {{ .Values.replicaCount}}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: radarr
+  template:
+    metadata:
+      labels:
+        app: radarr
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: TZ
+            value: {{ .Values.container.env.TZ }}
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+        ports:
+          - containerPort: 7878
+            name: {{ .Values.service.targetPort }}
+            protocol: TCP
+        resources: {}
+        volumeMounts:
+          - mountPath: {{ .Values.container.volumes.config.path }}
+            name: "vol-{{ .Chart.Name }}-config"
+          - mountPath: {{ .Values.container.volumes.media.path }}
+            name: "vol-{{ .Chart.Name }}-media"
+        volumes:
+          - name: "vol-{{ .Chart.Name }}-config"
+            persistentVolumeClaim:
+              claimName: pvc-radarr-config
+          - name: "vol-{{ .Chart.Name }}-media"
+            nfs:
+              path: {{ .Values.container.volumes.media.mediaServerPath }}
+              server: {{ .Values.container.volumes.mediaServerIP }}
