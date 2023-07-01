@@ -26,7 +26,7 @@ spec:
           - name: PGID
             value: "1000"
         ports:
-          - containerPort: 7878
+          - containerPort: 8989
             name: {{ .Values.service.targetPort }}
             protocol: TCP
         resources: {}
@@ -38,7 +38,7 @@ spec:
         volumes:
           - name: "vol-{{ .Chart.Name }}-config"
             persistentVolumeClaim:
-              claimName: pvc-radarr-config
+              claimName: pvc-sonarr-config
           - name: "vol-{{ .Chart.Name }}-media"
             nfs:
               path: {{ .Values.container.volumes.media.mediaServerPath }}
