@@ -30,17 +30,18 @@ spec:
             name: {{ .Values.service.targetPort }}
             protocol: TCP
         resources: {}
-        volumes:
-          - name: "vol-{{ .Chart.Name }}-config"
-            persistentVolumeClaim:
-              claimName: pvc-radarr-config
-          - name: "vol-{{ .Chart.Name }}-media"
-            nfs:
-              path: {{ .Values.container.volumes.media.mediaServerPath }}
-              server: {{ .Values.container.volumes.mediaServerIP }}
         volumeMounts:
           - mountPath: {{ .Values.container.volumes.config.path }}
             name: "vol-{{ .Chart.Name }}-config"
           - mountPath: {{ .Values.container.volumes.media.path }}
             name: "vol-{{ .Chart.Name }}-media"
+      volumes:
+        - name: "vol-{{ .Chart.Name }}-config"
+          persistentVolumeClaim:
+            claimName: pvc-radarr-config
+        - name: "vol-{{ .Chart.Name }}-media"
+          nfs:
+            path: {{ .Values.container.volumes.media.mediaServerPath }}
+            server: {{ .Values.container.volumes.mediaServerIP }}
+        
         
