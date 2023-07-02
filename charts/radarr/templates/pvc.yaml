@@ -4,6 +4,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: "pvc-{{ .Chart.Name }}-config"
 spec:
+  volumeName: "vol-{{ .Chart.Name}}-config"
   accessModes:
     - ReadWriteOnce
   resources:

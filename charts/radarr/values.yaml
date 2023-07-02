@@ -12,6 +12,7 @@ container:
     config:
       path: /config
       size: 2Gi
+      storageClass: longhorn
     media:
       path: /media
       mediaServerPath: /volume1/Plex

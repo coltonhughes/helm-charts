@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-{{ .Chart.Name }}
+  namespace: {{ .Release.Namespace}}
 spec:
   replicas: {{ .Values.replicaCount}}
   strategy:
@@ -36,9 +37,6 @@ spec:
           - mountPath: {{ .Values.container.volumes.media.path }}
             name: "vol-{{ .Chart.Name }}-media"
       volumes:
-        - name: "vol-{{ .Chart.Name }}-config"
-          persistentVolumeClaim:
-            claimName: pvc-radarr-config
         - name: "vol-{{ .Chart.Name }}-media"
           nfs:
             path: {{ .Values.container.volumes.media.mediaServerPath }}
