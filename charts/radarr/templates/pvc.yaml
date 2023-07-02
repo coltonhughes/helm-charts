@@ -1,13 +1,1 @@
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: "pvc-{{ .Chart.Name }}-config"
-spec:
-  volumeName: "vol-{{ .Chart.Name}}-config"
-  storageClassName: "{{ .Values.container.volumes.config.storageClass}}"
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: "{{ .Values.container.volumes.config.size }}"
+
