@@ -1,6 +1,0 @@
-apiVersion: v2
-name: sonarr
-description: A Helm chart to install linuxserver/sonarr
-type: application
-version: 0.1.0
-appVersion: "3.0.10"
