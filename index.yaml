@@ -3,6 +3,16 @@ entries:
   radarr:
   - apiVersion: v2
     appVersion: 4.5.2
+    created: "2023-07-02T02:16:40.41612197Z"
+    description: A Helm chart to install linuxserver/radarr
+    digest: 11efb116c185c6683a25a72be1e0ec8459e14f309789cbbbaf74748d8416d580
+    name: radarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/radarr-0.1.4/radarr-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: 4.5.2
     created: "2023-07-02T02:15:32.911417733Z"
     description: A Helm chart to install linuxserver/radarr
     digest: b15ee3b01b2baa59b3ae4f77dbc601839fc7e60cec6f467ec2ff8c05b57e029a
@@ -41,4 +51,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/radarr-0.1.0/radarr-0.1.0.tgz
     version: 0.1.0
-generated: "2023-07-02T02:15:32.911431033Z"
+generated: "2023-07-02T02:16:40.416308772Z"
