@@ -35,7 +35,5 @@ spec:
             name: "vol-{{ .Chart.Name }}-config"
           - mountPath: {{ .Values.container.volumes.media.path }}
             name: "vol-{{ .Chart.Name }}-media"
-      volumes:
-
         
         
