@@ -15,6 +15,7 @@ container:
       storageClass: longhorn
     media:
       path: /media
+      size: 2Gi
       mediaServerPath: /volume1/Plex
       mediaServerIP: 10.0.0.66
 

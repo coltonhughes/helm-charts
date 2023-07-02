@@ -36,9 +36,6 @@ spec:
           - mountPath: {{ .Values.container.volumes.media.path }}
             name: "vol-{{ .Chart.Name }}-media"
       volumes:
-        - name: "vol-{{ .Chart.Name }}-media"
-          nfs:
-            path: {{ .Values.container.volumes.media.mediaServerPath }}
-            server: {{ .Values.container.volumes.mediaServerIP }}
+
         
         
