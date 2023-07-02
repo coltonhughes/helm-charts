@@ -7,4 +7,5 @@ spec:
   accessModes:
     - ReadWriteOnce
   resources:
-    storage: { { .Values.container.volumes.config.size | default "2Gi" } }
+    requests:
+      storage: { { .Values.container.volumes.config.size | default "2Gi" } }
