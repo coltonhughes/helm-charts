@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Chart.Name }}
+  name: {{ .Chart.Name }}-{{ .Chart.AppVersion }}
 spec:
   replicas: {{ .Values.replicaCount}}
   strategy:
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
           - name: TZ
@@ -29,14 +29,16 @@ spec:
           - containerPort: 7878
             name: {{ .Values.service.targetPort }}
             protocol: TCP
-        resources: {}
         volumeMounts:
           - mountPath: {{ .Values.container.volumes.config.path }}
             name: "vol-{{ .Chart.Name }}-config"
           - mountPath: {{ .Values.container.volumes.media.path }}
             name: "vol-{{ .Chart.Name }}-media"
       volumes:
-        - name: "vol-{{ .Chart.Name}}-media"
+        - name: "val-{{ .Chart.Name }}-config"
+          persistentVolumeClaim:
+            claimName: "pvc-{{ .Chart.Name }}-config"
+        - name: "vol-{{ .Chart.Name }}-media"
           nfs:
             path: "{{ .Values.container.volumes.media.mediaServerPath }}"
             server: "{{ .Values.container.volumes.media.mediaServerIP }}"
