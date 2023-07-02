@@ -10,7 +10,7 @@ spec:
     - ReadWriteOnce
   volumeMode: Filesystem
   persistentVolumeReclaimPolicy: Delete
-  storageClass: "{{ .Values.container.volumes.config.storageClass}}"
+  storageClassName: "{{ .Values.container.volumes.config.storageClass}}"
 ---
 apiVersion: v1
 kind: PersistentVolume
