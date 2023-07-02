@@ -9,14 +9,5 @@ spec:
   accessModes:
     - ReadWriteOnce
   volumeMode: Filesystem
-  persistentVolumeReclaimPolicy: delete
+  persistentVolumeReclaimPolicy: Delete
   storageClass: "{{ .Values.container.volumes.config.storageClass}}"
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: "vol-{{ .Chart.Name }}-media"
-spec:
-  nfs:
-    path: "{{ .Values.container.volumes.media.mediaServerPath }}"
-    server: "{{ .Values.container.volumes.mediaServerIP }}"

@@ -2,5 +2,5 @@ apiVersion: v2
 name: radarr
 description: A Helm chart to install linuxserver/radarr
 type: application
-version: 0.2.1
+version: 0.2.2
 appVersion: "4.5.2"
