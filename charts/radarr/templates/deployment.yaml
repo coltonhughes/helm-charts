@@ -23,25 +23,27 @@ spec:
             path: "{{ .Values.container.volumes.media.mediaServerPath }}"
             server: "{{ .Values.container.volumes.media.mediaServerIP }}"
       containers:
-      - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+      - env:
+        - name: TZ
+          value: {{ quote .Values.container.env.tz }}
+        - name: PUID
+          value: {{ quote .Values.container.env.puid }}
+        - name: PGID
+          value: {{ quote .Values.container.env.pgid }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag
+          | default .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        env:
-          - name: TZ
-            value: {{ .Values.container.env.TZ }}
-          - name: PUID
-            value: "1000"
-          - name: PGID
-            value: "1000"
+        name: radarr
         ports:
-          - containerPort: 7878
-            name: {{ .Values.service.targetPort }}
-            protocol: TCP
+        - containerPort: 7878
+          name: radarr
+          protocol: TCP
+        resources: {}
         volumeMounts:
           - mountPath: {{ .Values.container.volumes.config.path }}
-            name: config
+            name: "vol-{{ .Chart.Name }}-config"
           - mountPath: {{ .Values.container.volumes.media.path }}
-            name: media
+            name: "vol-{{ .Chart.Name }}-media"
       
         
         

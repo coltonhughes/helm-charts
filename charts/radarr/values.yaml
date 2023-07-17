@@ -7,7 +7,7 @@ image:
 
 container:
   env:
-    TZ: America/Chicago
+    tz: America/Chicago
   volumes:
     config:
       path: /config
