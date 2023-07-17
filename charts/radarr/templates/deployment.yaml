@@ -15,7 +15,7 @@ spec:
         app: {{ .Chart.Name }}
     spec:
       volumes:
-        - name: "val-{{ .Chart.Name }}-config"
+        - name: config
           persistentVolumeClaim:
             claimName: "pvc-{{ .Chart.Name }}-config"
         - name: "vol-{{ .Chart.Name }}-media"
@@ -39,9 +39,9 @@ spec:
             protocol: TCP
         volumeMounts:
           - mountPath: {{ .Values.container.volumes.config.path }}
-            name: "vol-{{ .Chart.Name }}-config"
+            name: config
           - mountPath: {{ .Values.container.volumes.media.path }}
-            name: "vol-{{ .Chart.Name }}-media"
+            name: media
       
         
         
