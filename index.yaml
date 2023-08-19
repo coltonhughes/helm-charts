@@ -3,6 +3,16 @@ entries:
   radarr:
   - apiVersion: v2
     appVersion: 4.5.2
+    created: "2023-08-19T23:14:06.642591314Z"
+    description: A Helm chart to install linuxserver/radarr
+    digest: f57b75828209f134b70d54de8fd316b4da3c22e28ac006dc3240af0ffe8054f4
+    name: radarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/radarr-0.3.5/radarr-0.3.5.tgz
+    version: 0.3.5
+  - apiVersion: v2
+    appVersion: 4.5.2
     created: "2023-07-17T02:05:02.410885196Z"
     description: A Helm chart to install linuxserver/radarr
     digest: 0f4e6cca6eb64fd7009c3f0a3b0d15802c5887be6625c05cae9f535d29f05ab6
@@ -241,4 +251,15 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/radarr-0.1.0/radarr-0.1.0.tgz
     version: 0.1.0
-generated: "2023-07-17T02:05:02.411062797Z"
+  sonarr:
+  - apiVersion: v2
+    appVersion: 3.0.10
+    created: "2023-08-19T23:14:06.737579779Z"
+    description: A Helm chart for running Sonarr on kubernetes
+    digest: 0814bdc072f4696bc754d794add610a38fd12e5a1baa946a7f452602e191ae1c
+    name: sonarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
+    version: 0.1.0
+generated: "2023-08-19T23:14:06.737771882Z"
