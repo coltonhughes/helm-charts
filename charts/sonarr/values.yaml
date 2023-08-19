@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: linuxserver/radarr
+  repository: linuxserver/sonarr
   pullPolicy: IfNotPresent
   tag: "latest"
 
@@ -23,5 +23,5 @@ persistence:
 service:
   type: ClusterIP
   protocol: TCP
-  port: 7878
-  targetPort: radarr
+  port: 8989
+  targetPort: sonarr

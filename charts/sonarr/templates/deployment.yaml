@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "radarr.fullname" . }}
+  name: {{ include "sonarr.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: {{ include "radarr.fullname" . }}
+      app: {{ include "sonarr.fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ include "radarr.fullname" . }}
+        app: {{ include "sonarr.fullname" . }}
     spec:
       volumes:
         - name: config
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "radarr.fullname" .) }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "sonarr.fullname" .) }}
         {{- else }}
           emptyDir: {}
         {{- end }}
@@ -35,10 +35,10 @@ spec:
           value: {{ quote .Values.container.env.pgid }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        name: {{ include "radarr.fullname" . }}
+        name: {{ include "sonarr.fullname" . }}
         ports:
-        - containerPort: 7878
-          name: {{ include "radarr.fullname" . }}
+        - containerPort: 8989
+          name: {{ include "sonarr.fullname" . }}
           protocol: TCP
         resources: {}
         volumeMounts:
