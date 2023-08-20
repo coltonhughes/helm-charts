@@ -1,0 +1,15 @@
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 2Gi
+  additionalVolumes:
+    - name: media
+      nfs:
+        path: /volume1/plex
+        server: 10.0.0.66
+  additionalMounts:
+    - mountPath: /mnt/media
+      name: media
+
+ingress:
+  fqdn: radarrtest.media.articops.com

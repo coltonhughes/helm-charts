@@ -25,3 +25,9 @@ service:
   protocol: TCP
   port: 7878
   targetPort: radarr
+
+ingress:
+  clusterIssuer: letsencrypt-prod
+  class: nginx
+  acme: true
+  fqdn: radarr.example.com
