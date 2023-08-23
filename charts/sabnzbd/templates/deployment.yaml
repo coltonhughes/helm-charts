@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sabnzbd.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ include "sabnzbd.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "sabnzbd.fullname" . }}
+    spec:
+      volumes:
+        - name: config
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "sabnzbd.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+      {{- if .Values.persistence.additionalVolumes }}
+        {{- .Values.persistence.additionalVolumes | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+      - env:
+        - name: TZ
+          value: {{ quote .Values.container.env.tz }}
+        - name: PUID
+          value: {{ quote .Values.container.env.puid }}
+        - name: PGID
+          value: {{ quote .Values.container.env.pgid }}
+        - name: VPN_SERVICE_PROVIDER
+          value: {{ .Values.container.env.vpn_provider }}
+        - name: VPN_TYPE
+          value: {{ .Values.container.env.vpn_type }}
+        - name: VPN_ENDPOINT_IP
+          value: {{ .Values.container.env.vpn_endpoint_ip }}
+        - name: VPN_ENDPOINT_PORT
+          value: {{ .Values.container.env.vpn_endpoint_port }}
+        {{- if eq .Values.container.env.vpn_type "wireguard"}}
+        - name: WIREGUARD_PUBLIC_KEY
+          valueFrom:
+            secretKeyRef:
+              key: 
+
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: {{ include "sabnzbd.fullname" . }}
+        hostname: {{ .Values.ingress.fqdn }}
+        ports:
+        - containerPort: 8080
+          name: {{ include "sabnzbd.fullname" . }}
+          protocol: TCP
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            add:
+              - NET_ADMIN
+              - SYS_MODULE
+            privileged: true
+        dnsPolicy: ClusterFirst
+        volumeMounts:
+          - mountPath: /config
+            name: config
+        {{- if .Values.persistence.additionalMounts }}
+          {{- .Values.persistence.additionalMounts | toYaml | nindent 10 }}
+        {{- end }}
+        
