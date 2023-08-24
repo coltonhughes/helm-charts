@@ -6,7 +6,6 @@ metadata:
   labels:
       {{- include "overseerr.labels" . | nindent 4 }}
 spec:
-  storageClassName: {{ .Values.persistence.storageClass }}
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
   resources:
