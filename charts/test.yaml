@@ -4,4 +4,4 @@ persistence:
   size: 2Gi
 
 ingress:
-  fqdn: test.media.articops.com
+  fqdn: test2.media.articops.com
