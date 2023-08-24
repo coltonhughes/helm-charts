@@ -36,6 +36,16 @@ entries:
   sonarr:
   - apiVersion: v2
     appVersion: 3.0.10
+    created: "2023-08-24T02:34:40.318639052Z"
+    description: A Helm chart for running Sonarr on k8s
+    digest: 3309a3c694cdd549b3abf22a843624d731979ede299587107542208724ce6d3d
+    name: sonarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.1/sonarr-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 3.0.10
     created: "2023-08-24T01:48:12.532495725Z"
     description: A Helm chart for running Sonarr on k8s
     digest: d4d4cac37d439beb28ee81201ff230c53140ab721586d9c75183f02544fff896
@@ -44,4 +54,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2023-08-24T01:48:12.532503825Z"
+generated: "2023-08-24T02:34:40.318654253Z"
