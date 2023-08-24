@@ -37,7 +37,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ include "overseerr.fullname" . }}
         ports:
-        - containerPort: 7878
+        - containerPort: 5055
           name: {{ include "overseerr.fullname" . }}
           protocol: TCP
         resources: {}
