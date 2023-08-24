@@ -25,3 +25,8 @@ service:
   protocol: TCP
   port: 8989
   targetPort: sonarr
+ingress:
+  clusterIssuer: letsencrypt-prod
+  class: nginx
+  acme: true
+  fqdn: sonarr.example.com
