@@ -1,7 +1,0 @@
-persistence:
-  enabled: true
-  accessMode: ReadWriteOnce
-  size: 2Gi
-
-ingress:
-  fqdn: test2.media.articops.com
