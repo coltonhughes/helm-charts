@@ -1,0 +1,47 @@
+apiVersion: v1
+entries:
+  overseerr:
+  - apiVersion: v2
+    appVersion: 1.33.2
+    created: "2023-08-24T01:48:11.969083458Z"
+    description: A Helm chart for running overseerr on k8s
+    digest: 5504ff427fb83da79aa3118e19523f35431393b69300b504aaa0dd4ed6d347a7
+    name: overseerr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/overseerr-0.1.0/overseerr-0.1.0.tgz
+    version: 0.1.0
+  prowlarr:
+  - apiVersion: v2
+    appVersion: 1.8.1259
+    created: "2023-08-24T01:48:12.143661814Z"
+    description: A Helm chart for running prowlarr on k8s
+    digest: 07d67b310620e9d83b372bdd071f639bee51951c39af6af0aa855bb03ec8355a
+    name: prowlarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/prowlarr-0.1.0/prowlarr-0.1.0.tgz
+    version: 0.1.0
+  radarr:
+  - apiVersion: v2
+    appVersion: 4.5.2
+    created: "2023-08-24T01:48:12.34972517Z"
+    description: A Helm chart for running Radarr on k8s
+    digest: fea847451111dbd0b76ccf0829e5e139cbbfcaf467ccb0a21be5493718a5d88f
+    name: radarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/radarr-0.1.0/radarr-0.1.0.tgz
+    version: 0.1.0
+  sonarr:
+  - apiVersion: v2
+    appVersion: 3.0.10
+    created: "2023-08-24T01:48:12.532495725Z"
+    description: A Helm chart for running Sonarr on k8s
+    digest: d4d4cac37d439beb28ee81201ff230c53140ab721586d9c75183f02544fff896
+    name: sonarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
+    version: 0.1.0
+generated: "2023-08-24T01:48:12.532503825Z"
