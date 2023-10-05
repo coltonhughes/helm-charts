@@ -31,4 +31,4 @@ spec:
                 name: {{ include "prowlarr.fullname" . }}
                 port:
                   number: {{ .Values.service.port }}
-{{ - end }}
+{{- end }}
