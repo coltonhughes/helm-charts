@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  jackett:
+  - apiVersion: v2
+    appVersion: 0.21.958
+    created: "2023-10-05T03:55:45.727346134Z"
+    description: A Helm chart for running Jackett on k8s
+    digest: 07207083b92e4c5faa576f367715845b5aec225fd9c4bcef9e5dc27f807d4ad8
+    name: jackett
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/jackett-0.1.0/jackett-0.1.0.tgz
+    version: 0.1.0
   overseerr:
   - apiVersion: v2
     appVersion: 1.33.2
@@ -144,4 +155,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2023-10-05T03:37:04.660917815Z"
+generated: "2023-10-05T03:55:45.727368134Z"
