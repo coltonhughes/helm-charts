@@ -14,6 +14,17 @@ spec:
       labels:
         app: {{ include "sabnzbd.fullname" . }}
     spec:
+      initContainers:
+        - name: copy
+          image: bash
+          command: ["bash", "-c", "if [ -f /config/sabnzbd.ini ]; then exit 0; else cp /tmp/sabnzbd.ini /config/sabnzbd.ini; fi"]
+          # command: ["sh", "-c", "cp /tmp/sabnzbd.ini /config/sabnzbd.ini"]
+          volumeMounts:
+          - mountPath: /config
+            name: sabnzbd-config
+          - mountPath: /tmp/sabnzbd.ini
+            subPath: sabnzbd.ini
+            name: sabnzbd-config-ini
       containers:
         - name: {{ include "sabnzbd.fullname" . }}  
           image: {{ .Values.sabnzbd.image.repository }}:{{ .Values.sabnzbd.image.tag | default .Chart.AppVersion }}
@@ -33,7 +44,7 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: sabnzbd-config
-            - mountPath: /config/sabnzbd.ini
+            - mountPath: /tmp/sabnzbd.ini
               subPath: sabnzbd.ini
               name: sabnzbd-config-ini
           {{- if .Values.sabnzbd.additionalMounts }}
@@ -111,6 +122,7 @@ spec:
         - name: sabnzbd-config-ini
           configMap:
             name: {{ include "sabnzbd.fullname" . }}
+            defaultMode: 0777
       {{- if .Values.sabnzbd.additionalVolumes }}
         {{- .Values.sabnzbd.additionalVolumes | toYaml | nindent 8 }}
       {{- end }}
