@@ -65,6 +65,16 @@ entries:
   prowlarr:
   - apiVersion: v2
     appVersion: 1.8.1259
+    created: "2023-10-05T06:11:36.855458764Z"
+    description: A Helm chart for running prowlarr on k8s
+    digest: 40232d5d7b081dfa1e5faeae5f2ab7d3052f858b8265c281763af4ccaef4db74
+    name: prowlarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/prowlarr-0.1.4/prowlarr-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: 1.8.1259
     created: "2023-10-05T06:07:05.873145319Z"
     description: A Helm chart for running prowlarr on k8s
     digest: 0cbc1c9b42a56b0ba414957c4e456961fdd25f69c2eac85fe6983223dcede08b
@@ -226,4 +236,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2023-10-05T06:07:06.670104198Z"
+generated: "2023-10-05T06:11:36.855525464Z"
