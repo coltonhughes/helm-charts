@@ -15,7 +15,7 @@ spec:
         app: {{ include "sabnzbd.fullname" . }}
     spec:
       volumes:
-        - name: config
+        - name: sabnzbd-config
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim | default (include "sabnzbd.fullname" .) }}
@@ -26,16 +26,16 @@ spec:
         {{- .Values.sabnzbd.additionalVolumes | toYaml | nindent 8 }}
       {{- end }}
       containers:
-        - env:
-          - name: TZ
-            value: {{ quote .Values.sabnzbd.env.tz }}
-          - name: PUID
-            value: {{ quote .Values.sabnzbd.env.puid }}
-          - name: PGID
-            value: {{ quote .Values.sabnzbd.env.pgid }}
+        - name: {{ include "sabnzbd.fullname" . }}  
           image: {{ .Values.sabnzbd.image.repository }}:{{ .Values.sabnzbd.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.sabnzbd.image.pullPolicy }}
-          name: {{ include "sabnzbd.fullname" . }}
+          env:
+            - name: TZ
+              value: {{ quote .Values.sabnzbd.env.tz }}
+            - name: PUID
+              value: {{ quote .Values.sabnzbd.env.puid }}
+            - name: PGID
+              value: {{ quote .Values.sabnzbd.env.pgid }}
           ports:
             - containerPort: 8080
               name: {{ include "sabnzbd.fullname" . }}
@@ -43,11 +43,13 @@ spec:
           resources: {}
           volumeMounts:
             - mountPath: /config
-              name: config
+              name: sabnzbd-config
           {{- if .Values.sabnzbd.additionalMounts }}
             {{- .Values.sabnzbd.additionalMounts | toYaml | nindent 12 }}
           {{- end }}
         - name: vpn
+          image: {{ .Values.vpn.image.repository }}:{{ .Values.vpn.image.tag | default "latest" }}
+          imagePullPolicy: {{ .Values.vpn.image.pullPolicy }}
           env:
             - name: VPN_SERVICE_PROVIDER
               value: custom
@@ -92,8 +94,6 @@ spec:
               value: "off"
             - name: DNS_ADDRESS
               value: {{ quote .Values.vpn.env.dns_address | default "8.8.8.8" }}
-          image: {{ .Values.vpn.image.repository }}:{{ .Values.vpn.image.tag | default "latest" }}
-          imagePullPolicy: {{ .Values.vpn.image.pullPolicy }}
           ports:
             - containerPort: 8080
               name: {{ include "sabnzbd.fullname" . }}
@@ -108,11 +108,3 @@ spec:
             privileged: true
       dnsPolicy: ClusterFirst
       restartPolicy: Always
-      volumes:
-        - name: config
-          {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.vpn.existingClaim | default (include "sabnzbd.fullname" .) }}
-          {{- else }}
-          emptyDir: {}
-          {{- end }}

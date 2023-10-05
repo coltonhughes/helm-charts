@@ -32,8 +32,6 @@ persistence:
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
-  additionalVolumes: []
-  additionalMounts: []
 
 service:
   type: ClusterIP
