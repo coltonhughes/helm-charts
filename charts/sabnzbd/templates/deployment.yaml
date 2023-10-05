@@ -47,53 +47,53 @@ spec:
           {{- if .Values.sabnzbd.additionalMounts }}
             {{- .Values.sabnzbd.additionalMounts | toYaml | nindent 10 }}
           {{- end }}
-        - env:
-          - name: VPN_SERVICE_PROVIDER
-            value: custom
-          - name: VPN_TYPE
-            value: {{ quote .Values.vpn.env.type | default "wireguard" }}
-          - name: VPN_ENDPOINT_IP
-            value: {{ quote .Values.vpn.env.vpn_endpoint_ip }}
-          - name: VPN_ENDPOINT_PORT
-            value: {{ quote .Values.vpn.env.vpn_endpoint_port }}
-          {{- if .Values.vpn.env.wg_existing_secret }}
-          - name: WIREGUARD_PUBLIC_KEY
-            valueFrom:
-              secretKeyRef:
-                key: WIREGUARD_PUBLIC_KEY
-                name: {{ .Values.vpn.env.wg_existing_secret }}
-                optional: false
-          - name: WIREGUARD_PRIVATE_KEY
-            valueFrom:
-              secretKeyRef:
-                key: WIREGUARD_PRIVATE_KEY
-                name: {{ .Values.vpn.env.wg_existing_secret }}
-                optional: false
-          - name: WIREGUARD_PRESHARED_KEY
-            valueFrom:
-              secretKeyRef:
-                key: WIREGUARD_PRESHARED_KEY
-                name: {{ .Values.vpn.env.wg_existing_secret }}
-                optional: false
-          {{- else }}
-          - name: WIREGUARD_PUBLIC_KEY
-            value: {{ .Values.vpn.env.wg_public_key }}
-          - name: WIREGUARD_PRIVATE_KEY
-            value: {{ .Values.vpn.env.wg_private_key }}
-          - name: WIREGUARD_PRESHARED_KEY
-            value: {{ .Values.vpn.env.wg_preshared_key }}
-          {{- end }}
-          - name: WIREGUARD_ADDRESSES
-            value: {{ quote .Values.vpn.env.wireguard_cidr }}
-          - name: FIREWALL_INPUT_PORTS
-            value: "8080,9090,4191,4143,4140,4190"
-          - name: DOT
-            value: "off"
-          - name: DNS_ADDRESS
-            value: {{ quote .Values.vpn.env.dns_address | default "8.8.8.8"}}
+        - name: vpn
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: custom
+            - name: VPN_TYPE
+              value: {{ quote .Values.vpn.env.type | default "wireguard" }}
+            - name: VPN_ENDPOINT_IP
+              value: {{ quote .Values.vpn.env.vpn_endpoint_ip }}
+            - name: VPN_ENDPOINT_PORT
+              value: {{ quote .Values.vpn.env.vpn_endpoint_port }}
+            {{- if .Values.vpn.env.wg_existing_secret }}
+            - name: WIREGUARD_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: WIREGUARD_PUBLIC_KEY
+                  name: {{ .Values.vpn.env.wg_existing_secret }}
+                  optional: false
+            - name: WIREGUARD_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: WIREGUARD_PRIVATE_KEY
+                  name: {{ .Values.vpn.env.wg_existing_secret }}
+                  optional: false
+            - name: WIREGUARD_PRESHARED_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: WIREGUARD_PRESHARED_KEY
+                  name: {{ .Values.vpn.env.wg_existing_secret }}
+                  optional: false
+            {{- else }}
+            - name: WIREGUARD_PUBLIC_KEY
+              value: {{ .Values.vpn.env.wg_public_key }}
+            - name: WIREGUARD_PRIVATE_KEY
+              value: {{ .Values.vpn.env.wg_private_key }}
+            - name: WIREGUARD_PRESHARED_KEY
+              value: {{ .Values.vpn.env.wg_preshared_key }}
+            {{- end }}
+            - name: WIREGUARD_ADDRESSES
+              value: {{ quote .Values.vpn.env.wireguard_cidr }}
+            - name: FIREWALL_INPUT_PORTS
+              value: "8080,9090,4191,4143,4140,4190"
+            - name: DOT
+              value: "off"
+            - name: DNS_ADDRESS
+              value: {{ quote .Values.vpn.env.dns_address | default "8.8.8.8" }}
           image: {{ .Values.vpn.image.repository }}:{{ .Values.vpn.image.tag | default "latest" }}
           imagePullPolicy: {{ .Values.vpn.image.pullPolicy }}
-          name: vpn
           ports:
             - containerPort: 8080
               name: {{ include "sabnzbd.fullname" . }}
