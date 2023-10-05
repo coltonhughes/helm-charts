@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jackett.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ include "jackett.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "jackett.fullname" . }}
+    spec:
+      volumes:
+        - name: config
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "jackett.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+      {{- if .Values.persistence.additionalVolumes }}
+        {{- .Values.persistence.additionalVolumes | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+      - env:
+        - name: TZ
+          value: {{ quote .Values.container.env.tz }}
+        - name: PUID
+          value: {{ quote .Values.container.env.puid }}
+        - name: PGID
+          value: {{ quote .Values.container.env.pgid }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: {{ include "jackett.fullname" . }}
+        ports:
+        - containerPort: 9117
+          name: {{ include "jackett.fullname" . }}
+          protocol: TCP
+        resources: {}
+        volumeMounts:
+          - mountPath: /config
+            name: config
+        {{- if .Values.persistence.additionalMounts }}
+          {{- .Values.persistence.additionalMounts | toYaml | nindent 10 }}
+        {{- end }}
+        
