@@ -9,8 +9,8 @@ sabnzbd:
     tz: America/Chicago
     puid: 1000
     pgid: 1000
-    additionalVolumes: []
-    additionalMounts: []
+  additionalVolumes: []
+  additionalMounts: []
 vpn:
   image:
     repository: qmcgaw/gluetun

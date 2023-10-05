@@ -16,12 +16,12 @@ spec:
     spec:
       volumes:
         - name: config
-          {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim | default (include "sabnzbd.fullname" .) }}
-          {{- else }}
+        {{- else }}
           emptyDir: {}
-          {{- end }}
+        {{- end }}
       {{- if .Values.sabnzbd.additionalVolumes }}
         {{- .Values.sabnzbd.additionalVolumes | toYaml | nindent 8 }}
       {{- end }}
@@ -45,7 +45,7 @@ spec:
             - mountPath: /config
               name: config
           {{- if .Values.sabnzbd.additionalMounts }}
-            {{- .Values.sabnzbd.additionalMounts | toYaml | nindent 10 }}
+            {{- .Values.sabnzbd.additionalMounts | toYaml | nindent 12 }}
           {{- end }}
         - name: vpn
           env:
@@ -116,6 +116,3 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
-      {{- if .Values.vpn.additionalVolumes }}
-        {{- .Values.vpn.additionalVolumes | toYaml | nindent 8 }}
-      {{- end }}
