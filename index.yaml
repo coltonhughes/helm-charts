@@ -157,6 +157,16 @@ entries:
   sabnzbd:
   - apiVersion: v2
     appVersion: 4.1.0
+    created: "2023-10-05T21:51:24.866782826Z"
+    description: A Helm chart for running sabnzbd on k8s
+    digest: d928130c7c29e132494f59cdbb445848439c0e423925a0ee1eb0546f28a52552
+    name: sabnzbd
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/sabnzbd-0.1.7/sabnzbd-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
+    appVersion: 4.1.0
     created: "2023-10-05T20:56:56.50921915Z"
     description: A Helm chart for running sabnzbd on k8s
     digest: dff3484f7e290b7704f0ddcfa2c3e7adacb8e350e92179388f4cdef6ad0aa66f
@@ -266,4 +276,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2023-10-05T20:56:56.509268151Z"
+generated: "2023-10-05T21:51:24.866843026Z"
