@@ -26,6 +26,7 @@ service:
   port: 8989
   targetPort: sonarr
 ingress:
+  enabled: true
   clusterIssuer: letsencrypt-prod
   class: nginx
   acme: true

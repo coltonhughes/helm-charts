@@ -27,6 +27,7 @@ service:
   targetPort: radarr
 
 ingress:
+  enabled: true
   clusterIssuer: letsencrypt-prod
   class: nginx
   acme: true
