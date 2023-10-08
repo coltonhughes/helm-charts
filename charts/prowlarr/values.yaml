@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: linuxserver/prowlarr
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   tag: "latest"
 
 container:

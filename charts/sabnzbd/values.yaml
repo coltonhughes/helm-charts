@@ -3,7 +3,7 @@ replicaCount: 1
 sabnzbd:
   image:
     repository: linuxserver/sabnzbd
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: "latest"
   env:
     tz: America/Chicago
