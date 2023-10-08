@@ -3,6 +3,16 @@ entries:
   jackett:
   - apiVersion: v2
     appVersion: 0.21.958
+    created: "2023-10-08T15:54:44.394157402Z"
+    description: A Helm chart for running Jackett on k8s
+    digest: 365b6ac60a46b138137c695349a96e93a5c32929181d99dca1e4b314a63be184
+    name: jackett
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/jackett-0.1.2/jackett-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 0.21.958
     created: "2023-10-05T06:07:05.404572828Z"
     description: A Helm chart for running Jackett on k8s
     digest: 01b6473d12e34a7942873aeff05cefeab001aef004a665c7c5f7a226fb3312e2
@@ -22,6 +32,16 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/jackett-0.1.0/jackett-0.1.0.tgz
     version: 0.1.0
   overseerr:
+  - apiVersion: v2
+    appVersion: 1.33.2
+    created: "2023-10-08T15:54:44.557008444Z"
+    description: A Helm chart for running overseerr on k8s
+    digest: 14756cf6a5ad973320761bcf471f3337b5bd989a9c25c948a69d7fd238c3d4ad
+    name: overseerr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/overseerr-0.1.4/overseerr-0.1.4.tgz
+    version: 0.1.4
   - apiVersion: v2
     appVersion: 1.33.2
     created: "2023-10-05T06:07:05.628111806Z"
@@ -63,6 +83,16 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/overseerr-0.1.0/overseerr-0.1.0.tgz
     version: 0.1.0
   prowlarr:
+  - apiVersion: v2
+    appVersion: 1.8.1259
+    created: "2023-10-08T15:54:44.825995714Z"
+    description: A Helm chart for running prowlarr on k8s
+    digest: 59b82bcd675f39a12152428c09d9d78cd81f89fd5024b6b0bc420fb36279f136
+    name: prowlarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/prowlarr-0.1.5/prowlarr-0.1.5.tgz
+    version: 0.1.5
   - apiVersion: v2
     appVersion: 1.8.1259
     created: "2023-10-05T06:11:36.855458764Z"
@@ -116,6 +146,16 @@ entries:
   radarr:
   - apiVersion: v2
     appVersion: 4.5.2
+    created: "2023-10-08T15:54:44.990320456Z"
+    description: A Helm chart for running Radarr on k8s
+    digest: 9a49951062d8afd02de1401a359c79b670259e4ae63be61ca2b38bbbc5b9f3cb
+    name: radarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/radarr-0.1.4/radarr-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: 4.5.2
     created: "2023-10-05T06:07:06.121664348Z"
     description: A Helm chart for running Radarr on k8s
     digest: a4df58afdfacc37fafe38d4b915337d4eb7279a8e2e5cd23fd0100a4e5fb1886
@@ -155,6 +195,16 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/radarr-0.1.0/radarr-0.1.0.tgz
     version: 0.1.0
   sabnzbd:
+  - apiVersion: v2
+    appVersion: 4.1.0
+    created: "2023-10-08T15:54:45.165888102Z"
+    description: A Helm chart for running sabnzbd on k8s
+    digest: 8e37ee9ea9bdd8ae8a3e9da97515bcb5caafa1d7b92239b02f934a104f4fed31
+    name: sabnzbd
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/sabnzbd-0.1.9/sabnzbd-0.1.9.tgz
+    version: 0.1.9
   - apiVersion: v2
     appVersion: 4.1.0
     created: "2023-10-05T22:21:05.453529594Z"
@@ -228,6 +278,16 @@ entries:
   sonarr:
   - apiVersion: v2
     appVersion: 3.0.10
+    created: "2023-10-08T15:54:45.346203748Z"
+    description: A Helm chart for running Sonarr on k8s
+    digest: 6670e465cd78e2fff2d88775525d9f8294626118640d7fcf302c721e3457d2a6
+    name: sonarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.6/sonarr-0.1.6.tgz
+    version: 0.1.6
+  - apiVersion: v2
+    appVersion: 3.0.10
     created: "2023-10-05T06:07:06.670036694Z"
     description: A Helm chart for running Sonarr on k8s
     digest: 85c1feea998ffcacc4304531a2a7811968276324514c9728fbbc75ca15a11f10
@@ -286,4 +346,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2023-10-05T22:21:05.453593994Z"
+generated: "2023-10-08T15:54:45.346293948Z"
