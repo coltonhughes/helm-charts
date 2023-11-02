@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "plex.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ include "plex.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "plex.fullname" . }}
+    spec:
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      volumes:
+        - name: config
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "plex.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+      {{- if .Values.persistence.additionalVolumes }}
+        {{- .Values.persistence.additionalVolumes | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+      - env:
+        - name: TZ
+          value: {{ quote .Values.container.env.tz }}
+        - name: PUID
+          value: {{ quote .Values.container.env.puid }}
+        - name: PGID
+          value: {{ quote .Values.container.env.pgid }}
+        - name: VERSION
+          value: {{ quote .Values.container.env.version }}
+        {{- if .Values.container.env.plexClaim }}
+        - name: PLEX_CLAIM
+          value: {{ quote .Values.container.env.plexClaim}}
+        {{- end }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: {{ include "plex.fullname" . }}
+        ports:
+        - containerPort: 32400
+          name: {{ include "plex.fullname" . }}
+          protocol: TCP
+        resources: {}
+        volumeMounts:
+          - mountPath: /config
+            name: config
+        {{- if .Values.persistence.additionalMounts }}
+          {{- .Values.persistence.additionalMounts | toYaml | nindent 10 }}
+        {{- end }}

@@ -1,0 +1,38 @@
+replicaCount: 1
+
+image:
+  repository: linuxserver/plex
+  pullPolicy: Always
+  tag: "latest"
+
+container:
+  env:
+    tz: America/Chicago
+    puid: 1000
+    pgid: 1000
+    version: docker
+
+nodeSelector:
+  kubernetes.io/arch: amd64
+
+persistence:
+  storageClass: ""
+  exisitingClaim: ""
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 2Gi
+  additionalVolumes: []
+  additionalMounts: []
+
+service:
+  type: ClusterIP
+  protocol: TCP
+  port: 32400
+  targetPort: plex
+
+ingress:
+  enabled: true
+  clusterIssuer: letsencrypt-prod
+  class: nginx
+  acme: true
+  fqdn: plex.example.com
