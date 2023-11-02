@@ -82,6 +82,17 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/overseerr-0.1.0/overseerr-0.1.0.tgz
     version: 0.1.0
+  plex:
+  - apiVersion: v2
+    appVersion: 1.32.7
+    created: "2023-11-02T02:48:15.156670608Z"
+    description: A Helm chart for running plex on k8s
+    digest: 66dc325ef6dd7752780cb697c499a677a643356d8a786fbff871a825df352156
+    name: plex
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/plex-0.0.1/plex-0.0.1.tgz
+    version: 0.0.1
   prowlarr:
   - apiVersion: v2
     appVersion: 1.8.1259
@@ -346,4 +357,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2023-10-08T15:54:45.346293948Z"
+generated: "2023-11-02T02:48:15.156775911Z"
