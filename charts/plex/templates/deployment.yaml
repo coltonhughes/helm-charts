@@ -44,6 +44,11 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ include "plex.fullname" . }}
+        {{- if .Values.gpuEnabled }}
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+        {{- end }}
         ports:
         - containerPort: 32400
           name: {{ include "plex.fullname" . }}
