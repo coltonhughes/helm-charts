@@ -1,0 +1,21 @@
+ingress:
+  enabled: true
+  hosts:
+    - plex-test.lab.articops.com
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  tls:
+    - secretName: plex-test-tls
+      hosts:
+        - plex-test.lab.articops.com
+nodeSelector:
+  plex.io/ready: "true"
+
+timezone: America/Chicago
+extraEnv:
+  NVIDIA_VISIBLE_DEVICES: all
+  NVIDIA_DRIVER_CAPABILITIES: video,compute,utility
+# runtimeClassName: nvidia

@@ -14,8 +14,9 @@ spec:
       labels:
         app: {{ include "plex.fullname" . }}
     spec:
-      nodeSelector:
-        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      {{- if .Values.gpuEnabled }}
+      runtimeClassName: nvidia
+      {{- end }}
       volumes:
         - name: config
         {{- if .Values.persistence.enabled }}
@@ -41,6 +42,12 @@ spec:
         - name: PLEX_CLAIM
           value: {{ quote .Values.container.env.plexClaim}}
         {{- end }}
+        {{- if .Values.gpuEnabled }}
+        - name: NVIDIA_VISIBLE_DEVICES 
+          value: all
+        - name: NVIDIA_DRIVER_CAPABILITIES  
+          value: "compute,video,utility"
+        {{- end }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ include "plex.fullname" . }}
@@ -50,10 +57,36 @@ spec:
             nvidia.com/gpu: 1
         {{- end }}
         ports:
-        - containerPort: 32400
-          name: {{ include "plex.fullname" . }}
-          protocol: TCP
-        resources: {}
+          - containerPort: 32400    
+            name: {{ include "plex.fullname" . }}
+            protocol: TCP
+          - containerPort: 32469
+            name: dlna-tcp
+            protocol: TCP
+          - containerPort: 1900
+            name: dlna-udp
+            protocol: UDP
+          - containerPort: 3005
+            name: plex-companion
+            protocol: TCP  
+          - containerPort: 5353
+            name: discovery-udp
+            protocol: UDP  
+          - containerPort: 8324
+            name: plex-roku
+            protocol: TCP  
+          - containerPort: 32410
+            name: gdm-32410
+            protocol: UDP
+          - containerPort: 32412
+            name: gdm-32412
+            protocol: UDP
+          - containerPort: 32413
+            name: gdm-32413
+            protocol: UDP
+          - containerPort: 32414
+            name: gdm-32414
+            protocol: UDP
         volumeMounts:
           - mountPath: /config
             name: config

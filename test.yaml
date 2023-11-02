@@ -12,7 +12,9 @@ persistence:
       name: media
 container:
   env:
-    plexClaim: claim-VzLde2xWRxzH_vRQLPSj
+    plexClaim: claim-hi7Mehd1Y7ZWsaXffyzG
 ingress:
   enabled: true
   fqdn: plex-test.lab.articops.com
+
+gpuEnabled: true
