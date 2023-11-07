@@ -3,23 +3,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "overseerr.fullname" . }}
-  annotations:
-    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuer }}
-  {{- if .Values.ingress.acme }}
-    kubernetes.io/tls-acme: "true"
-  {{- end }}
-    kubernetes.io/ingress.class: {{ .Values.ingress.class | quote }}
-  {{- if eq .Values.ingress.class "nginx" }}
-    nginx.ingress.kubernetes.io/rewrite-target: /
-  {{- end }}
   labels:
     name: {{ include "overseerr.fullname" . }}
 spec:
   ingressClassName: {{ .Values.ingress.class }}
-  tls:
-    - hosts:
-        - {{ .Values.ingress.fqdn }}
-      secretName: "{{ include "overseerr.fullname" . }}-tls"
   rules:
     - host: {{ .Values.ingress.fqdn }}
       http:
