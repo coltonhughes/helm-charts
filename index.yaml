@@ -85,6 +85,16 @@ entries:
   plex:
   - apiVersion: v2
     appVersion: 1.32.8
+    created: "2024-01-02T20:44:56.520406437Z"
+    description: A Helm chart for running plex on k8s
+    digest: aaa84a83410025cdbe700e6d7c69c238c06c8d11491472df09c2f9b7be8e1ac8
+    name: plex
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/plex-0.1.1/plex-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.32.8
     created: "2024-01-02T20:30:01.03610543Z"
     description: A Helm chart for running plex on k8s
     digest: 93cb8c3239eed37d1b82f51390c7238198366555d2487b9de654495e918aedd9
@@ -367,4 +377,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2024-01-02T20:30:01.036215755Z"
+generated: "2024-01-02T20:44:56.520480065Z"
