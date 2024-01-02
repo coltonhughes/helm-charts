@@ -26,6 +26,9 @@ persistence:
   additionalVolumes: []
   additionalMounts: []
 
+loadBalancer:
+  enabled: true
+
 service:
   type: ClusterIP
   protocol: TCP
