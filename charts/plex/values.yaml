@@ -1,6 +1,7 @@
 replicaCount: 1
 
-gpuEnabled: false
+gpu:
+  enabled: false
 
 image:
   repository: linuxserver/plex

@@ -14,8 +14,10 @@ spec:
       labels:
         app: {{ include "plex.fullname" . }}
     spec:
-      {{- if .Values.gpuEnabled }}
+      {{- if .Values.gpu.enabled }}
+      {{ if eq .Values.gpu.type "nvidia" }}
       runtimeClassName: nvidia
+      {{ end}}
       {{- end }}
       volumes:
         - name: config
@@ -51,10 +53,14 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ include "plex.fullname" . }}
-        {{- if .Values.gpuEnabled }}
+        {{- if .Values.gpu.enabled }}
         resources:
           limits:
+          {{- if eq .Values.gpu.type "nvidia" }}
             nvidia.com/gpu: 1
+          {{ else if eq .Values.gpu.type "intel" }}
+            gpu.intel.com/i915: "1"
+          {{ end }}
         {{- end }}
         ports:
           - containerPort: 32400    

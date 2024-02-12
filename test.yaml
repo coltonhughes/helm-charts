@@ -16,6 +16,8 @@ container:
 ingress:
   enabled: true
   fqdn: plex-test.lab.articops.com
-loadBalancer:
-  IP: 192.168.20.105
-gpuEnabled: true
+# loadBalancer:
+#   IP: 192.168.20.105
+gpu:
+  enabled: true
+  type: intel
