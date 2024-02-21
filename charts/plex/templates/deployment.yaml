@@ -60,6 +60,7 @@ spec:
             nvidia.com/gpu: 1
           {{ else if eq .Values.gpu.type "intel" }}
             gpu.intel.com/i915: "1"
+          {{ end }}
           limits:
           {{- if eq .Values.gpu.type "nvidia" }}
             nvidia.com/gpu: 1
