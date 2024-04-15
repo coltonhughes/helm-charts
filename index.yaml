@@ -31,6 +31,17 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/jackett-0.1.0/jackett-0.1.0.tgz
     version: 0.1.0
+  lazylibrarian:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-04-15T17:54:24.980712181Z"
+    description: Helm chart to install lazylibrarian
+    digest: c24028918f31192ca736bbeb5e186a60023802503e998e8e6f09791c2e90f1e3
+    name: lazylibrarian
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/lazylibrarian-0.1.0/lazylibrarian-0.1.0.tgz
+    version: 0.1.0
   overseerr:
   - apiVersion: v2
     appVersion: 1.33.2
@@ -407,4 +418,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2024-02-21T02:07:37.001742263Z"
+generated: "2024-04-15T17:54:24.980786981Z"
