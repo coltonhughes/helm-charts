@@ -28,5 +28,7 @@ service:
 
 ingress:
   enabled: true
+  clusterIssuer: letsencrypt-prod
   class: nginx
+  acme: true
   fqdn: lazylibrarian.example.com
