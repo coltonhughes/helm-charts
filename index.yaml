@@ -34,6 +34,16 @@ entries:
   lazylibrarian:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2024-04-15T18:03:19.789267193Z"
+    description: Helm chart to install lazylibrarian
+    digest: e30981f53928792ffe9d82b312c7611b7d831852196f5e8ba9c630a31f5159c5
+    name: lazylibrarian
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/lazylibrarian-0.1.1/lazylibrarian-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2024-04-15T17:54:24.980712181Z"
     description: Helm chart to install lazylibrarian
     digest: c24028918f31192ca736bbeb5e186a60023802503e998e8e6f09791c2e90f1e3
@@ -418,4 +428,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-15T17:54:24.980786981Z"
+generated: "2024-04-15T18:03:19.789350229Z"
