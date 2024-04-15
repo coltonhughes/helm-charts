@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  gha-cache:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-04-15T20:20:27.244616987Z"
+    description: Installs GHA cache server
+    digest: 43412d362b6a7f17f2c4cd7f6a2ac90adc5f5f5329b959364ddbd74538bb89f8
+    name: gha-cache
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/gha-cache-0.1.0/gha-cache-0.1.0.tgz
+    version: 0.1.0
   jackett:
   - apiVersion: v2
     appVersion: 0.21.958
@@ -428,4 +439,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-15T18:03:19.789350229Z"
+generated: "2024-04-15T20:20:27.244718608Z"
