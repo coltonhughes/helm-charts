@@ -1,7 +1,7 @@
 persistence:
   enabled: true
   accessMode: ReadWriteOnce
-  size: 20Gi
+  size: 5Gi
   additionalVolumes:
     - name: media
       nfs:
@@ -10,14 +10,6 @@ persistence:
   additionalMounts:
     - mountPath: /mnt/media
       name: media
-container:
-  env:
-    plexClaim: claim-hi7Mehd1Y7ZWsaXffyzG
 ingress:
   enabled: true
-  fqdn: plex-test.lab.articops.com
-# loadBalancer:
-#   IP: 192.168.20.105
-gpu:
-  enabled: true
-  type: intel
+  fqdn: ll.test.articops.com
