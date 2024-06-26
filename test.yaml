@@ -1,7 +1,7 @@
 persistence:
   enabled: true
   accessMode: ReadWriteOnce
-  size: 5Gi
+  size: 50Gi
   # additionalVolumes:
   #   - name: media
   #     nfs:
@@ -12,8 +12,8 @@ persistence:
   #     name: media
 ingress:
   enabled: true
-  fqdn: gha-cache.test.articops.com
+  fqdn: gha-cache.lab.articops.com
 
 container:
   env:
-    base_url: https://gha-cache.test.articops.com
+    base_url: https://gha-cache.lab.articops.com
