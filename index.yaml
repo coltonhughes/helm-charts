@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  factorio:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-06-26T03:50:33.763332729Z"
+    description: A Helm chart for Kubernetes
+    digest: b35c7ef2d262899172d7e343f86235c3d8a3fac1aa6ceaf9cfbdf2862cd8cad5
+    name: factorio
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/factorio-0.1.0/factorio-0.1.0.tgz
+    version: 0.1.0
   gha-cache:
   - apiVersion: v2
     appVersion: 1.0.0
@@ -439,4 +450,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-15T20:20:27.244718608Z"
+generated: "2024-06-26T03:50:33.763404473Z"
