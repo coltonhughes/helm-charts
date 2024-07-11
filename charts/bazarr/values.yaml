@@ -1,0 +1,31 @@
+replicaCount: 1
+
+image:
+  repository: linuxserver/bazarr
+  pullPolicy: Always
+  tag: "latest"
+
+container:
+  env:
+    tz: America/Chicago
+    puid: 1000
+    pgid: 1000
+
+persistence:
+  storageClass: ""
+  exisitingClaim: ""
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 2Gi
+  additionalVolumes: []
+  additionalMounts: []
+
+service:
+  type: ClusterIP
+  protocol: TCP
+  port: 6767
+  targetPort: bazarr
+ingress:
+  enabled: true
+  class: nginx
+  fqdn: bazarr.example.com

@@ -12,8 +12,7 @@ persistence:
   #     name: media
 ingress:
   enabled: true
-  fqdn: gha-cache.lab.articops.com
-
-container:
-  env:
-    base_url: https://gha-cache.lab.articops.com
+  fqdn: bazarr.test.articops.com
+# container:
+#   env:
+#     base_url: https://gha-cache.lab.articops.com
