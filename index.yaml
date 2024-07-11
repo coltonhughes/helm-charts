@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  bazarr:
+  - apiVersion: v2
+    appVersion: v1.4.3
+    created: "2024-07-11T02:18:22.367665819Z"
+    description: A Helm chart for bazarr
+    digest: ea23b9a740313f01257e563b0501421cf790cf19412277c21169458198ba17a6
+    name: bazarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/bazarr-0.1.0/bazarr-0.1.0.tgz
+    version: 0.1.0
   factorio:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -450,4 +461,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2024-06-26T03:50:33.763404473Z"
+generated: "2024-07-11T02:18:22.367729478Z"
