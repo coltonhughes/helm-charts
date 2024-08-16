@@ -31,40 +31,40 @@ spec:
         {{- .Values.persistence.additionalVolumes | toYaml | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ include "jellyfin.fullname" . }}
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.gpu.enabled }}
-          resources:
-            requests:
-            {{- if eq .Values.gpu.type "nvidia" }}
-              nvidia.com/gpu: 1
-            {{ else if eq .Values.gpu.type "intel" }}
-              gpu.intel.com/i915: "1"
-            {{ end }}
-            limits:
-            {{- if eq .Values.gpu.type "nvidia" }}
-              nvidia.com/gpu: 1
-            {{ else if eq .Values.gpu.type "intel" }}
-              gpu.intel.com/i915: "1"
-            {{ end }}
-          {{- end }}
-          ports:
-            - containerPort: 8096    
-              name: http
-              protocol: TCP
-            - containerPort: 8920
-              name: https
-              protocol: TCP
-            - containerPort: 1900
-              name: service-discovery
-              protocol: UDP
-            - containerPort: 7359
-              name: auto-discovery
-              protocol: UDP  
-          volumeMounts:
-            - mountPath: /config
-              name: config
-          {{- if .Values.persistence.additionalMounts }}
-            {{- .Values.persistence.additionalMounts | toYaml | nindent 10 }}
-          {{- end }}
+      - name: {{ include "jellyfin.fullname" . }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.gpu.enabled }}
+        resources:
+          requests:
+          {{- if eq .Values.gpu.type "nvidia" }}
+            nvidia.com/gpu: 1
+          {{ else if eq .Values.gpu.type "intel" }}
+            gpu.intel.com/i915: "1"
+          {{ end }}
+          limits:
+          {{- if eq .Values.gpu.type "nvidia" }}
+            nvidia.com/gpu: 1
+          {{ else if eq .Values.gpu.type "intel" }}
+            gpu.intel.com/i915: "1"
+          {{ end }}
+        {{- end }}
+        ports:
+          - containerPort: 8096    
+            name: http
+            protocol: TCP
+          - containerPort: 8920
+            name: https
+            protocol: TCP
+          - containerPort: 1900
+            name: service-discovery
+            protocol: UDP
+          - containerPort: 7359
+            name: auto-discovery
+            protocol: UDP  
+        volumeMounts:
+          - mountPath: /config
+            name: config
+        {{- if .Values.persistence.additionalMounts }}
+          {{- .Values.persistence.additionalMounts | toYaml | nindent 10 }}
+        {{- end }}
