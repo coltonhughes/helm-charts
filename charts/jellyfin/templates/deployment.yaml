@@ -57,10 +57,10 @@ spec:
             name: https
             protocol: TCP
           - containerPort: 1900
-            name: service-discovery
+            name: svc-disc
             protocol: UDP
           - containerPort: 7359
-            name: auto-discovery
+            name: auto-disc
             protocol: UDP  
         volumeMounts:
           - mountPath: /config
