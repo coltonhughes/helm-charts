@@ -1,0 +1,37 @@
+replicaCount: 1
+
+gpu:
+  enabled: false
+
+image:
+  repository: jellyfin/jellyfin
+  pullPolicy: Always
+  tag: "latest"
+
+nodeSelector:
+  kubernetes.io/arch: amd64
+
+persistence:
+  storageClass: ""
+  exisitingClaim: ""
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 2Gi
+  additionalVolumes: []
+  additionalMounts: []
+
+loadBalancer:
+  enabled: true
+
+service:
+  type: ClusterIP
+  protocol: TCP
+  port: 8920
+  targetPort: https
+
+ingress:
+  enabled: true
+  clusterIssuer: letsencrypt-prod
+  class: nginx
+  acme: true
+  fqdn: plex.example.com

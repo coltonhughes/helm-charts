@@ -11,7 +11,7 @@ factorio:
     port: 27015
   whitelist: []
   banlist: []
-  admins: []
+  adminlist: []
   instanceName: "Factorio on K8s"
   instanceDescription: "This is running on k8s"
   existingFactorioAccountSecret: ""
