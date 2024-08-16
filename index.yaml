@@ -67,6 +67,16 @@ entries:
   jellyfin:
   - apiVersion: v2
     appVersion: 10.9.9
+    created: "2024-08-16T03:49:58.141178083Z"
+    description: A Helm chart for Kubernetes
+    digest: f939b63a3e64cf263b633c8b694aaf81ba0de27728abdb34d4b3f0eda1783a5e
+    name: jellyfin
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/jellyfin-0.4.0/jellyfin-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: 10.9.9
     created: "2024-08-16T03:37:13.347150686Z"
     description: A Helm chart for Kubernetes
     digest: 0da971c49918ec4fc0be546bdec314fa7573f72c0c27ede95ce8b59e32aaeded
@@ -492,4 +502,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-0.1.0/sonarr-0.1.0.tgz
     version: 0.1.0
-generated: "2024-08-16T03:37:13.347252865Z"
+generated: "2024-08-16T03:49:58.141266148Z"
