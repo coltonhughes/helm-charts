@@ -1,25 +1,18 @@
-# Default values for tabbyml.
+# Default values for johnbot.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: tabbyml/tabby
+  repository: ghcr.io/coltonhughes/johnbot2.0-johnbot
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: 0.18.0
+  tag: master
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
-
-models:
-  code: CodeQwen-7B
-
-gpu:
-  enabled: true
-  type: nvidia
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -50,17 +43,17 @@ securityContext:
 
 service:
   type: ClusterIP
-  port: 8080
+  port: 80
 
 ingress:
-  enabled: true
-  className: nginx
+  enabled: false
+  className: ""
   annotations:
     {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: tabbyml.lab.articops.com
+    - host: chart-example.local
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -70,10 +63,7 @@ ingress:
   #      - chart-example.local
 
 resources:
-  requests:
-    nvidia.com/gpu: 1
-  limits:
-    nvidia.com/gpu: 1
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -85,14 +75,14 @@ resources:
   #   cpu: 100m
   #   memory: 128Mi
 
-# livenessProbe:
-#   httpGet:
-#     path: /
-#     port: http
-# readinessProbe:
-#   httpGet:
-#     path: /
-#     port: http
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
 
 autoscaling:
   enabled: false
@@ -100,15 +90,6 @@ autoscaling:
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
-
-persistence:
-  storageClass: ""
-  exisitingClaim: ""
-  enabled: true
-  accessMode: ReadWriteOnce
-  size: 20Gi
-  additionalVolumes: []
-  additionalMounts: []
 
 # Additional volumes on the output Deployment definition.
 volumes: []
@@ -119,17 +100,12 @@ volumes: []
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts: []
-
 # - name: foo
 #   mountPath: "/etc/foo"
 #   readOnly: true
 
 nodeSelector: {}
 
-tolerations:
-  - key: "nvidia.com/gpu"
-    operator: "Equal"
-    value: "present"
-    effect: "NoSchedule"
+tolerations: []
 
 affinity: {}
