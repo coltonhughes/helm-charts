@@ -441,6 +441,17 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sabnzbd-0.1.2/sabnzbd-0.1.2.tgz
     version: 0.1.2
+  secuimage-backend:
+  - apiVersion: v2
+    appVersion: 2.8.3
+    created: "2024-11-07T06:39:23.855272871Z"
+    description: Deploys secuimage-backend
+    digest: 647b337657907f6ae46114a6f63caca8979e91e1782211165d69cd8926d3350c
+    name: secuimage-backend
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/secuimage-backend-0.1.0/secuimage-backend-0.1.0.tgz
+    version: 0.1.0
   sonarr:
   - apiVersion: v2
     appVersion: 3.0.10
@@ -523,4 +534,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tabbyml-0.1.0/tabbyml-0.1.0.tgz
     version: 0.1.0
-generated: "2024-08-16T22:09:54.103526388Z"
+generated: "2024-11-07T06:39:23.855389599Z"
