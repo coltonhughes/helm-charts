@@ -1,0 +1,81 @@
+replicaCount: 1
+
+image:
+  repository: registry
+  tag: ""
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  name: ""
+
+podSecurityContext: {}
+securityContext: {}
+
+metrics:
+  enabled: true
+  port: 5001
+  serviceMonitor:
+    enabled: false
+    namespace: ""
+    interval: 30s
+    scrapeTimeout: 10s
+    labels: {}
+    path: /metrics
+
+service:
+  type: ClusterIP
+  port: 5000
+  metrics:
+    port: 5001
+    type: ClusterIP
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: registry.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+config:
+  version: 0.1
+  log:
+    level: info
+  storage:
+    cache:
+      blobdescriptor: inmemory
+    filesystem:
+      rootdirectory: /var/lib/registry
+  http:
+    addr: :5000
+    headers:
+      X-Content-Type-Options: [nosniff]
+  health:
+    storagedriver:
+      enabled: true
+      interval: 10s
+      threshold: 3
+  prometheus:
+    enabled: true
+    path: /metrics
