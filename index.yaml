@@ -534,4 +534,15 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tabbyml-0.1.0/tabbyml-0.1.0.tgz
     version: 0.1.0
-generated: "2024-11-07T06:39:23.855389599Z"
+  tautulli:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-12-29T22:10:38.570127065Z"
+    description: A Helm chart for Kubernetes
+    digest: 2a3c82c1a25647be9debc30b9536a10f0a4a45dfcc23ae9411bd9d7965284871
+    name: tautulli
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-12-29T22:10:38.570222053Z"
