@@ -1,18 +1,8 @@
+replicaCount: 1
+
 persistence:
-  enabled: true
-  accessMode: ReadWriteOnce
-  size: 5Gi
-  additionalVolumes:
-    - name: media
-      nfs:
-        path: /volume1/plex
-        server: 10.0.0.66
-  additionalMounts:
-    - mountPath: /mnt/media
-      name: media
+  size: 2Gi
+
 ingress:
   enabled: true
-  fqdn: jf.test.articops.com
-# container:
-#   env:
-#     base_url: https://gha-cache.lab.articops.com
+  fqdn: tautulli.infra.articops.com

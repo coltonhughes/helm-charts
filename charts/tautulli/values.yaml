@@ -1,0 +1,34 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/tautulli/tautulli
+  pullPolicy: Always
+  tag: "latest"
+
+container:
+  env:
+    tz: America/Chicago
+    puid: 1000
+    pgid: 1000
+
+persistence:
+  storageClass: ""
+  exisitingClaim: ""
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 2Gi
+  additionalVolumes: []
+  additionalMounts: []
+
+service:
+  type: ClusterIP
+  protocol: TCP
+  port: 8181
+  targetPort: tautulli
+
+ingress:
+  enabled: true
+  clusterIssuer: letsencrypt-prod
+  class: nginx
+  acme: true
+  fqdn: sonarr.example.com
