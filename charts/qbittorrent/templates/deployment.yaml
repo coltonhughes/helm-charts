@@ -26,7 +26,7 @@ spec:
             - name: PGID
               value: {{ quote .Values.qbittorrent.env.pgid }}
             - name: WEBUI_PORT
-              value: {{ .Values.service.port }}
+              value: "{{ .Values.service.port }}"
           ports:
             - containerPort: {{ .Values.service.port }}
               name: {{ include "qbittorrent.fullname" . }}
