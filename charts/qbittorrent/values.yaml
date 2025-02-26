@@ -37,11 +37,11 @@ service:
   type: ClusterIP
   protocol: TCP
   port: 8080
-  targetPort: sabnzbd
+  targetPort: qbittorrent
 
 ingress:
   enabled: true
   clusterIssuer: letsencrypt-prod
   class: nginx
   acme: true
-  fqdn: sabnzbd.example.com
+  fqdn: qbittorrent.example.com
