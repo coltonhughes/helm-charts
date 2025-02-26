@@ -1,53 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "sabnzbd.fullname" . }}
+  name: {{ include "qbittorrent.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: {{ include "sabnzbd.fullname" . }}
+      app: {{ include "qbittorrent.fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ include "sabnzbd.fullname" . }}
+        app: {{ include "qbittorrent.fullname" . }}
     spec:
-      initContainers:
-        - name: copy
-          image: bash
-          command: ["bash", "-c", "if [ -f /config/sabnzbd.ini ]; then exit 0; else cp /tmp/sabnzbd.ini /config/sabnzbd.ini; fi"]
-          volumeMounts:
-          - mountPath: /config
-            name: sabnzbd-config
-          - mountPath: /tmp/sabnzbd.ini
-            subPath: sabnzbd.ini
-            name: sabnzbd-config-ini
       containers:
-        - name: {{ include "sabnzbd.fullname" . }}  
-          image: {{ .Values.sabnzbd.image.repository }}:{{ .Values.sabnzbd.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ .Values.sabnzbd.image.pullPolicy }}
+        - name: {{ include "qbittorrent.fullname" . }}  
+          image: {{ .Values.qbittorrent.image.repository }}:{{ .Values.qbittorrent.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.qbittorrent.image.pullPolicy }}
           env:
             - name: TZ
-              value: {{ quote .Values.sabnzbd.env.tz }}
+              value: {{ quote .Values.qbittorrent.env.tz }}
             - name: PUID
-              value: {{ quote .Values.sabnzbd.env.puid }}
+              value: {{ quote .Values.qbittorrent.env.puid }}
             - name: PGID
-              value: {{ quote .Values.sabnzbd.env.pgid }}
+              value: {{ quote .Values.qbittorrent.env.pgid }}
+            - name: WEBUI_PORT
+              value: {{ .Values.service.port }}
           ports:
-            - containerPort: 8080
-              name: {{ include "sabnzbd.fullname" . }}
+            - containerPort: {{ .Values.service.port }}
+              name: {{ include "qbittorrent.fullname" . }}
               protocol: TCP
           resources: {}
           volumeMounts:
             - mountPath: /config
-              name: sabnzbd-config
-            - mountPath: /tmp/sabnzbd.ini
-              subPath: sabnzbd.ini
-              name: sabnzbd-config-ini
-          {{- if .Values.sabnzbd.additionalMounts }}
-            {{- .Values.sabnzbd.additionalMounts | toYaml | nindent 12 }}
+              name: qbittorrent-config
+          {{- if .Values.qbittorrent.additionalMounts }}
+            {{- .Values.qbittorrent.additionalMounts | toYaml | nindent 12 }}
           {{- end }}
         - name: vpn
           image: {{ .Values.vpn.image.repository }}:{{ .Values.vpn.image.tag | default "latest" }}
@@ -91,14 +80,14 @@ spec:
             - name: WIREGUARD_ADDRESSES
               value: {{ quote .Values.vpn.env.wireguard_cidr }}
             - name: FIREWALL_INPUT_PORTS
-              value: "8080,9090,4191,4143,4140,4190"
+              value: "8080,6881"
             - name: DOT
               value: "off"
             - name: DNS_ADDRESS
               value: {{ quote .Values.vpn.env.dns_address | default "8.8.8.8" }}
           ports:
             - containerPort: 8080
-              name: {{ include "sabnzbd.fullname" . }}
+              name: {{ include "qbittorrent.fullname" . }}
               protocol: TCP
           resources: {}
           securityContext:
@@ -111,17 +100,13 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       volumes:
-        - name: sabnzbd-config
+        - name: qbittorrent-config
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "sabnzbd.fullname" .) }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "qbittorrent.fullname" .) }}
         {{- else }}
           emptyDir: {}
         {{- end }}
-        - name: sabnzbd-config-ini
-          configMap:
-            name: {{ include "sabnzbd.fullname" . }}
-            defaultMode: 0777
-      {{- if .Values.sabnzbd.additionalVolumes }}
-        {{- .Values.sabnzbd.additionalVolumes | toYaml | nindent 8 }}
+      {{- if .Values.qbittorrent.additionalVolumes }}
+        {{- .Values.qbittorrent.additionalVolumes | toYaml | nindent 8 }}
       {{- end }}

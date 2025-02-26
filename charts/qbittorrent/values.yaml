@@ -1,0 +1,47 @@
+replicaCount: 1
+
+sabnzbd:
+  image:
+    repository: linuxserver/qbittorrent
+    pullPolicy: Always
+    tag: "latest"
+  env:
+    tz: America/Chicago
+    puid: 1000
+    pgid: 1000
+  additionalVolumes: []
+  additionalMounts: []
+vpn:
+  image:
+    repository: qmcgaw/gluetun
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  env:
+    wg_existing_secret: ""
+    wg_public_key: ""
+    wg_private_key: ""
+    wg_preshared_key: ""
+    wireguard_cidr: ""
+    vpn_endpoint_ip: ""
+    vpn_endpoint_port: "51820"
+    type: "wireguard"
+
+persistence:
+  storageClass: ""
+  exisitingClaim: ""
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 2Gi
+
+service:
+  type: ClusterIP
+  protocol: TCP
+  port: 8080
+  targetPort: sabnzbd
+
+ingress:
+  enabled: true
+  clusterIssuer: letsencrypt-prod
+  class: nginx
+  acme: true
+  fqdn: sabnzbd.example.com
