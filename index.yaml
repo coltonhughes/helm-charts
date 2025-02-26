@@ -118,6 +118,16 @@ entries:
   lazylibrarian:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-02-26T03:52:58.242125155Z"
+    description: Helm chart to install lazylibrarian
+    digest: 0bab0f467b46ae1bc32a759612eb03e7f99d2dea2f9380f267b0c569dca4676b
+    name: lazylibrarian
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/lazylibrarian-0.1.2/lazylibrarian-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2024-04-15T18:03:19.789267193Z"
     description: Helm chart to install lazylibrarian
     digest: e30981f53928792ffe9d82b312c7611b7d831852196f5e8ba9c630a31f5159c5
@@ -309,6 +319,17 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/prowlarr-0.1.0/prowlarr-0.1.0.tgz
     version: 0.1.0
+  qbittorrent:
+  - apiVersion: v2
+    appVersion: 5.0.4
+    created: "2025-02-26T03:52:58.320777495Z"
+    description: A Helm chart for Kubernetes
+    digest: 5df5aa115e9dfed8a3f41bdfbd9066c5c36c5b80cb7aa17f00b4b6743a2cb7b0
+    name: qbittorrent
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/qbittorrent-0.1.1/qbittorrent-0.1.1.tgz
+    version: 0.1.1
   radarr:
   - apiVersion: v2
     appVersion: 4.5.2
@@ -361,6 +382,16 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/radarr-0.1.0/radarr-0.1.0.tgz
     version: 0.1.0
   sabnzbd:
+  - apiVersion: v2
+    appVersion: 4.1.0
+    created: "2025-02-26T03:52:58.40468949Z"
+    description: A Helm chart for running sabnzbd on k8s
+    digest: 64ff2701f8765be0d4ab12ed2300c5604a9aaea3777b9d08f4ac295b2d13b938
+    name: sabnzbd
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/sabnzbd-0.2.1/sabnzbd-0.2.1.tgz
+    version: 0.2.1
   - apiVersion: v2
     appVersion: 4.1.0
     created: "2023-10-08T15:54:45.165888102Z"
@@ -545,4 +576,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2024-12-29T22:10:38.570222053Z"
+generated: "2025-02-26T03:52:58.404793764Z"
