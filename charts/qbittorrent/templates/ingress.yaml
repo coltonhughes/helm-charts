@@ -6,6 +6,10 @@ metadata:
   labels:
     name: {{ include "qbittorrent.fullname" . }}
 spec:
+  tls:
+    - hosts:
+        - {{ .Values.ingress.fqdn }}
+      secretName: "{{ include "qbittorrent.fullname" . }}-tls"
   ingressClassName: {{ .Values.ingress.class }}
   rules:
     - host: {{ .Values.ingress.fqdn }}
