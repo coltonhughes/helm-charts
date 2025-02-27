@@ -15,4 +15,4 @@ spec:
       targetPort: {{ .Values.service.targetPort }}
     - protocol: TCP
       port: 50000
-      targetPort: qbittorent-torrent
+      targetPort: 50000
