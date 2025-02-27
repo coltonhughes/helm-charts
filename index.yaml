@@ -342,6 +342,16 @@ entries:
   qbittorrent:
   - apiVersion: v2
     appVersion: 5.0.4
+    created: "2025-02-27T05:13:56.849893112Z"
+    description: A Helm chart for Kubernetes
+    digest: 611628612ce5fa5306a9d1d2fa8e89e188547d3d5bfebcf1fe48412e3b095b28
+    name: qbittorrent
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/qbittorrent-0.1.14/qbittorrent-0.1.14.tgz
+    version: 0.1.14
+  - apiVersion: v2
+    appVersion: 5.0.4
     created: "2025-02-27T05:09:59.688051851Z"
     description: A Helm chart for Kubernetes
     digest: 5822c007d39ec5f833cc0d73cf8c246b20bd63d05ed49dc3ea7e26a21ffde439
@@ -716,4 +726,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-27T05:09:59.688255771Z"
+generated: "2025-02-27T05:13:56.850091984Z"
