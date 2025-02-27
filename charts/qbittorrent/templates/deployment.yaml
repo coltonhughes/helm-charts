@@ -33,7 +33,7 @@ spec:
             - containerPort: {{ .Values.service.port }}
               name: {{ include "qbittorrent.fullname" . }}
               protocol: TCP
-            - containerPort: "50000"
+            - containerPort: 50000
               name: qbittorrent-torrent
               protocol: TCP
           resources: {}
