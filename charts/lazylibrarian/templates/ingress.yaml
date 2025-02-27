@@ -3,9 +3,15 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "lazylibrarian.fullname" . }}
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
   labels:
     name: {{ include "lazylibrarian.fullname" . }}
 spec:
+  tls:
+    - hosts:
+        - {{ .Values.ingress.fqdn }}
+      secretName: "lazylibrarian-tls"
   ingressClassName: {{ .Values.ingress.class }}
   rules:
     - host: {{ .Values.ingress.fqdn }}
