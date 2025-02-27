@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "qbittorrent.fullname" . }}
+  name: {{ include "lazylibrarian.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: {{ include "qbittorrent.fullname" . }}
+      app: {{ include "lazylibrarian.fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ include "qbittorrent.fullname" . }}
+        app: {{ include "lazylibrarian.fullname" . }}
     spec:
       volumes:
         - name: config
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "qbittorrent.fullname" .) }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "lazylibrarian.fullname" .) }}
         {{- else }}
           emptyDir: {}
         {{- end }}
@@ -35,10 +35,10 @@ spec:
           value: {{ quote .Values.container.env.pgid }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        name: {{ include "qbittorrent.fullname" . }}
+        name: {{ include "lazylibrarian.fullname" . }}
         ports:
         - containerPort: 5299
-          name: {{ include "qbittorrent.fullname" . }}
+          name: {{ include "lazylibrarian.fullname" . }}
           protocol: TCP
         resources: {}
         volumeMounts:
