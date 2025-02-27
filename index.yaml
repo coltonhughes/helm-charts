@@ -118,6 +118,16 @@ entries:
   lazylibrarian:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-02-27T03:14:12.055529438Z"
+    description: Helm chart to install lazylibrarian
+    digest: dee34e71ee3d5a630998f63c2c9dd31ef712effd242835f88d814cd918838847
+    name: lazylibrarian
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/lazylibrarian-0.1.3/lazylibrarian-0.1.3.tgz
+    version: 0.1.3
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-02-26T03:52:58.242125155Z"
     description: Helm chart to install lazylibrarian
     digest: 0bab0f467b46ae1bc32a759612eb03e7f99d2dea2f9380f267b0c569dca4676b
@@ -646,4 +656,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-26T22:42:17.508241495Z"
+generated: "2025-02-27T03:14:12.055664369Z"
