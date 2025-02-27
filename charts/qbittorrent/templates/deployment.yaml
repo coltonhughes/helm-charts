@@ -27,9 +27,14 @@ spec:
               value: {{ quote .Values.qbittorrent.env.pgid }}
             - name: WEBUI_PORT
               value: "{{ .Values.service.port }}"
+            - name: TORRENT_PORT
+              value: "50000"
           ports:
             - containerPort: {{ .Values.service.port }}
               name: {{ include "qbittorrent.fullname" . }}
+              protocol: TCP
+            - containerPort: "50000"
+              name: qbittorrent-torrent
               protocol: TCP
           resources: {}
           volumeMounts:
