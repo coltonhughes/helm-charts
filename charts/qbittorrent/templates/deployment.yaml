@@ -94,6 +94,9 @@ spec:
             - containerPort: 8080
               name: {{ include "qbittorrent.fullname" . }}
               protocol: TCP
+            - containerPort: 50000
+              name: torrent
+              protocol: TCP
           resources: {}
           securityContext:
             allowPrivilegeEscalation: true
