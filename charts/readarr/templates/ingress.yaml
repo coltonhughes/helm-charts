@@ -1,0 +1,27 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "readarr.fullname" . }}
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  labels:
+    name: {{ include "readarr.fullname" . }}
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.ingress.fqdn }}
+      secretName: "readarr-tls"
+  ingressClassName: {{ .Values.ingress.class }}
+  rules:
+    - host: {{ .Values.ingress.fqdn }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: {{ include "readarr.fullname" . }}
+                port:
+                  number: {{ .Values.service.port }}
+{{- end }}

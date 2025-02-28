@@ -1,0 +1,34 @@
+replicaCount: 1
+
+image:
+  repository: linuxserver/readarr
+  pullPolicy: Always
+  tag: "develop"
+
+container:
+  env:
+    tz: America/Chicago
+    puid: 1000
+    pgid: 1000
+
+persistence:
+  storageClass: ""
+  exisitingClaim: ""
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 5Gi
+  additionalVolumes: []
+  additionalMounts: []
+
+service:
+  type: ClusterIP
+  protocol: TCP
+  port: 8787
+  targetPort: readarr
+
+ingress:
+  enabled: true
+  clusterIssuer: letsencrypt-prod
+  class: nginx
+  acme: true
+  fqdn: readarr.example.com
