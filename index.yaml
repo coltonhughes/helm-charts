@@ -551,6 +551,17 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/radarr-0.1.0/radarr-0.1.0.tgz
     version: 0.1.0
+  readarr:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-02-28T03:14:41.151397295Z"
+    description: A Helm chart for Kubernetes
+    digest: 2ce9bcdbc1fd28bb2c4e7ddaaf95c5304d175f306d86a8e1141d783c2aaaef30
+    name: readarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/readarr-0.1.0/readarr-0.1.0.tgz
+    version: 0.1.0
   sabnzbd:
   - apiVersion: v2
     appVersion: 4.1.0
@@ -746,4 +757,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-28T02:54:06.907391372Z"
+generated: "2025-02-28T03:14:41.15154022Z"
