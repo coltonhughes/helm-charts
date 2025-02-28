@@ -15,7 +15,7 @@ vpn:
   image:
     repository: qmcgaw/gluetun
     pullPolicy: IfNotPresent
-    tag: "latest"
+    tag: "5.0.4"
   env:
     wg_existing_secret: ""
     wg_public_key: ""
