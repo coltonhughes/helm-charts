@@ -10,9 +10,11 @@ spec:
   loadBalancerIP: {{ .Values.loadBalancer.IP }}
   {{- end }}
   ports:
-    - protocol: {{ .Values.service.protocol | default "TCP" }}
+    - name: ui
+      protocol: {{ .Values.service.protocol | default "TCP" }}
       port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
-    - protocol: TCP
+    - name: torrent
+      protocol: TCP
       port: 50000
-      targetPort: 50000
+      targetPort: torrent

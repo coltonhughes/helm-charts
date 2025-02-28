@@ -1,8 +1,22 @@
-replicaCount: 1
-
+loadBalancer:
+  IP: 192.168.20.106
+vpn:
+  env:
+    wg_existing_secret: qbittorrent-vpn
+    wireguard_cidr: "10.207.63.2/24"
+    vpn_endpoint_ip: "199.231.184.227"
 persistence:
-  size: 2Gi
-
-ingress:
   enabled: true
-  fqdn: tautulli.infra.articops.com
+  accessMode: ReadWriteOnce
+  size: 5Gi
+qbittorrent:
+  additionalVolumes:
+    - name: media
+      nfs:
+        path: /volume1/plex
+        server: ${NAS_IP}
+  additionalMounts:
+    - mountPath: /mnt/media
+      name: media
+ingress:
+  fqdn: torrent.media.articops.com
