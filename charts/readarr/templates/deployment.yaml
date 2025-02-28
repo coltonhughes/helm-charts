@@ -37,7 +37,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ include "readarr.fullname" . }}
         ports:
-        - containerPort: 7878
+        - containerPort: 8787
           name: {{ include "readarr.fullname" . }}
           protocol: TCP
         resources: {}
