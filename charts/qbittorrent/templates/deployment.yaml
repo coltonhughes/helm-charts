@@ -51,9 +51,9 @@ spec:
               value: custom
             - name: VPN_TYPE
               value: {{ quote .Values.vpn.env.type | default "wireguard" }}
-            - name: VPN_ENDPOINT_IP
+            - name: WIREGUARD_ENDPOINT_IP
               value: {{ quote .Values.vpn.env.vpn_endpoint_ip }}
-            - name: VPN_ENDPOINT_PORT
+            - name: WIREGUARD_ENDPOINT_PORT
               value: {{ quote .Values.vpn.env.vpn_endpoint_port }}
             {{- if .Values.vpn.env.wg_existing_secret }}
             - name: WIREGUARD_PUBLIC_KEY
