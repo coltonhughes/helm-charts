@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  audiobookshelf:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-03-05T04:38:43.112691699Z"
+    description: A Helm chart for Kubernetes
+    digest: 6b6f99f776c98a9759cd2c188a1f5b825dd10c1326cf5fab81f5171edf75752c
+    name: audiobookshelf
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/audiobookshelf-0.1.0/audiobookshelf-0.1.0.tgz
+    version: 0.1.0
   bazarr:
   - apiVersion: v2
     appVersion: v1.4.3
@@ -827,4 +838,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2025-03-01T05:02:22.11090999Z"
+generated: "2025-03-05T04:38:43.112899608Z"
