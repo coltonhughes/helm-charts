@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "audiobookshelf.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ include "audiobookshelf.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "audiobookshelf.fullname" . }}
+    spec:
+      volumes:
+        - name: config
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "audiobookshelf.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+      {{- if .Values.persistence.additionalVolumes }}
+        {{- .Values.persistence.additionalVolumes | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+      - env:
+        - name: TZ
+          value: {{ quote .Values.container.env.tz }}
+        - name: PUID
+          value: {{ quote .Values.container.env.puid }}
+        - name: PGID
+          value: {{ quote .Values.container.env.pgid }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: {{ include "audiobookshelf.fullname" . }}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+          name: abs
+          protocol: TCP
+        resources: {}
+        volumeMounts:
+          - mountPath: /config
+            name: config
+        {{- if .Values.persistence.additionalMounts }}
+          {{- .Values.persistence.additionalMounts | toYaml | nindent 10 }}
+        {{- end }}
+        

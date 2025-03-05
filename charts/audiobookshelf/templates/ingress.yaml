@@ -1,0 +1,27 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "audiobookshelf.fullname" . }}
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  labels:
+    name: {{ include "audiobookshelf.fullname" . }}
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.ingress.fqdn }}
+      secretName: "audiobookshelf-tls"
+  ingressClassName: {{ .Values.ingress.class }}
+  rules:
+    - host: {{ .Values.ingress.fqdn }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: {{ include "audiobookshelf.fullname" . }}
+                port:
+                  number: {{ .Values.service.port }}
+{{- end }}
