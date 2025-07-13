@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ include "qbittorrent.fullname" . }}
+  name: {{ include "qbittorrent.fullname" . | trunc 15 }}
   labels:
       {{- include "qbittorrent.labels" . | nindent 4 }}
 spec:

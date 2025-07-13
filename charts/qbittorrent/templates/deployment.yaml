@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "qbittorrent.fullname" . }}
+  name: {{ include "qbittorrent.fullname" . | trunc 15 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: {{ include "qbittorrent.fullname" . }}
+      app: {{ include "qbittorrent.fullname" . | trunc 15 }}
   template:
     metadata:
       labels:
-        app: {{ include "qbittorrent.fullname" . }}
+        app: {{ include "qbittorrent.fullname" . | trunc 15 }}
     spec:
       containers:
-        - name: {{ include "qbittorrent.fullname" . }}  
+        - name: {{ include "qbittorrent.fullname" . | trunc 15 }}  
           image: {{ .Values.qbittorrent.image.repository }}:{{ .Values.qbittorrent.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.qbittorrent.image.pullPolicy }}
           env:
@@ -31,7 +31,7 @@ spec:
               value: "50000"
           ports:
             - containerPort: {{ .Values.service.port }}
-              name: qbittorrent
+              name: {{ include "qbittorrent.fullname" . | trunc 15 }}
               protocol: TCP
             - containerPort: 50000
               name: torrent
@@ -94,7 +94,7 @@ spec:
               value: {{ quote .Values.vpn.env.dns_address | default "8.8.8.8" }}
           ports:
             - containerPort: 8080
-              name: {{ include "qbittorrent.fullname" . }}
+              name: {{ include "qbittorrent.fullname" . | trunc 15 }}
               protocol: TCP
             - containerPort: 50000
               name: torrent
