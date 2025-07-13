@@ -2,11 +2,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "qbittorrent.fullname" . | trunc 15 }}
+  name: {{ include "qbittorrent.fullname" . }}
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
   labels:
-    name: {{ include "qbittorrent.fullname" . | trunc 15 }}
+    name: {{ include "qbittorrent.fullname" . }}
 spec:
   tls:
     - hosts:
@@ -21,7 +21,7 @@ spec:
             path: /
             backend:
               service:
-                name: {{ include "qbittorrent.fullname" . | trunc 15 }}
+                name: {{ include "qbittorrent.fullname" . }}
                 port:
                   number: {{ .Values.service.port }}
 {{- end }}
