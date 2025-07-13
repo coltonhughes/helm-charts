@@ -94,7 +94,7 @@ spec:
               value: {{ quote .Values.vpn.env.dns_address | default "8.8.8.8" }}
           ports:
             - containerPort: 8080
-              name: {{ include "qbittorrent.fullname" . }}
+              name: vpn
               protocol: TCP
             - containerPort: 50000
               name: torrent
