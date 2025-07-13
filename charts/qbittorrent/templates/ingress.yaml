@@ -11,7 +11,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.ingress.fqdn }}
-      secretName: "qbittorrent-tls"
+      secretName: {{ include "qbittorrent.fullname" . }}-tls
   ingressClassName: {{ .Values.ingress.class }}
   rules:
     - host: {{ .Values.ingress.fqdn }}
