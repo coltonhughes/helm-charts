@@ -2,29 +2,39 @@
     "extends": [
         "config:base"
     ],
+    "helm-values": {
+        "fileMatch": [
+            "charts/*/values.yaml"
+        ]
+    },
     "packageRules": [
         {
+            "matchManagers": [
+                "helm-values"
+            ],
             "matchDatasources": [
                 "docker"
             ],
-            "matchPackageNames": [
-                "linuxserver/radarr"
+            "updateTypes": [
+                "minor",
+                "patch",
+                "major"
             ],
-            "matchFiles": [
-                "charts/radarr/values.yaml",
-                "charts/radarr/Chart.yaml"
+            "automerge": false
+        },
+        {
+            "matchManagers": [
+                "helm"
             ],
-            "extractVersion": "^(?:appVersion:|\\s*tag:)\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?\\s*$",
             "updateTypes": [
                 "minor",
                 "patch",
                 "major"
             ],
             "automerge": false,
-            "commitMessageTopic": "{{depName}}"
+            "postUpdateOptions": [
+                "helmChartVersion"
+            ]
         }
-    ],
-    "postUpdateOptions": [
-        "helmChartVersion"
     ]
 }
