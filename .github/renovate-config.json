@@ -1,12 +1,38 @@
 {
-    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
         "config:base"
     ],
     "helm-values": {
         "fileMatch": [
-            "^charts/.*/values\\.yaml$"
-        ],
-        "bumpChartVersion": true
+            "**/values.yaml"
+        ]
+    },
+    "packageRules": [
+        {
+            "matchManagers": [
+                "helm-values"
+            ],
+            "addLabels": [
+                "renovate/helm"
+            ],
+            "addPipelines": [
+                "bumpVersion"
+            ]
+        }
+    ],
+    "pipelines": {
+        "bumpVersion": [
+            {
+                "manager": "regex",
+                "fileMatch": [
+                    "**/Chart.yaml"
+                ],
+                "matchStrings": [
+                    "version:\\s*(?<currentValue>[\\d.]+)",
+                    "appVersion:\\s*(?<currentValue>[\\d.]+)"
+                ],
+                "bumpType": "patch"
+            }
+        ]
     }
 }
