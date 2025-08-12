@@ -11,10 +11,11 @@
             "matchPackageNames": [
                 "linuxserver/radarr"
             ],
-            "matchPaths": [
-                "charts/radarr/values.yaml"
+            "matchFiles": [
+                "charts/radarr/values.yaml",
+                "charts/radarr/Chart.yaml"
             ],
-            "extractVersion": "^\\s*tag:\\s*\"?(?<currentValue>.+?)\"?$",
+            "extractVersion": "^(?:appVersion:|\\s*tag:)\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?\\s*$",
             "updateTypes": [
                 "minor",
                 "patch",
@@ -22,24 +23,6 @@
             ],
             "automerge": false,
             "commitMessageTopic": "{{depName}}"
-        },
-        {
-            "matchFiles": [
-                "charts/radarr/Chart.yaml"
-            ],
-            "matchDatasources": [
-                "docker"
-            ],
-            "matchPackageNames": [
-                "linuxserver/radarr"
-            ],
-            "extractVersion": "^appVersion:\\s*\"?(?<currentValue>.+?)\"?$",
-            "updateTypes": [
-                "minor",
-                "patch",
-                "major"
-            ],
-            "automerge": false
         }
     ],
     "postUpdateOptions": [
