@@ -6,7 +6,7 @@ gpu:
 image:
   repository: linuxserver/plex
   pullPolicy: Always
-  tag: 1.41.9
+  tag: latest
 
 container:
   env:
