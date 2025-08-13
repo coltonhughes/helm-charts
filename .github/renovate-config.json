@@ -1,43 +1,48 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-        "config:base"
+        "config:recommended"
     ],
     "helm-values": {
         "fileMatch": [
             "**/values.yaml"
         ]
     },
+    "customManagers": [
+        {
+            "customType": "regex",
+            "fileMatch": [
+                "**/values.yaml"
+            ],
+            "matchStrings": [
+                "tag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
+            ],
+            "datasourceTemplate": "docker",
+            "depNameTemplate": "your-registry/your-image-name",
+            "versioningTemplate": "semver"
+        }
+    ],
     "packageRules": [
         {
             "matchManagers": [
-                "helm-values"
+                "helm-values",
+                "regex"
             ],
             "addLabels": [
                 "renovate/helm"
             ],
-            "postUpdateOptions": {
-                "bumpVersions": {
-                    "filePatterns": [
-                        "**/Chart.yaml"
-                    ],
-                    "matchStrings": [
-                        "version:\\s*(?<currentValue>[\\d.]+)"
-                    ],
-                    "bumpType": "patch"
-                }
-            }
+            "prBodyTemplate": "This PR updates Helm chart dependencies.\n\n- Updates image tags in values.yaml\n- Will trigger automatic appVersion and chart version updates\n\n{{#if hasReleaseNotes}}{{releaseNotes}}{{/if}}",
+            "commitMessageTopic": "{{depName}}",
+            "commitMessageAction": "Update",
+            "commitMessageExtra": "to {{newValue}}",
+            "semanticCommits": "enabled",
+            "semanticCommitType": "feat",
+            "semanticCommitScope": "helm"
         }
     ],
-    "bumpVersions": [
-        {
-            "filePatterns": [
-                "**/Chart.yaml"
-            ],
-            "matchStrings": [
-                "appVersion:\\s*(?<currentValue>[\\d.]+)"
-            ],
-            "bumpType": "minor"
-        }
-    ]
+    "postUpdateOptions": [
+        "helmUpdateSubChartArchives"
+    ],
+    "prConcurrentLimit": 3,
+    "branchConcurrentLimit": 5
 }
