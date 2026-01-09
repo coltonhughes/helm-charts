@@ -2,7 +2,7 @@ apiVersion: v2
 name: plex
 description: A Helm chart for running plex on k8s
 type: application
-version: 1.0.0
+version: 1.0.1
 appVersion: "1.32.8"
 
 dependencies:

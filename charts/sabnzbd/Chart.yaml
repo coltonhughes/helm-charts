@@ -2,7 +2,7 @@ apiVersion: v2
 name: sabnzbd
 description: A Helm chart for running sabnzbd on k8s
 type: application
-version: 1.0.0
+version: 1.0.1
 appVersion: "4.1.0"
 
 dependencies:
