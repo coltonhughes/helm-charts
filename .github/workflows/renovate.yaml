@@ -34,7 +34,7 @@ permissions:
 
 jobs:
   renovate:
-    runs-on: [self-hosted, helm-chart-builder] # include your runner label(s)
+    runs-on: [helm-chart-builder] # include your runner label(s)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
