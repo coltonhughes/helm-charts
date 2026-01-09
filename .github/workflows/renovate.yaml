@@ -1,0 +1,44 @@
+name: Renovate
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 * * * *" # every hour at :15 (tune as you want)
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  renovate:
+    runs-on: [self-hosted]  # add more labels if you use them (e.g., x64, k8s, runners)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # --- If using GitHub App auth (recommended) ---
+      - name: Generate token (GitHub App)
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.RENOVATE_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_PRIVATE_KEY }}
+          installation-id: ${{ secrets.RENOVATE_INSTALLATION_ID }}
+
+      - name: Run Renovate
+        uses: renovatebot/github-action@v44.2.3
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          configurationFile: renovate.json
+        env:
+          LOG_LEVEL: info
+
+      # --- If using PAT instead, replace the steps above with: ---
+      # - name: Run Renovate
+      #   uses: renovatebot/github-action@v41.0.0
+      #   with:
+      #     token: ${{ secrets.RENOVATE_TOKEN }}
+      #     configurationFile: renovate.json
+      #   env:
+      #     LOG_LEVEL: info
