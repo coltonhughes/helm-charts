@@ -332,6 +332,18 @@ spec:
   {{- else if .Values.ingress.class }}
   ingressClassName: {{ .Values.ingress.class }}
   {{- end }}
+  {{- $tlsEntries := list }}
+  {{- if .Values.ingress.hosts }}
+    {{- range .Values.ingress.hosts }}
+      {{- if .tls }}
+        {{- $tls := deepCopy .tls }}
+        {{- if and (not $tls.hosts) .host }}
+          {{- $_ := set $tls "hosts" (list .host) -}}
+        {{- end }}
+        {{- $tlsEntries = append $tlsEntries $tls -}}
+      {{- end }}
+    {{- end }}
+  {{- end }}
   rules:
     {{- if .Values.ingress.hosts }}
     {{- range .Values.ingress.hosts }}
@@ -363,6 +375,9 @@ spec:
   {{- if .Values.ingress.tls }}
   tls:
     {{- toYaml .Values.ingress.tls | nindent 4 }}
+  {{- else if $tlsEntries }}
+  tls:
+    {{- toYaml $tlsEntries | nindent 4 }}
   {{- else if and .Values.ingress.tlsSecretName .Values.ingress.fqdn }}
   tls:
     - hosts:
