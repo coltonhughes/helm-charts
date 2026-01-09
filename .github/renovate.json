@@ -1,10 +1,15 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
+  "extends": [
+    "config:recommended"
+  ],
   "dependencyDashboard": true,
-  "regexManagers": [
+  "customManagers": [
     {
-      "fileMatch": ["^charts/.+/values\\.yaml$"],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^charts/.+/values\\.yaml$/"
+      ],
       "matchStrings": [
         "(?m)^[ \\t]*image:\\n[ \\t]*repository:\\s*(?<depName>[A-Za-z0-9][^\\s]*)\\n(?:[ \\t]*pullPolicy:[^\\n]*\\n)?[ \\t]*tag:\\s*\"?(?<currentValue>[^\"\\s]+)\"?"
       ],
@@ -13,13 +18,21 @@
   ],
   "packageRules": [
     {
-      "matchManagers": ["regex"],
-      "matchFileNames": ["charts/*/values.yaml"],
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchFileNames": [
+        "charts/*/values.yaml"
+      ],
       "groupName": "chart {{{packageFileDir}}} images",
       "groupSlug": "{{{packageFileDir}}}-images",
       "postUpgradeTasks": {
-        "commands": ["./scripts/bump-chart-version.sh {{{packageFileDir}}}"],
-        "fileFilters": ["**/Chart.yaml"]
+        "commands": [
+          "./scripts/bump-chart-version.sh {{{packageFileDir}}}"
+        ],
+        "fileFilters": [
+          "**/Chart.yaml"
+        ]
       }
     }
   ]
