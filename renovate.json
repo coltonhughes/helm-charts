@@ -1,0 +1,26 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "dependencyDashboard": true,
+  "regexManagers": [
+    {
+      "fileMatch": ["^charts/.+/values\\.yaml$"],
+      "matchStrings": [
+        "(?m)^[ \\t]*image:\\n[ \\t]*repository:\\s*(?<depName>[A-Za-z0-9][^\\s]*)\\n(?:[ \\t]*pullPolicy:[^\\n]*\\n)?[ \\t]*tag:\\s*\"?(?<currentValue>[^\"\\s]+)\"?"
+      ],
+      "datasourceTemplate": "docker"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchManagers": ["regex"],
+      "matchFileNames": ["charts/*/values.yaml"],
+      "groupName": "chart {{{packageFileDir}}} images",
+      "groupSlug": "{{{packageFileDir}}}-images",
+      "postUpgradeTasks": {
+        "commands": ["./scripts/bump-chart-version.sh {{{packageFileDir}}}"],
+        "fileFilters": ["**/Chart.yaml"]
+      }
+    }
+  ]
+}
