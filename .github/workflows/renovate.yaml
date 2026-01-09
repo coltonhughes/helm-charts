@@ -68,11 +68,6 @@ jobs:
           # Use GitHub API to create commits (allows signed commits from GitHub App)
           RENOVATE_PLATFORM_COMMIT: "true"
 
-          # Optional: keep these if you want commits/PRs to be attributed to the app bot explicitly.
-          # If you don’t care, you can delete both and Renovate will still work.
-          RENOVATE_USERNAME: "renovate[bot]"
-          RENOVATE_GIT_AUTHOR: "renovate <renovate[bot]@users.noreply.github.com>"
-
           # Override schedule if set (forces schedule: null)
           RENOVATE_FORCE: ${{ github.event.inputs.overrideSchedule == 'true' && '{''schedule'':null}' || '' }}
 
