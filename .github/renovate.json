@@ -1,39 +1,48 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
+
+  "extends": ["config:recommended"],
+
+  // ---- PR behavior ----
   "dependencyDashboard": false,
   "dependencyDashboardApproval": false,
+  "prCreation": "immediate",
+  "schedule": ["at any time"],
+
+  // ---- Allow post-upgrade scripts ----
+  "allowedPostUpgradeCommands": [
+    "^\\./scripts/bump-chart-version\\.sh .*"
+  ],
+
+  // ---- Custom regex manager for Helm values image tags ----
   "customManagers": [
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/^charts/.+/values\\.yaml$/"
+        "^charts/.+/values\\.yaml$"
       ],
       "matchStrings": [
-        "(?m)^[ \\t]*image:\\n[ \\t]*repository:\\s*(?<depName>[A-Za-z0-9][^\\s]*)\\n(?:[ \\t]*pullPolicy:[^\\n]*\\n)?[ \\t]*tag:\\s*\"?(?<currentValue>[^\"\\s]+)\"?"
+        "(?m)^[ \\t]*image:\\n[ \\t]*repository:\\s*(?<depName>[^\\s]+)\\n(?:[ \\t]*pullPolicy:[^\\n]*\\n)?[ \\t]*tag:\\s*\"?(?<currentValue>[^\"\\s]+)\"?"
       ],
-      "datasourceTemplate": "docker"
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
     }
   ],
+
+  // ---- Group image updates per chart and bump Chart.yaml ----
   "packageRules": [
     {
-      "matchManagers": [
-        "custom.regex"
-      ],
-      "matchFileNames": [
-        "charts/*/values.yaml"
-      ],
+      "matchManagers": ["regex"],
+      "matchFileNames": ["charts/*/values.yaml"],
+
       "groupName": "chart {{{packageFileDir}}} images",
       "groupSlug": "{{{packageFileDir}}}-images",
+
       "postUpgradeTasks": {
         "commands": [
           "./scripts/bump-chart-version.sh {{{packageFileDir}}}"
         ],
-        "fileFilters": [
-          "**/Chart.yaml"
-        ]
+        "fileFilters": ["**/Chart.yaml"]
       }
     }
   ]
