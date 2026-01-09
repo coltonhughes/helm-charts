@@ -10,6 +10,9 @@ image:
   pullPolicy: Always
   tag: latest
 
+serviceAccount:
+  create: true
+
 container:
   env:
     tz: America/Chicago

@@ -8,6 +8,9 @@ image:
   pullPolicy: Always
   tag: "latest"
 
+serviceAccount:
+  create: true
+
 nodeSelector:
   kubernetes.io/arch: amd64
 

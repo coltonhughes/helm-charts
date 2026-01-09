@@ -37,10 +37,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "common.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "common.fullname" .) .Values.serviceAccount.name }}
+{{- $serviceAccount := .Values.serviceAccount | default dict -}}
+{{- if $serviceAccount.create | default false }}
+{{- default (include "common.fullname" .) $serviceAccount.name }}
 {{- else }}
-{{- default "default" .Values.serviceAccount.name }}
+{{- default "default" $serviceAccount.name }}
 {{- end }}
 {{- end }}
 
