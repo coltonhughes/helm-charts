@@ -3,7 +3,8 @@
   "extends": [
     "config:recommended"
   ],
-  "dependencyDashboard": true,
+  "dependencyDashboard": false,
+  "dependencyDashboardApproval": false,
   "customManagers": [
     {
       "customType": "regex",
