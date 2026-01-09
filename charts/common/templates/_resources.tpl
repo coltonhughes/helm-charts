@@ -36,7 +36,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.gpu.enabled }}
+      {{- $gpuEnabled := false -}}
+      {{- if .Values.gpu }}
+        {{- $gpuEnabled = .Values.gpu.enabled | default false -}}
+      {{- end }}
+      {{- if $gpuEnabled }}
       {{- $runtimeClassName := .Values.gpu.runtimeClassName | default "" -}}
       {{- if and (not $runtimeClassName) (eq .Values.gpu.type "nvidia") }}
       {{- $runtimeClassName = "nvidia" -}}
@@ -109,7 +113,7 @@ spec:
           startupProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.gpu.enabled }}
+          {{- if $gpuEnabled }}
           {{- if .Values.gpu.resources }}
           resources:
             {{- toYaml .Values.gpu.resources | nindent 12 }}
