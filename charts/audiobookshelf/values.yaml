@@ -10,23 +10,48 @@ container:
     tz: America/Chicago
 
 persistence:
-  storageClass: ""
-  exisitingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
-  size: 5Gi
-  additionalVolumes: []
-  additionalMounts: []
+  size: 8Gi
+  additionalVolumes:
+    - name: media
+      nfs:
+        path: /volume1/plex
+        server: 10.0.0.66
+  additionalMounts:
+    - mountPath: /mnt/media
+      name: media
 
 service:
   type: ClusterIP
   protocol: TCP
   port: 80
-  targetPort: abs
+  targetPort: 80
 
 ingress:
   enabled: true
   clusterIssuer: letsencrypt-prod
   class: nginx
   acme: true
-  fqdn: abs.example.com
+  fqdn: abs.media.articops.com
+
+# Gateway API (disabled by default)
+gateway:
+  enabled: false
+  gatewayClassName: ""
+  name: ""
+  namespace: ""
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: ""
+  route:
+    name: ""
+    namespace: ""
+    hostnames: []
+    matches:
+      - path:
+          type: PathPrefix
+          value: /
+    filters: []

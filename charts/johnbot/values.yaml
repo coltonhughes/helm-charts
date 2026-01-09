@@ -44,6 +44,8 @@ securityContext:
 service:
   type: ClusterIP
   port: 80
+  name: http
+  portName: http
 
 ingress:
   enabled: false
@@ -62,6 +64,27 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+
+# Gateway API (disabled by default)
+gateway:
+  enabled: false
+  gatewayClassName: ""
+  name: ""
+  namespace: ""
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: ""
+  route:
+    name: ""
+    namespace: ""
+    hostnames: []
+    matches:
+      - path:
+          type: PathPrefix
+          value: /
+    filters: []
 resources:
   {}
   # We usually recommend not to specify default resources and to leave this as a conscious

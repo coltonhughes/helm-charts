@@ -2,6 +2,8 @@ replicaCount: 1
 
 gpu:
   enabled: false
+  type: ""
+  runtimeClassName: ""
 
 image:
   repository: linuxserver/plex
@@ -14,27 +16,105 @@ container:
     puid: 1000
     pgid: 1000
     version: docker
+    plex_claim: ""
+  extraEnv: |
+    {{- if and .Values.gpu.enabled (eq .Values.gpu.type "nvidia") }}
+    - name: NVIDIA_VISIBLE_DEVICES
+      value: "all"
+    - name: NVIDIA_DRIVER_CAPABILITIES
+      value: "compute,video,utility"
+    {{- end }}
+  ports:
+    - containerPort: 32400
+      name: pms-web
+      protocol: TCP
+    - containerPort: 32469
+      name: dlna-tcp
+      protocol: TCP
+    - containerPort: 1900
+      name: dlna-udp
+      protocol: UDP
+    - containerPort: 3005
+      name: plex-companion
+      protocol: TCP
+    - containerPort: 5353
+      name: discovery-udp
+      protocol: UDP
+    - containerPort: 8324
+      name: plex-roku
+      protocol: TCP
+    - containerPort: 32410
+      name: gdm-32410
+      protocol: UDP
+    - containerPort: 32412
+      name: gdm-32412
+      protocol: UDP
+    - containerPort: 32413
+      name: gdm-32413
+      protocol: UDP
+    - containerPort: 32414
+      name: gdm-32414
+      protocol: UDP
 
 nodeSelector:
   kubernetes.io/arch: amd64
 
 persistence:
   storageClass: ""
-  exisitingClaim: ""
+  existingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
   additionalVolumes: []
   additionalMounts: []
 
-loadBalancer:
-  enabled: true
-
 service:
-  type: ClusterIP
+  enabled: true
+  type: LoadBalancer
   protocol: TCP
   port: 32400
-  targetPort: plex
+  ports:
+    - port: 32400
+      targetPort: 32400
+      name: pms-web
+      protocol: TCP
+    - port: 3005
+      targetPort: 3005
+      name: plex-companion
+      protocol: TCP
+    - port: 8324
+      targetPort: 8324
+      name: plex-roku
+      protocol: TCP
+    - port: 32469
+      targetPort: 32469
+      name: dlna-tcp
+      protocol: TCP
+    - port: 1900
+      targetPort: 1900
+      name: dlna-udp
+      protocol: UDP
+    - port: 5353
+      targetPort: 5353
+      name: discovery-udp
+      protocol: UDP
+    - port: 32410
+      targetPort: 32410
+      name: gdm-32410
+      protocol: UDP
+    - port: 32412
+      targetPort: 32412
+      name: gdm-32412
+      protocol: UDP
+    - port: 32413
+      targetPort: 32413
+      name: gdm-32413
+      protocol: UDP
+    - port: 32414
+      targetPort: 32414
+      name: gdm-32414
+      protocol: UDP
+  loadBalancerIP: ""
 
 ingress:
   enabled: true
@@ -42,3 +122,24 @@ ingress:
   class: nginx
   acme: true
   fqdn: plex.example.com
+
+# Gateway API (disabled by default)
+gateway:
+  enabled: false
+  gatewayClassName: ""
+  name: ""
+  namespace: ""
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: ""
+  route:
+    name: ""
+    namespace: ""
+    hostnames: []
+    matches:
+      - path:
+          type: PathPrefix
+          value: /
+    filters: []

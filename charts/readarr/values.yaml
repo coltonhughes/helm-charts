@@ -13,7 +13,7 @@ container:
 
 persistence:
   storageClass: ""
-  exisitingClaim: ""
+  existingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
   size: 5Gi
@@ -24,7 +24,7 @@ service:
   type: ClusterIP
   protocol: TCP
   port: 8787
-  targetPort: readarr
+  targetPort: 8787
 
 ingress:
   enabled: true
@@ -32,3 +32,24 @@ ingress:
   class: nginx
   acme: true
   fqdn: readarr.example.com
+
+# Gateway API (disabled by default)
+gateway:
+  enabled: false
+  gatewayClassName: ""
+  name: ""
+  namespace: ""
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: ""
+  route:
+    name: ""
+    namespace: ""
+    hostnames: []
+    matches:
+      - path:
+          type: PathPrefix
+          value: /
+    filters: []

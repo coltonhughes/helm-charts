@@ -13,21 +13,18 @@ nodeSelector:
 
 persistence:
   storageClass: ""
-  exisitingClaim: ""
+  existingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
   additionalVolumes: []
   additionalMounts: []
 
-loadBalancer:
-  enabled: true
-
 service:
   type: ClusterIP
   protocol: TCP
   port: 8096
-  targetPort: https
+  targetPort: 8096
 
 ingress:
   enabled: true
@@ -35,3 +32,24 @@ ingress:
   class: nginx
   acme: true
   fqdn: plex.example.com
+
+# Gateway API (disabled by default)
+gateway:
+  enabled: false
+  gatewayClassName: ""
+  name: ""
+  namespace: ""
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: ""
+  route:
+    name: ""
+    namespace: ""
+    hostnames: []
+    matches:
+      - path:
+          type: PathPrefix
+          value: /
+    filters: []

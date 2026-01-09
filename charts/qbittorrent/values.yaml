@@ -1,16 +1,91 @@
 replicaCount: 1
 
-qbittorrent:
-  image:
-    repository: linuxserver/qbittorrent
-    pullPolicy: Always
-    tag: "latest"
+image:
+  repository: linuxserver/qbittorrent
+  pullPolicy: Always
+  tag: "latest"
+
+container:
   env:
     tz: America/Chicago
     puid: 1000
     pgid: 1000
-  additionalVolumes: []
-  additionalMounts: []
+    webui_port: "8080"
+    torrent_port: "50000"
+  ports:
+    - containerPort: 8080
+      name: qbittorrent
+      protocol: TCP
+    - containerPort: 50000
+      name: torrent
+      protocol: TCP
+
+extraContainers: |
+  - name: vpn
+    image: {{ .Values.vpn.image.repository }}:{{ .Values.vpn.image.tag | default "latest" }}
+    imagePullPolicy: {{ .Values.vpn.image.pullPolicy }}
+    env:
+      - name: VPN_SERVICE_PROVIDER
+        value: custom
+      - name: VPN_TYPE
+        value: {{ quote .Values.vpn.env.type | default "wireguard" }}
+      - name: WIREGUARD_ENDPOINT_IP
+        value: {{ quote .Values.vpn.env.vpn_endpoint_ip }}
+      - name: WIREGUARD_ENDPOINT_PORT
+        value: {{ quote .Values.vpn.env.vpn_endpoint_port }}
+      {{- if .Values.vpn.env.wg_existing_secret }}
+      - name: WIREGUARD_PUBLIC_KEY
+        valueFrom:
+          secretKeyRef:
+            key: WIREGUARD_PUBLIC_KEY
+            name: {{ .Values.vpn.env.wg_existing_secret }}
+            optional: false
+      - name: WIREGUARD_PRIVATE_KEY
+        valueFrom:
+          secretKeyRef:
+            key: WIREGUARD_PRIVATE_KEY
+            name: {{ .Values.vpn.env.wg_existing_secret }}
+            optional: false
+      - name: WIREGUARD_PRESHARED_KEY
+        valueFrom:
+          secretKeyRef:
+            key: WIREGUARD_PRESHARED_KEY
+            name: {{ .Values.vpn.env.wg_existing_secret }}
+            optional: false
+      {{- else }}
+      - name: WIREGUARD_PUBLIC_KEY
+        value: {{ .Values.vpn.env.wg_public_key }}
+      - name: WIREGUARD_PRIVATE_KEY
+        value: {{ .Values.vpn.env.wg_private_key }}
+      - name: WIREGUARD_PRESHARED_KEY
+        value: {{ .Values.vpn.env.wg_preshared_key }}
+      {{- end }}
+      - name: WIREGUARD_ADDRESSES
+        value: {{ quote .Values.vpn.env.wireguard_cidr }}
+      - name: FIREWALL_INPUT_PORTS
+        value: "8080,50000"
+      - name: FIREWALL_VPN_INPUT_PORTS
+        value: "50000"
+      - name: DOT
+        value: "off"
+      - name: DNS_ADDRESS
+        value: {{ quote .Values.vpn.env.dns_address | default "8.8.8.8" }}
+    ports:
+      - containerPort: 8080
+        name: vpn
+        protocol: TCP
+      - containerPort: 50000
+        name: torrent
+        protocol: TCP
+    resources: {}
+    securityContext:
+      allowPrivilegeEscalation: true
+      capabilities:
+        add:
+          - NET_ADMIN
+          - SYS_MODULE
+      privileged: true
+
 vpn:
   image:
     repository: qmcgaw/gluetun
@@ -28,16 +103,18 @@ vpn:
 
 persistence:
   storageClass: ""
-  exisitingClaim: ""
+  existingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
+  additionalVolumes: []
+  additionalMounts: []
 
 service:
   type: ClusterIP
   protocol: TCP
   port: 8080
-  targetPort: qbittorrent
+  targetPort: 8080
 
 ingress:
   enabled: true
@@ -45,3 +122,24 @@ ingress:
   class: nginx
   acme: true
   fqdn: qbittorrent.example.com
+
+# Gateway API (disabled by default)
+gateway:
+  enabled: false
+  gatewayClassName: ""
+  name: ""
+  namespace: ""
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: ""
+  route:
+    name: ""
+    namespace: ""
+    hostnames: []
+    matches:
+      - path:
+          type: PathPrefix
+          value: /
+    filters: []

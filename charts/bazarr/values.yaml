@@ -13,7 +13,7 @@ container:
 
 persistence:
   storageClass: ""
-  exisitingClaim: ""
+  existingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
@@ -24,8 +24,29 @@ service:
   type: ClusterIP
   protocol: TCP
   port: 6767
-  targetPort: bazarr
+  targetPort: 6767
 ingress:
   enabled: true
   class: nginx
   fqdn: bazarr.example.com
+
+# Gateway API (disabled by default)
+gateway:
+  enabled: false
+  gatewayClassName: ""
+  name: ""
+  namespace: ""
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: ""
+  route:
+    name: ""
+    namespace: ""
+    hostnames: []
+    matches:
+      - path:
+          type: PathPrefix
+          value: /
+    filters: []
