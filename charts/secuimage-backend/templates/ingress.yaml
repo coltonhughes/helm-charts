@@ -30,7 +30,7 @@ spec:
         paths:
           {{- range .paths }}
           - path: {{ .path }}
-            pathType: {{ .pathType }}
+            pathType: {{ default "Prefix" $.Values.ingress.pathType }}
             backend:
               service:
                 name: {{ include "secuimage-backend.fullname" $ }}

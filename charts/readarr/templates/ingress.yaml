@@ -17,7 +17,7 @@ spec:
     - host: {{ .Values.ingress.fqdn }}
       http:
         paths:
-          - pathType: Prefix
+          - pathType: {{ default "Prefix" .Values.ingress.pathType }}
             path: /
             backend:
               service:
