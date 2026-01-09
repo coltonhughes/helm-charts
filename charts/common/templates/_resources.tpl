@@ -201,19 +201,40 @@ spec:
 {{- end }}
 
 {{- define "common.all" -}}
-{{- include "common.serviceAccount" . }}
-{{- include "common.deployment" . }}
-{{- include "common.service" . }}
-{{- include "common.ingress" . }}
-{{- include "common.gateway" . }}
-{{- include "common.pvc" . }}
+{{- $serviceAccount := include "common.serviceAccount" . | trim -}}
+{{- if $serviceAccount }}
+{{- $serviceAccount }}
+---
+{{- end }}
+{{- $deployment := include "common.deployment" . | trim -}}
+{{- if $deployment }}
+{{- $deployment }}
+---
+{{- end }}
+{{- $service := include "common.service" . | trim -}}
+{{- if $service }}
+{{- $service }}
+---
+{{- end }}
+{{- $ingress := include "common.ingress" . | trim -}}
+{{- if $ingress }}
+{{- $ingress }}
+---
+{{- end }}
+{{- $gateway := include "common.gateway" . | trim -}}
+{{- if $gateway }}
+{{- $gateway }}
+---
+{{- end }}
+{{- $pvc := include "common.pvc" . | trim -}}
+{{- if $pvc }}
+{{- $pvc }}
+{{- end }}
 {{- end }}
 
 {{- define "common.serviceAccount" -}}
-{{- $serviceAccountCreate := false -}}
-{{- if .Values.serviceAccount }}
-  {{- $serviceAccountCreate = .Values.serviceAccount.create | default false -}}
-{{- end }}
+{{- $serviceAccount := .Values.serviceAccount | default dict -}}
+{{- $serviceAccountCreate := $serviceAccount.create | default false -}}
 {{- if $serviceAccountCreate }}
 apiVersion: v1
 kind: ServiceAccount
@@ -225,7 +246,7 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
+automountServiceAccountToken: {{ $serviceAccount.automount | default true }}
 {{- end }}
 {{- end }}
 
