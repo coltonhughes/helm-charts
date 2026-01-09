@@ -32,9 +32,19 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{- define "common.selectorLabels" -}}
-app: {{ include "common.name" . }}
 app.kubernetes.io/name: {{ include "common.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{- define "common.podLabels" -}}
+{{- $podLabels := .Values.podLabels | default dict -}}
+{{- include "common.selectorLabels" . }}
+{{- if not (hasKey $podLabels "app") }}
+app: {{ include "common.name" . }}
+{{- end }}
+{{- with $podLabels }}
+{{- toYaml . }}
+{{- end }}
 {{- end }}
 
 {{- define "common.serviceAccountName" -}}
