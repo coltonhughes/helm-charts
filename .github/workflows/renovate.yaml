@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   renovate:
-    runs-on: [self-hosted]  # add more labels if you use them (e.g., x64, k8s, runners)
+    runs-on: [helm-chart-builder]  # add more labels if you use them (e.g., x64, k8s, runners)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
