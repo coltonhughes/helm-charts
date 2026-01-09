@@ -206,7 +206,11 @@ spec:
 {{- end }}
 
 {{- define "common.serviceAccount" -}}
-{{- if .Values.serviceAccount.create }}
+{{- $serviceAccountCreate := false -}}
+{{- if .Values.serviceAccount }}
+  {{- $serviceAccountCreate = .Values.serviceAccount.create | default false -}}
+{{- end }}
+{{- if $serviceAccountCreate }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:

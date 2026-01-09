@@ -2,10 +2,10 @@ apiVersion: v2
 name: overseerr
 description: A Helm chart for running overseerr on k8s
 type: application
-version: 1.0.2
+version: 1.0.3
 appVersion: "1.33.2"
 
 dependencies:
   - name: common
-    version: 1.0.1
+    version: 1.0.2
     repository: "file://../common"
