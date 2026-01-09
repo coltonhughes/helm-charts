@@ -261,6 +261,20 @@ entries:
   overseerr:
   - apiVersion: v2
     appVersion: 1.33.2
+    created: "2026-01-09T05:53:27.737204194Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 1.0.0
+    description: A Helm chart for running overseerr on k8s
+    digest: af579b21d8ae82510b8c30f706d47045302ecbba7ff89ede51cf55e590b17d89
+    name: overseerr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/overseerr-1.0.1/overseerr-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 1.33.2
     created: "2026-01-09T05:03:39.559079092Z"
     description: A Helm chart for running overseerr on k8s
     digest: d378399cc84a4a2548153a29bd1223cf139ec0a591a4784c694c0a1498c0dc76
@@ -1089,4 +1103,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2026-01-09T05:03:41.742818778Z"
+generated: "2026-01-09T05:53:27.73741862Z"
