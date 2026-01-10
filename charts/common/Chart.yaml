@@ -2,4 +2,4 @@ apiVersion: v2
 name: common
 description: Shared library chart for common templates
 type: library
-version: 1.2.0
+version: 1.2.1

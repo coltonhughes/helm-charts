@@ -32,14 +32,20 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{- define "common.selectorLabels" -}}
+{{- if .Values.selectorLabels }}
+{{- toYaml .Values.selectorLabels }}
+{{- else }}
 app.kubernetes.io/name: {{ include "common.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
 {{- end }}
 
 {{- define "common.podLabels" -}}
 {{- $podLabels := .Values.podLabels | default dict -}}
+{{- $selectorLabels := .Values.selectorLabels | default dict -}}
+{{- $selectorHasApp := and (kindIs "map" $selectorLabels) (hasKey $selectorLabels "app") -}}
 {{- include "common.selectorLabels" . }}
-{{- if not (hasKey $podLabels "app") }}
+{{- if and (not $selectorHasApp) (not (hasKey $podLabels "app")) }}
 app: {{ include "common.name" . }}
 {{- end }}
 {{- with $podLabels }}

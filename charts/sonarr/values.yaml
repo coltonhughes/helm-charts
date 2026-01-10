@@ -8,6 +8,9 @@ image:
 serviceAccount:
   create: true
 
+selectorLabels:
+  app: sonarr
+
 container:
   env:
     tz: America/Chicago
