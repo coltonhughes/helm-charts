@@ -415,11 +415,12 @@ spec:
 
 {{- define "common.pvc" -}}
 {{- $existingClaim := coalesce .Values.persistence.existingClaim .Values.persistence.exisitingClaim "" -}}
-{{- if and .Values.persistence.enabled (not $existingClaim) }}
+{{- $existingClaimIsSet := hasKey .Values.persistence "existingClaim" -}}
+{{- if and .Values.persistence.enabled $existingClaimIsSet (not $existingClaim) }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ include "common.pvcClaimName" . }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:

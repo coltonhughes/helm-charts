@@ -61,7 +61,7 @@ app: {{ include "common.name" . }}
 {{- if $existingClaim -}}
 {{- $existingClaim -}}
 {{- else -}}
-{{- include "common.fullname" . -}}
+{{- include "common.name" . -}}
 {{- end -}}
 {{- end }}
 

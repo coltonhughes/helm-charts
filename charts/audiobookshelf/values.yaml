@@ -16,6 +16,7 @@ persistence:
   enabled: true
   accessMode: ReadWriteOnce
   size: 8Gi
+  existingClaim: "audiobookshelf"
   additionalVolumes:
     - name: media
       nfs:
