@@ -1,4 +1,10 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+{{- $existingClaim := .Values.persistence.existingClaim | default .Values.persistence.exisitingClaim }}
+{{- if and .Values.persistence.enabled (not $existingClaim) }}
+{{- $pvc := lookup "v1" "PersistentVolumeClaim" .Release.Namespace (include "plex.fullname" .) }}
+{{- $storageClass := .Values.persistence.storageClass | default "" }}
+{{- if and (eq $storageClass "") $pvc }}
+{{- $storageClass = $pvc.spec.storageClassName | default "" }}
+{{- end }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -11,4 +17,10 @@ spec:
   resources:
       requests:
           storage: {{ .Values.persistence.size | quote }}
+  {{- if $storageClass }}
+  storageClassName: {{ $storageClass | quote }}
+  {{- end }}
+  {{- if and $pvc $pvc.spec.volumeName }}
+  volumeName: {{ $pvc.spec.volumeName | quote }}
+  {{- end }}
 {{- end }}

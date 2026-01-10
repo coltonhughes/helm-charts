@@ -1,3 +1,4 @@
+{{- $existingClaim := .Values.persistence.existingClaim | default .Values.persistence.exisitingClaim }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,7 +24,7 @@ spec:
         - name: config
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "plex.fullname" .) }}
+            claimName: {{ $existingClaim | default (include "plex.fullname" .) }}
         {{- else }}
           emptyDir: {}
         {{- end }}
