@@ -113,7 +113,7 @@ vpn:
 
 persistence:
   storageClass: ""
-  existingClaim: ""
+  existingClaim: "sabnzbd"
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi

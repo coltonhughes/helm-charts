@@ -18,7 +18,7 @@ nodeSelector:
 
 persistence:
   storageClass: ""
-  existingClaim: ""
+  existingClaim: "jellyfin"
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi

@@ -16,7 +16,7 @@ container:
 
 persistence:
   storageClass: ""
-  existingClaim: ""
+  existingClaim: "readarr"
   enabled: true
   accessMode: ReadWriteOnce
   size: 5Gi

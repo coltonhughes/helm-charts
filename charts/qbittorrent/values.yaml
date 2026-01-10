@@ -106,7 +106,7 @@ vpn:
 
 persistence:
   storageClass: ""
-  existingClaim: ""
+  existingClaim: "qbittorrent"
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi

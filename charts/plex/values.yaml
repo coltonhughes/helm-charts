@@ -64,7 +64,7 @@ nodeSelector:
 
 persistence:
   storageClass: ""
-  existingClaim: ""
+  existingClaim: "plex"
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi

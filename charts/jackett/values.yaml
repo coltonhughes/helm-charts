@@ -16,7 +16,7 @@ container:
 
 persistence:
   storageClass: ""
-  existingClaim: ""
+  existingClaim: "jackett"
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi

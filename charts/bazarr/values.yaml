@@ -16,7 +16,7 @@ container:
 
 persistence:
   storageClass: ""
-  existingClaim: ""
+  existingClaim: "bazarr"
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
