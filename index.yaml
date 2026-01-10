@@ -1380,6 +1380,16 @@ entries:
   plex:
   - apiVersion: v2
     appVersion: 1.32.8
+    created: "2026-01-10T19:13:38.095250341Z"
+    description: A Helm chart for running plex on k8s
+    digest: 65c27aaea980da772350dfaee73f30a5f24b40e6402c58933f2c1aba1297f7c3
+    name: plex
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/plex-2.0.1/plex-2.0.1.tgz
+    version: 2.0.1
+  - apiVersion: v2
+    appVersion: 1.32.8
     created: "2026-01-10T19:04:19.549153815Z"
     description: A Helm chart for running plex on k8s
     digest: 32f6b0e3721d1444657f1faf60042b090d62eaa62f4e9911ceb0541dcda5dafd
@@ -3255,4 +3265,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2026-01-10T19:04:20.938226622Z"
+generated: "2026-01-10T19:13:38.095759848Z"
