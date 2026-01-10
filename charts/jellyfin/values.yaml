@@ -11,6 +11,8 @@ image:
 serviceAccount:
   create: true
 
+container: {}
+
 nodeSelector:
   kubernetes.io/arch: amd64
 
