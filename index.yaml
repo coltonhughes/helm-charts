@@ -2776,6 +2776,16 @@ entries:
   sabnzbd:
   - apiVersion: v2
     appVersion: 4.1.0
+    created: "2026-01-11T02:15:45.395711331Z"
+    description: A Helm chart for running sabnzbd on k8s
+    digest: b5e034b99a1590546dac67e9cb0a02801f5e8e5cc1458be2274b6284ac7ef25a
+    name: sabnzbd
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/sabnzbd-2.0.2/sabnzbd-2.0.2.tgz
+    version: 2.0.2
+  - apiVersion: v2
+    appVersion: 4.1.0
     created: "2026-01-11T01:05:45.842180045Z"
     dependencies:
     - name: common
@@ -3526,4 +3536,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2026-01-11T01:05:46.399067836Z"
+generated: "2026-01-11T02:15:45.396575394Z"
