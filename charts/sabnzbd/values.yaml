@@ -1,19 +1,16 @@
 replicaCount: 1
 
-deploymentStrategy:
-  type: Recreate
-
-image:
-  repository: linuxserver/sabnzbd
-  pullPolicy: Always
-  tag: "latest"
-
-container:
+sabnzbd:
+  image:
+    repository: linuxserver/sabnzbd
+    pullPolicy: Always
+    tag: "latest"
   env:
-    TZ: America/Chicago
-    PUID: "1000"
-    PGID: "1000"
-
+    tz: America/Chicago
+    puid: 1000
+    pgid: 1000
+  additionalVolumes: []
+  additionalMounts: []
 vpn:
   image:
     repository: qmcgaw/gluetun
@@ -28,116 +25,23 @@ vpn:
     vpn_endpoint_ip: ""
     vpn_endpoint_port: "51820"
     type: "wireguard"
-    dns_address: "8.8.8.8"
-
-initContainers:
-  - name: copy
-    image: bash
-    command: ["bash", "-c", "if [ -f /config/sabnzbd.ini ]; then exit 0; else cp /tmp/sabnzbd.ini /config/sabnzbd.ini; fi"]
-    volumeMounts:
-      - mountPath: /config
-        name: sabnzbd-config
-      - mountPath: /tmp/sabnzbd.ini
-        subPath: sabnzbd.ini
-        name: sabnzbd-config-ini
-
-extraContainersTemplate: |
-  - name: vpn
-    image: "{{ .Values.vpn.image.repository }}:{{ .Values.vpn.image.tag | default "latest" }}"
-    imagePullPolicy: "{{ .Values.vpn.image.pullPolicy }}"
-    env:
-      - name: VPN_SERVICE_PROVIDER
-        value: custom
-      - name: VPN_TYPE
-        value: "{{ .Values.vpn.env.type | default "wireguard" }}"
-      - name: VPN_ENDPOINT_IP
-        value: "{{ .Values.vpn.env.vpn_endpoint_ip }}"
-      - name: VPN_ENDPOINT_PORT
-        value: "{{ .Values.vpn.env.vpn_endpoint_port }}"
-      {{ if .Values.vpn.env.wg_existing_secret }}
-      - name: WIREGUARD_PUBLIC_KEY
-        valueFrom:
-          secretKeyRef:
-            key: WIREGUARD_PUBLIC_KEY
-            name: "{{ .Values.vpn.env.wg_existing_secret }}"
-            optional: false
-      - name: WIREGUARD_PRIVATE_KEY
-        valueFrom:
-          secretKeyRef:
-            key: WIREGUARD_PRIVATE_KEY
-            name: "{{ .Values.vpn.env.wg_existing_secret }}"
-            optional: false
-      - name: WIREGUARD_PRESHARED_KEY
-        valueFrom:
-          secretKeyRef:
-            key: WIREGUARD_PRESHARED_KEY
-            name: "{{ .Values.vpn.env.wg_existing_secret }}"
-            optional: false
-      {{ else }}
-      - name: WIREGUARD_PUBLIC_KEY
-        value: "{{ .Values.vpn.env.wg_public_key }}"
-      - name: WIREGUARD_PRIVATE_KEY
-        value: "{{ .Values.vpn.env.wg_private_key }}"
-      - name: WIREGUARD_PRESHARED_KEY
-        value: "{{ .Values.vpn.env.wg_preshared_key }}"
-      {{ end }}
-      - name: WIREGUARD_ADDRESSES
-        value: "{{ .Values.vpn.env.wireguard_cidr }}"
-      - name: FIREWALL_INPUT_PORTS
-        value: "8080,9090,4191,4143,4140,4190"
-      - name: DOT
-        value: "off"
-      - name: DNS_ADDRESS
-        value: "{{ .Values.vpn.env.dns_address }}"
-    ports:
-      - containerPort: 8080
-        name: sabnzbd
-        protocol: TCP
-    resources: {}
-    securityContext:
-      allowPrivilegeEscalation: true
-      capabilities:
-        add:
-          - NET_ADMIN
-          - SYS_MODULE
-      privileged: true
 
 persistence:
   storageClass: ""
-  existingClaim: ""
+  exisitingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
-  mountPath: /config
-  name: sabnzbd-config
 
 service:
   type: ClusterIP
+  protocol: TCP
   port: 8080
+  targetPort: sabnzbd
 
 ingress:
   enabled: true
-  className: nginx
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: sabnzbd.example.com
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: sabnzbd-tls
-      hosts:
-        - sabnzbd.example.com
-
-volumeMounts:
-  - name: sabnzbd-config-ini
-    mountPath: /tmp/sabnzbd.ini
-    subPath: sabnzbd.ini
-
-volumes:
-  - name: sabnzbd-config-ini
-    configMap:
-      name: '{{ include "common.fullname" . }}'
-      defaultMode: 0777
+  clusterIssuer: letsencrypt-prod
+  class: nginx
+  acme: true
+  fqdn: sabnzbd.example.com
