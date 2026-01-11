@@ -1,5 +1,8 @@
 replicaCount: 1
 
+deploymentStrategy:
+  type: Recreate
+
 image:
   repository: linuxserver/lazylibrarian
   pullPolicy: Always
@@ -7,28 +10,38 @@ image:
 
 container:
   env:
-    tz: America/Chicago
-    puid: 1000
-    pgid: 1000
+    TZ: America/Chicago
+    PUID: "1000"
+    PGID: "1000"
 
 persistence:
   storageClass: ""
-  exisitingClaim: ""
+  existingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
-  additionalVolumes: []
-  additionalMounts: []
+  mountPath: /config
+  name: config
 
 service:
   type: ClusterIP
-  protocol: TCP
   port: 5299
-  targetPort: lazylibrarian
 
 ingress:
   enabled: true
-  clusterIssuer: letsencrypt-prod
-  class: nginx
-  acme: true
-  fqdn: lazylibrarian.example.com
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: lazylibrarian.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: lazylibrarian-tls
+      hosts:
+        - lazylibrarian.example.com
+
+volumes: []
+volumeMounts: []

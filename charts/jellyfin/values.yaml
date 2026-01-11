@@ -1,7 +1,11 @@
 replicaCount: 1
 
+deploymentStrategy:
+  type: Recreate
+
 gpu:
   enabled: false
+  type: ""
 
 image:
   repository: jellyfin/jellyfin
@@ -13,25 +17,58 @@ nodeSelector:
 
 persistence:
   storageClass: ""
-  exisitingClaim: ""
+  existingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
-  additionalVolumes: []
-  additionalMounts: []
-
-loadBalancer:
-  enabled: true
+  mountPath: /config
+  name: config
 
 service:
-  type: ClusterIP
-  protocol: TCP
+  type: LoadBalancer
   port: 8096
-  targetPort: https
+  ports:
+    - name: http
+      port: 8096
+      targetPort: http
+      protocol: TCP
+    - name: https
+      port: 8920
+      targetPort: https
+      protocol: TCP
+    - name: service-discovery
+      port: 1900
+      targetPort: service-discovery
+      protocol: UDP
+    - name: auto-discovery
+      port: 7359
+      targetPort: auto-discovery
+      protocol: UDP
+
+containerPorts:
+  - name: http
+    containerPort: 8096
+    protocol: TCP
+  - name: https
+    containerPort: 8920
+    protocol: TCP
+  - name: service-discovery
+    containerPort: 1900
+    protocol: UDP
+  - name: auto-discovery
+    containerPort: 7359
+    protocol: UDP
 
 ingress:
   enabled: true
-  clusterIssuer: letsencrypt-prod
-  class: nginx
-  acme: true
-  fqdn: plex.example.com
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: plex.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+volumes: []
+volumeMounts: []

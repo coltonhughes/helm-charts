@@ -1,34 +1,42 @@
 replicaCount: 1
 
+deploymentStrategy:
+  type: Recreate
+
 image:
-  repository: ghcr.io/tautulli/tautulli
+  repository: linuxserver/tautulli
   pullPolicy: Always
   tag: "latest"
 
 container:
   env:
-    tz: America/Chicago
-    puid: 1000
-    pgid: 1000
+    TZ: America/Chicago
+    PUID: "1000"
+    PGID: "1000"
 
 persistence:
   storageClass: ""
-  exisitingClaim: ""
+  existingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
-  additionalVolumes: []
-  additionalMounts: []
+  mountPath: /config
+  name: config
 
 service:
   type: ClusterIP
-  protocol: TCP
   port: 8181
-  targetPort: tautulli
 
 ingress:
   enabled: true
-  clusterIssuer: letsencrypt-prod
-  class: nginx
-  acme: true
-  fqdn: sonarr.example.com
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: tautulli.example.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+volumes: []
+volumeMounts: []

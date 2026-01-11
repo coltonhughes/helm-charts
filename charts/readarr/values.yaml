@@ -1,34 +1,47 @@
 replicaCount: 1
 
+deploymentStrategy:
+  type: Recreate
+
 image:
   repository: linuxserver/readarr
   pullPolicy: Always
-  tag: "develop"
+  tag: "latest"
 
 container:
   env:
-    tz: America/Chicago
-    puid: 1000
-    pgid: 1000
+    TZ: America/Chicago
+    PUID: "1000"
+    PGID: "1000"
 
 persistence:
   storageClass: ""
-  exisitingClaim: ""
+  existingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
-  size: 5Gi
-  additionalVolumes: []
-  additionalMounts: []
+  size: 2Gi
+  mountPath: /config
+  name: config
 
 service:
   type: ClusterIP
-  protocol: TCP
   port: 8787
-  targetPort: readarr
 
 ingress:
   enabled: true
-  clusterIssuer: letsencrypt-prod
-  class: nginx
-  acme: true
-  fqdn: readarr.example.com
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: readarr.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: readarr-tls
+      hosts:
+        - readarr.example.com
+
+volumes: []
+volumeMounts: []

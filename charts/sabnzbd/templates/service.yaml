@@ -1,12 +1,1 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "sabnzbd.fullname" . }}
-spec:
-  selector:
-    app: {{ include "sabnzbd.fullname" . }}
-  type: {{ .Values.service.type }}
-  ports:
-    - protocol: {{ .Values.service.protocol | default "TCP" }}
-      port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+{{- include "common.service" . }}

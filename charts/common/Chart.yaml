@@ -1,0 +1,5 @@
+apiVersion: v2
+name: common
+description: Base library chart for shared templates and standard values.
+type: library
+version: 0.3.1

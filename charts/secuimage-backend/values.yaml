@@ -10,7 +10,14 @@ fullnameOverride: ""
 
 serviceAccount:
   create: true
+  automount: true
+  annotations: {}
   name: ""
+
+podAnnotations:
+  prometheus.io/scrape: "{{ .Values.metrics.enabled }}"
+  prometheus.io/port: "5001"
+  prometheus.io/path: "{{ .Values.metrics.serviceMonitor.path }}"
 
 podSecurityContext: {}
 securityContext: {}
@@ -32,6 +39,23 @@ service:
   metrics:
     port: 5001
     type: ClusterIP
+  ports:
+    - port: 5000
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 5001
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+
+containerPorts:
+  - name: http
+    containerPort: 5000
+    protocol: TCP
+  - name: metrics
+    containerPort: 5001
+    protocol: TCP
 
 ingress:
   enabled: false
@@ -47,8 +71,21 @@ ingress:
 persistence:
   enabled: true
   storageClass: ""
+  existingClaim: ""
   accessMode: ReadWriteOnce
   size: 10Gi
+  mountPath: /var/lib/registry
+  name: storage
+
+volumeMounts:
+  - name: config
+    mountPath: /etc/docker/registry/config.yml
+    subPath: config.yml
+
+volumes:
+  - name: config
+    configMap:
+      name: "{{ include \"common.fullname\" . }}"
 
 resources:
   limits:

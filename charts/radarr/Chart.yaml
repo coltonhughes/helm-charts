@@ -2,5 +2,9 @@ apiVersion: v2
 name: radarr
 description: A Helm chart for running Radarr on k8s
 type: application
-version: 2.0.0
+version: 2.0.1
 appVersion: "4.5.2"
+dependencies:
+  - name: common
+    version: 0.3.0
+    repository: "file://../common"

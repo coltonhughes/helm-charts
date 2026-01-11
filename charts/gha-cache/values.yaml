@@ -1,5 +1,8 @@
 replicaCount: 1
 
+deploymentStrategy:
+  type: Recreate
+
 image:
   repository: ghcr.io/falcondev-oss/github-actions-cache-server
   pullPolicy: Always
@@ -7,27 +10,32 @@ image:
 
 container:
   env:
-    url_access_token: superdupersecret
-    base_url: http://localhost:3000
+    URL_ACCESS_TOKEN: superdupersecret
+    BASE_URL: http://localhost:3000
 
 persistence:
   storageClass: ""
-  exisitingClaim: ""
+  existingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
-  additionalVolumes: []
-  additionalMounts: []
+  mountPath: /data
+  name: data
 
 service:
   type: ClusterIP
-  protocol: TCP
   port: 3000
-  targetPort: gha-cache
 
 ingress:
   enabled: true
-  clusterIssuer: letsencrypt-prod
-  class: nginx
-  acme: true
-  fqdn: gha-cache.example.com
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: gha-cache.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+volumes: []
+volumeMounts: []

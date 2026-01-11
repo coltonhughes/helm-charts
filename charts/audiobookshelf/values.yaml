@@ -1,5 +1,8 @@
 replicaCount: 1
 
+deploymentStrategy:
+  type: Recreate
+
 image:
   repository: ghcr.io/advplyr/audiobookshelf
   pullPolicy: Always
@@ -7,26 +10,36 @@ image:
 
 container:
   env:
-    tz: America/Chicago
+    TZ: America/Chicago
 
 persistence:
   storageClass: ""
-  exisitingClaim: ""
+  existingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
   size: 5Gi
-  additionalVolumes: []
-  additionalMounts: []
+  mountPath: /config
+  name: config
 
 service:
   type: ClusterIP
-  protocol: TCP
   port: 80
-  targetPort: abs
 
 ingress:
   enabled: true
-  clusterIssuer: letsencrypt-prod
-  class: nginx
-  acme: true
-  fqdn: abs.example.com
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: abs.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: audiobookshelf-tls
+      hosts:
+        - abs.example.com
+
+volumes: []
+volumeMounts: []
