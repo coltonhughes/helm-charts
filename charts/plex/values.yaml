@@ -1,7 +1,11 @@
 replicaCount: 1
 
+deploymentStrategy:
+  type: Recreate
+
 gpu:
   enabled: false
+  type: ""
 
 image:
   repository: linuxserver/plex
@@ -10,10 +14,10 @@ image:
 
 container:
   env:
-    tz: America/Chicago
-    puid: 1000
-    pgid: 1000
-    version: docker
+    TZ: America/Chicago
+    PUID: "1000"
+    PGID: "1000"
+    VERSION: docker
 
 nodeSelector:
   kubernetes.io/arch: amd64
@@ -24,21 +28,102 @@ persistence:
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
-  additionalVolumes: []
-  additionalMounts: []
-
-loadBalancer:
-  enabled: true
+  mountPath: /config
+  name: config
 
 service:
-  type: ClusterIP
-  protocol: TCP
+  type: LoadBalancer
   port: 32400
-  targetPort: plex
+  ports:
+    - name: pms-web
+      port: 32400
+      targetPort: pms-web
+      protocol: TCP
+    - name: plex-companion
+      port: 3005
+      targetPort: plex-companion
+      protocol: TCP
+    - name: plex-roku
+      port: 8324
+      targetPort: plex-roku
+      protocol: TCP
+    - name: dlna-tcp
+      port: 32469
+      targetPort: dlna-tcp
+      protocol: TCP
+    - name: dlna-udp
+      port: 1900
+      targetPort: dlna-udp
+      protocol: UDP
+    - name: discovery-udp
+      port: 5353
+      targetPort: discovery-udp
+      protocol: UDP
+    - name: gdm-32410
+      port: 32410
+      targetPort: gdm-32410
+      protocol: UDP
+    - name: gdm-32412
+      port: 32412
+      targetPort: gdm-32412
+      protocol: UDP
+    - name: gdm-32413
+      port: 32413
+      targetPort: gdm-32413
+      protocol: UDP
+    - name: gdm-32414
+      port: 32414
+      targetPort: gdm-32414
+      protocol: UDP
+
+containerPorts:
+  - name: pms-web
+    containerPort: 32400
+    protocol: TCP
+  - name: plex-companion
+    containerPort: 3005
+    protocol: TCP
+  - name: plex-roku
+    containerPort: 8324
+    protocol: TCP
+  - name: dlna-tcp
+    containerPort: 32469
+    protocol: TCP
+  - name: dlna-udp
+    containerPort: 1900
+    protocol: UDP
+  - name: discovery-udp
+    containerPort: 5353
+    protocol: UDP
+  - name: gdm-32410
+    containerPort: 32410
+    protocol: UDP
+  - name: gdm-32412
+    containerPort: 32412
+    protocol: UDP
+  - name: gdm-32413
+    containerPort: 32413
+    protocol: UDP
+  - name: gdm-32414
+    containerPort: 32414
+    protocol: UDP
 
 ingress:
   enabled: true
-  clusterIssuer: letsencrypt-prod
-  class: nginx
-  acme: true
-  fqdn: plex.example.com
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: plex.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: plex-tls
+      hosts:
+        - plex.example.com
+
+volumes: []
+volumeMounts: []

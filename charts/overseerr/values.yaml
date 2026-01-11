@@ -1,5 +1,8 @@
 replicaCount: 1
 
+deploymentStrategy:
+  type: Recreate
+
 image:
   repository: linuxserver/overseerr
   pullPolicy: Always
@@ -7,28 +10,33 @@ image:
 
 container:
   env:
-    tz: America/Chicago
-    puid: 1000
-    pgid: 1000
+    TZ: America/Chicago
+    PUID: "1000"
+    PGID: "1000"
 
 persistence:
   storageClass: ""
-  exisitingClaim: ""
+  existingClaim: ""
   enabled: true
   accessMode: ReadWriteOnce
   size: 2Gi
-  additionalVolumes: []
-  additionalMounts: []
+  mountPath: /config
+  name: config
 
 service:
   type: ClusterIP
-  protocol: TCP
   port: 5055
-  targetPort: overseerr
 
 ingress:
   enabled: true
-  clusterIssuer: letsencrypt-prod
-  class: nginx
-  acme: true
-  fqdn: overseerr.example.com
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: overseerr.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+volumes: []
+volumeMounts: []

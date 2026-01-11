@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "sabnzbd.fullname" . }}
+  name: {{ include "common.fullname" . }}
   labels:
-      {{- include "sabnzbd.labels" . | nindent 4 }}
+      {{- include "common.labels" . | nindent 4 }}
 data:
   sabnzbd.ini: |
     __version__ = 19
@@ -154,7 +154,7 @@ data:
     nomedia_marker = ""
     ipv6_servers = 1
     url_base = /sabnzbd
-    host_whitelist = {{ .Values.ingress.fqdn }}
+    host_whitelist = {{ (index .Values.ingress.hosts 0).host }}
     local_ranges = ,
     max_url_retries = 10
     downloader_sleep_time = 10
