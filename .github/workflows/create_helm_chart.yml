@@ -46,7 +46,15 @@ jobs:
           owner="${GITHUB_REPOSITORY%%/*}"
           repo="${GITHUB_REPOSITORY##*/}"
 
-          cr package charts --package-path .cr-release-packages
+          for chart_dir in charts/*; do
+            chart_name="$(basename "$chart_dir")"
+            if [ "$chart_name" = "common" ]; then
+              continue
+            fi
+            if [ -f "$chart_dir/Chart.yaml" ]; then
+              cr package "$chart_dir" --package-path .cr-release-packages
+            fi
+          done
           cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
           mkdir -p .cr-index
           cr index --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --push
