@@ -6,4 +6,5 @@ version: 2.0.2
 appVersion: "1.8.1259"
 dependencies:
   - name: common
-    version: 0.3.2repository: "file://../common"
+    version: 0.3.2
+    repository: "file://../common"
