@@ -35,8 +35,8 @@ jobs:
           repo="${GITHUB_REPOSITORY##*/}"
 
           cr package charts/common --package-path .cr-release-packages
-          cr upload --owner "$owner" --repo "$repo" --package-path .cr-release-packages --skip-existing
-          cr index --owner "$owner" --repo "$repo" --package-path .cr-release-packages --push
+          cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
+          cr index --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --push
 
       - name: Publish remaining charts
         env:
@@ -46,6 +46,6 @@ jobs:
           repo="${GITHUB_REPOSITORY##*/}"
 
           cr package charts --package-path .cr-release-packages
-          cr upload --owner "$owner" --repo "$repo" --package-path .cr-release-packages --skip-existing
-          cr index --owner "$owner" --repo "$repo" --package-path .cr-release-packages --push
+          cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
+          cr index --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --push
           
