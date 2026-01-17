@@ -20,18 +20,32 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Run chart-releaser (common first)
+      - name: Install chart-releaser
         uses: helm/chart-releaser-action@v1.5.0
         with:
-          charts_dir: charts/common
+          install_only: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Run chart-releaser (all charts)
-        uses: helm/chart-releaser-action@v1.5.0
-        with:
-          charts_dir: charts
-          skip_existing: true
+      - name: Publish common chart
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repo="${GITHUB_REPOSITORY##*/}"
+
+          cr package charts/common --package-path .cr-release-packages
+          cr upload --owner "$owner" --repo "$repo" --package-path .cr-release-packages --skip-existing
+          cr index --owner "$owner" --repo "$repo" --package-path .cr-release-packages --push
+
+      - name: Publish remaining charts
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repo="${GITHUB_REPOSITORY##*/}"
+
+          cr package charts --package-path .cr-release-packages
+          cr upload --owner "$owner" --repo "$repo" --package-path .cr-release-packages --skip-existing
+          cr index --owner "$owner" --repo "$repo" --package-path .cr-release-packages --push
           
