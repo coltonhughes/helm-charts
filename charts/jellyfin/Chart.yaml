@@ -24,4 +24,4 @@ appVersion: "2025070705"
 dependencies:
   - name: common
     version: 0.3.2
-    repository: "file://../common"
+    repository: "https://coltonhughes.github.io/helm-charts"
