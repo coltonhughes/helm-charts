@@ -62,4 +62,5 @@ spec:
           {{- end }}
     {{- end }}
 {{- end }}
+{{- include "common.gatewayapi" . }}
 {{- end }}
