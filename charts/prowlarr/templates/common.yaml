@@ -6,9 +6,6 @@
 ---
 {{- include "common.ingress" . }}
 ---
-{{- include "common.gatewayapi" . }}
----
 {{- include "common.pvc" . }}
 ---
 {{- include "common.hpa" . }}
----
