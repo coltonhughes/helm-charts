@@ -1,11 +1,11 @@
-{{- include "common.deployment" . }}
+{{ include "common.deployment" . }}
 ---
-{{- include "common.serviceAccount" . }}
+{{ include "common.serviceAccount" . }}
 ---
-{{- include "common.service" . }}
+{{ include "common.service" . }}
 ---
-{{- include "common.ingress" . }}
+{{ include "common.ingress" . }}
 ---
-{{- include "common.pvc" . }}
+{{ include "common.pvc" . }}
 ---
-{{- include "common.hpa" . }}
+{{ include "common.hpa" . }}
