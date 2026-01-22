@@ -1,21 +1,38 @@
 {{- define "common.gatewayapi" -}}
-{{- $gatewayAPI := default dict .Values.gatewayAPI -}}
-{{- if $gatewayAPI.enabled -}}
-  {{- range $route := $gatewayAPI.httpRoutes }}
+{{- if .Values.httpRoute.enabled -}}
+{{- $fullName := include "common.fullname" . -}}
+{{- $svcPort := (default dict .Values.service).port | default 80 -}}
 ---
-{{- tpl (toYaml $route) $ | nindent 0 }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    {{- with .Values.httpRoute.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.httpRoute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- range $route := $gatewayAPI.tcpRoutes }}
----
-{{- tpl (toYaml $route) $ | nindent 0 }}
+spec:
+  parentRefs:
+    {{- required "A valid .Values.httpRoute.parentRefs entry is required when httpRoute.enabled is true" .Values.httpRoute.parentRefs | toYaml | nindent 4 }}
+  {{- with .Values.httpRoute.hostnames }}
+  hostnames:
+    {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- range $route := $gatewayAPI.tlsRoutes }}
----
-{{- tpl (toYaml $route) $ | nindent 0 }}
-  {{- end }}
-  {{- range $route := $gatewayAPI.udpRoutes }}
----
-{{- tpl (toYaml $route) $ | nindent 0 }}
-  {{- end }}
-{{- end }}
+  rules:
+    {{- if .Values.httpRoute.rules }}
+    {{- toYaml .Values.httpRoute.rules | nindent 4 }}
+    {{- else }}
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: {{ $fullName }}
+          port: {{ $svcPort }}
+    {{- end }}
 {{- end }}

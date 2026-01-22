@@ -76,37 +76,38 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-gatewayAPI:
+# HTTPRoute configuration for Gateway API
+# Please refer to https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.HTTPRoute
+httpRoute:
+  # -- Enable HTTPRoute resource for Gateway API
   enabled: false
-  # Each entry should be a full Gateway API resource definition.
-  # httpRoutes:
-  #   - apiVersion: gateway.networking.k8s.io/v1
-  #     kind: HTTPRoute
-  #     metadata:
-  #       name: {{ include "common.fullname" . }}-http
-  #     spec: {}
-  # tcpRoutes:
-  #   - apiVersion: gateway.networking.k8s.io/v1alpha2
-  #     kind: TCPRoute
-  #     metadata:
-  #       name: {{ include "common.fullname" . }}-tcp
-  #     spec: {}
-  # udpRoutes:
-  #   - apiVersion: gateway.networking.k8s.io/v1alpha2
-  #     kind: UDPRoute
-  #     metadata:
-  #       name: {{ include "common.fullname" . }}-udp
-  #     spec: {}
-  httpRoutes: []
-  tcpRoutes: []
-  # tlsRoutes:
-  #   - apiVersion: gateway.networking.k8s.io/v1alpha2
-  #     kind: TLSRoute
-  #     metadata:
-  #       name: {{ include "common.fullname" . }}-tls
-  #     spec: {}
-  tlsRoutes: []
-  udpRoutes: []
+  # -- Annotations for HTTPRoute resource
+  annotations: {}
+  # -- Additional labels for HTTPRoute resource
+  labels: {}
+  # -- Parent references (REQUIRED when enabled - HTTPRoute will not work without this)
+  # Example:
+  # parentRefs:
+  #   - name: my-gateway
+  #     namespace: gateway-namespace
+  parentRefs: []
+  # -- Hostnames for the HTTPRoute
+  # Example:
+  # hostnames:
+  #   - chart-example.local
+  hostnames: []
+  # -- Custom routing rules (optional, defaults to path prefix /)
+  # If not specified, a default rule routing all traffic to the service is used
+  rules: []
+  # Example custom rules:
+  # rules:
+  #   - matches:
+  #       - path:
+  #           type: PathPrefix
+  #           value: /app
+  #     backendRefs:
+  #       - name: "{{ .Release.Name }}-app"
+  #         port: 80
 
 resources:
   {}

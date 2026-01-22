@@ -186,35 +186,35 @@
         }
       }
     },
-    "gatewayAPI": {
+    "httpRoute": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "enabled": {
           "type": "boolean"
         },
-        "httpRoutes": {
+        "annotations": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "parentRefs": {
           "type": "array",
           "items": {
             "type": "object",
             "additionalProperties": true
           }
         },
-        "tcpRoutes": {
+        "hostnames": {
           "type": "array",
           "items": {
-            "type": "object",
-            "additionalProperties": true
+            "type": "string"
           }
         },
-        "tlsRoutes": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": true
-          }
-        },
-        "udpRoutes": {
+        "rules": {
           "type": "array",
           "items": {
             "type": "object",
