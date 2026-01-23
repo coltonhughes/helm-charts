@@ -453,6 +453,15 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/common-1.0.1/common-1.0.1.tgz
     version: 1.0.1
   - apiVersion: v2
+    created: "2026-01-23T00:01:25.59469788Z"
+    description: Base library chart for shared templates and standard values.
+    digest: 5fedf1f637b9953ea8517c0bce0583a1ae9dc7cd85fb8824942a2bceede6f353
+    name: common
+    type: library
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/common-0.3.5/common-0.3.5.tgz
+    version: 0.3.5
+  - apiVersion: v2
     created: "2026-01-22T23:51:57.171732757Z"
     description: Base library chart for shared templates and standard values.
     digest: bed48b43801a1e6c61a22744d624df68b501ebaa78992e52b713ca5d9b974100
@@ -3857,4 +3866,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2026-01-22T23:51:57.17231321Z"
+generated: "2026-01-23T00:01:29.364803052Z"
