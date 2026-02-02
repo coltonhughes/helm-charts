@@ -166,6 +166,8 @@ persistence:
   enabled: false
   storageClass: ""
   existingClaim: ""
+  # Optional override for the PVC name (defaults to common.fullname).
+  claimName: ""
   accessMode: ReadWriteOnce
   size: 1Gi
   mountPath: /config
