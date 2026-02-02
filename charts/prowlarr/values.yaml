@@ -13,19 +13,39 @@ container:
     TZ: America/Chicago
     PUID: "1000"
     PGID: "1000"
+  command: []
+  args: []
 
-persistence:
-  storageClass: ""
-  existingClaim: ""
-  enabled: true
-  accessMode: ReadWriteOnce
-  size: 2Gi
-  mountPath: /config
-  name: config
+containerPorts:
+  - name: http
+    containerPort: 9696
+    protocol: TCP
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
 
 service:
   type: ClusterIP
   port: 9696
+  protocol: TCP
+  targetPort: ""
+  loadBalancerIP: ""
+  annotations: {}
+  ports: []
 
 ingress:
   enabled: true
@@ -38,5 +58,58 @@ ingress:
           pathType: Prefix
   tls: []
 
+httpRoute:
+  enabled: false
+  annotations: {}
+  labels: {}
+  parentRefs: []
+  hostnames: []
+  rules: []
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+initContainers: []
+initContainersTemplate: ""
+extraContainers: []
+extraContainersTemplate: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
 volumes: []
+
 volumeMounts: []
+
+gpu:
+  enabled: false
+  type: ""
+  runtimeClassName: ""
+  resources: {}
+
+persistence:
+  enabled: true
+  storageClass: ""
+  existingClaim: ""
+  accessMode: ReadWriteOnce
+  size: 2Gi
+  mountPath: /config
+  subPath: ""
+  name: config
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
