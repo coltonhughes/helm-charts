@@ -8,14 +8,57 @@ on:
   workflow_dispatch:
 
 jobs:
-  release:
+  changes:
     runs-on: helm-chart-builder
+    outputs:
+      common_changed: ${{ steps.detect.outputs.common_changed }}
+      other_changed: ${{ steps.detect.outputs.other_changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
+
+      - name: Detect changed charts
+        id: detect
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "common_changed=true" >> "$GITHUB_OUTPUT"
+            echo "other_changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          base="${{ github.event.before }}"
+          head="${{ github.sha }}"
+          if [ "$base" = "0000000000000000000000000000000000000000" ]; then
+            base="$(git rev-parse HEAD^)"
+          fi
+
+          changed_files="$(git diff --name-only "$base" "$head")"
+          common_changed=false
+          other_changed=false
+
+          while IFS= read -r file; do
+            case "$file" in
+              charts/common/*) common_changed=true ;;
+              charts/*/*) other_changed=true ;;
+            esac
+          done <<< "$changed_files"
+
+          echo "common_changed=$common_changed" >> "$GITHUB_OUTPUT"
+          echo "other_changed=$other_changed" >> "$GITHUB_OUTPUT"
+
+  release-common:
+    runs-on: helm-chart-builder
+    needs: changes
+    if: needs.changes.outputs.common_changed == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
@@ -37,6 +80,33 @@ jobs:
 
           cr package charts/common --package-path .cr-release-packages
           cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
+
+  release-charts:
+    runs-on: helm-chart-builder
+    needs: changes
+    if: needs.changes.outputs.other_changed == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install chart-releaser
+        uses: helm/chart-releaser-action@v1.5.0
+        with:
+          install_only: true
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Prepare Helm repository cache
+        run: |
+          helm repo add helm-manager https://coltonhughes.github.io/helm-charts
+          helm repo update
 
       - name: Publish remaining charts
         env:
