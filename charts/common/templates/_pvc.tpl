@@ -1,10 +1,11 @@
 {{- define "common.pvc" -}}
 {{- $persistence := default dict .Values.persistence -}}
+{{- $claimName := default (include "common.fullname" .) $persistence.claimName -}}
 {{- if and $persistence.enabled (not $persistence.existingClaim) }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ $claimName }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:

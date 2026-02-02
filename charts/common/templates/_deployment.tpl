@@ -143,6 +143,7 @@ spec:
         {{- tpl $extraContainersTemplate $ | nindent 8 }}
         {{- end }}
       {{- $hasVolumes := .Values.volumes }}
+      {{- $claimName := default (include "common.fullname" .) $persistence.claimName }}
       {{- if or $persistence.enabled $hasVolumes }}
       volumes:
         {{ if $persistence.enabled }}
@@ -152,7 +153,7 @@ spec:
             claimName: {{ $persistence.existingClaim }}
           {{- else }}
           persistentVolumeClaim:
-            claimName: {{ include "common.fullname" . }}
+            claimName: {{ $claimName }}
           {{- end }}
         {{ end }}
         {{ with .Values.volumes }}
