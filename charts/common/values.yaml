@@ -166,6 +166,9 @@ persistence:
   enabled: false
   storageClass: ""
   existingClaim: ""
+  # If set, overrides the name of the PVC created by this chart.
+  # Changing this after install will cause a new PVC to be created on upgrade.
+  claimName: ""
   accessMode: ReadWriteOnce
   size: 1Gi
   mountPath: /config

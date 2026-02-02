@@ -147,13 +147,8 @@ spec:
       volumes:
         {{ if $persistence.enabled }}
         - name: {{ $persistence.name }}
-          {{- if $persistence.existingClaim }}
           persistentVolumeClaim:
-            claimName: {{ $persistence.existingClaim }}
-          {{- else }}
-          persistentVolumeClaim:
-            claimName: {{ include "common.fullname" . }}
-          {{- end }}
+            claimName: {{ include "common.pvcClaimName" . }}
         {{ end }}
         {{ with .Values.volumes }}
         {{ tpl (toYaml .) $ | nindent 8 }}

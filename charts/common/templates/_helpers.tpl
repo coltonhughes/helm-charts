@@ -61,3 +61,29 @@ Create the name of the service account to use
 {{- default "default" $serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+PVC resource name (only used when creating a PVC).
+*/}}
+{{- define "common.pvcResourceName" -}}
+{{- $persistence := default dict .Values.persistence -}}
+{{- if $persistence.claimName }}
+{{- $persistence.claimName }}
+{{- else }}
+{{- include "common.fullname" . }}
+{{- end }}
+{{- end }}
+
+{{/*
+PVC claim name (used by pod volumes; honors existingClaim).
+*/}}
+{{- define "common.pvcClaimName" -}}
+{{- $persistence := default dict .Values.persistence -}}
+{{- if $persistence.existingClaim }}
+{{- $persistence.existingClaim }}
+{{- else if $persistence.claimName }}
+{{- $persistence.claimName }}
+{{- else }}
+{{- include "common.fullname" . }}
+{{- end }}
+{{- end }}
