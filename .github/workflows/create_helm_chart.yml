@@ -82,6 +82,8 @@ jobs:
 
           cr package charts/common --package-path .cr-release-packages
           cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
+          mkdir -p .cr-index
+          cr index --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --push
 
   release-charts:
     runs-on: helm-chart-builder
