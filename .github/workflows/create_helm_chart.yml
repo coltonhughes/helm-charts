@@ -9,6 +9,9 @@ on:
       - "charts/**"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   changes:
     runs-on: helm-chart-builder
@@ -82,8 +85,6 @@ jobs:
 
           cr package charts/common --package-path .cr-release-packages
           cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
-          mkdir -p .cr-index
-          cr index --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --push
 
   release-charts:
     runs-on: helm-chart-builder
@@ -129,5 +130,61 @@ jobs:
             fi
           done
           cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
-          mkdir -p .cr-index
-          cr index --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --push
+
+  update-index:
+    runs-on: helm-chart-builder
+    needs:
+      - changes
+      - release-common
+      - release-charts
+    if: |
+      always() &&
+      (needs.changes.outputs.common_changed == 'true' || needs.changes.outputs.other_changed == 'true') &&
+      (needs.release-common.result == 'success' || needs.release-common.result == 'skipped') &&
+      (needs.release-charts.result == 'success' || needs.release-charts.result == 'skipped')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Ensure gh-pages branch exists locally
+        run: |
+          if ! git show-ref --quiet refs/heads/gh-pages; then
+            git fetch origin gh-pages:gh-pages
+          fi
+
+      - name: Check out gh-pages branch
+        run: git switch gh-pages
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install chart-releaser
+        uses: helm/chart-releaser-action@v1.5.0
+        with:
+          install_only: true
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Update index on gh-pages
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repo="${GITHUB_REPOSITORY##*/}"
+          charts_repo="https://$owner.github.io/$repo"
+
+          # (re)generate index.yaml in the gh-pages working tree
+          cr index --owner "$owner" --git-repo "$repo" --charts-repo "$charts_repo" --release-name-template '{{ .Name }}-{{ .Version }}.tgz'
+
+      - name: Commit and push index
+        run: |
+          if git status --porcelain | grep .; then
+            git add index.yaml
+            git commit -m "Update chart index"
+            git push origin gh-pages
+          else
+            echo "No index changes to commit"
