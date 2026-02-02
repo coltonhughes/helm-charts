@@ -326,6 +326,9 @@
         "existingClaim": {
           "type": "string"
         },
+        "pvcName": {
+          "type": "string"
+        },
         "accessMode": {
           "type": "string"
         },

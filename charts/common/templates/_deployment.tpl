@@ -146,13 +146,14 @@ spec:
       {{- if or $persistence.enabled $hasVolumes }}
       volumes:
         {{ if $persistence.enabled }}
+        {{- $pvcName := default (include "common.fullname" .) $persistence.pvcName }}
         - name: {{ $persistence.name }}
           {{- if $persistence.existingClaim }}
           persistentVolumeClaim:
             claimName: {{ $persistence.existingClaim }}
           {{- else }}
           persistentVolumeClaim:
-            claimName: {{ include "common.fullname" . }}
+            claimName: {{ $pvcName }}
           {{- end }}
         {{ end }}
         {{ with .Values.volumes }}
