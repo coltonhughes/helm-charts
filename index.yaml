@@ -1903,6 +1903,20 @@ entries:
   prowlarr:
   - apiVersion: v2
     appVersion: 1.8.1259
+    created: "2026-02-02T20:09:11.448111381Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.3.6
+    description: A Helm chart for running prowlarr on k8s
+    digest: a25db23f5a7d9369e15befe8fa5f22dfc26c505fda28845993af534f995a7ea3
+    name: prowlarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/prowlarr-2.0.7/prowlarr-2.0.7.tgz
+    version: 2.0.7
+  - apiVersion: v2
+    appVersion: 1.8.1259
     created: "2026-01-22T23:26:06.711230776Z"
     dependencies:
     - name: common
@@ -3875,4 +3889,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2026-01-23T00:05:46.718521626Z"
+generated: "2026-02-02T20:09:12.945865452Z"
