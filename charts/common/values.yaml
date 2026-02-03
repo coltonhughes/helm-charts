@@ -166,6 +166,7 @@ persistence:
   enabled: false
   storageClass: ""
   existingClaim: ""
+  claimName: ""
   accessMode: ReadWriteOnce
   size: 1Gi
   mountPath: /config

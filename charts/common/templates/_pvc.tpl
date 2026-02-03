@@ -4,7 +4,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ $persistence.claimName | default (include "common.fullname" .) }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:

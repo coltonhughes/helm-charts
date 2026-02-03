@@ -152,7 +152,7 @@ spec:
             claimName: {{ $persistence.existingClaim }}
           {{- else }}
           persistentVolumeClaim:
-            claimName: {{ include "common.fullname" . }}
+            claimName: {{ $persistence.claimName | default (include "common.fullname" .) }}
           {{- end }}
         {{ end }}
         {{ with .Values.volumes }}
