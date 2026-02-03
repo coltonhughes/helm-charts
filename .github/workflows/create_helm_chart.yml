@@ -30,6 +30,9 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
       - name: Configure Helm repo cache
         run: |
           helm repo add helm-charts https://coltonhughes.github.io/helm-charts
