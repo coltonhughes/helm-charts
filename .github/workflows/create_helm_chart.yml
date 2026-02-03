@@ -10,6 +10,8 @@ on:
 jobs:
   release:
     runs-on: helm-chart-builder
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -28,6 +30,11 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
+      - name: Configure Helm repo cache
+        run: |
+          helm repo add helm-charts https://coltonhughes.github.io/helm-charts
+          helm repo update
+
       - name: Publish common chart
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
@@ -35,7 +42,7 @@ jobs:
           owner="${GITHUB_REPOSITORY%%/*}"
           repo="${GITHUB_REPOSITORY##*/}"
 
-          cr package charts/common --package-path .cr-release-packages
+          cr package charts/common --package-path .cr-release-packages --dependency-update
           cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
 
       - name: Publish remaining charts
@@ -51,9 +58,9 @@ jobs:
               continue
             fi
             if [ -f "$chart_dir/Chart.yaml" ]; then
-              cr package "$chart_dir" --package-path .cr-release-packages
+              cr package "$chart_dir" --package-path .cr-release-packages --dependency-update
             fi
           done
           cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
           mkdir -p .cr-index
-          cr index --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --push
+          cr index --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --pages-branch gh-pages --push
