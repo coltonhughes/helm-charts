@@ -191,11 +191,11 @@ resources: {}
 livenessProbe:
   httpGet:
     path: /
-    port: http
+    port: pms-web
 readinessProbe:
   httpGet:
     path: /
-    port: http
+    port: pms-web
 initContainers: []
 initContainersTemplate: ""
 extraContainers: []
