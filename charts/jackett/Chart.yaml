@@ -2,7 +2,7 @@ apiVersion: v2
 name: jackett
 description: A Helm chart for running Jackett on k8s
 type: application
-version: 2.0.2
+version: 2.0.3
 appVersion: "0.21.958"
 dependencies:
   - name: common

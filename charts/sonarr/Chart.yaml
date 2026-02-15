@@ -2,7 +2,7 @@ apiVersion: v2
 name: sonarr
 description: A Helm chart for running Sonarr on k8s
 type: application
-version: 2.0.2
+version: 2.0.3
 appVersion: "3.0.10"
 dependencies:
   - name: common
