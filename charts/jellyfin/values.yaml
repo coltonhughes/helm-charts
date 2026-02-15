@@ -21,7 +21,7 @@ containerPorts:
   - name: https
     containerPort: 8920
     protocol: TCP
-  - name: service-discovery
+  - name: svc-discovery
     containerPort: 1900
     protocol: UDP
   - name: auto-discovery
@@ -69,9 +69,9 @@ service:
       port: 8920
       targetPort: https
       protocol: TCP
-    - name: service-discovery
+    - name: svc-discovery
       port: 1900
-      targetPort: service-discovery
+      targetPort: svc-discovery
       protocol: UDP
     - name: auto-discovery
       port: 7359
