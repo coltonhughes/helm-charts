@@ -1024,6 +1024,20 @@ entries:
   jellyfin:
   - apiVersion: v2
     appVersion: "2025070705"
+    created: "2026-02-15T16:22:38.703137178Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.5
+    description: A Helm chart for Kubernetes
+    digest: fdf60e6712f60f8192acdf2fa63334eaddd36440533867467dc5ef56674880ea
+    name: jellyfin
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/jellyfin-2.0.7/jellyfin-2.0.7.tgz
+    version: 2.0.7
+  - apiVersion: v2
+    appVersion: "2025070705"
     created: "2026-02-15T07:46:49.28489308Z"
     dependencies:
     - name: common
@@ -4731,4 +4745,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2026-02-15T07:46:51.340496638Z"
+generated: "2026-02-15T16:22:40.834828189Z"
