@@ -38,11 +38,6 @@ jobs:
           helm repo add helm-charts https://coltonhughes.github.io/helm-charts
           helm repo update
           helm dependency update charts/common
-          for chart_dir in charts/*; do
-            if [ -f "$chart_dir/Chart.yaml" ]; then
-              helm dependency update "$chart_dir"
-            fi
-          done
 
       - name: Publish common chart
         env:
@@ -53,6 +48,29 @@ jobs:
 
           cr package charts/common --package-path .cr-release-packages
           cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
+
+      - name: Publish index after common
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repo="${GITHUB_REPOSITORY##*/}"
+
+          mkdir -p .cr-index
+          cr index --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --pages-branch gh-pages --push
+
+      - name: Refresh dependencies for remaining charts
+        run: |
+          helm repo update
+          for chart_dir in charts/*; do
+            chart_name="$(basename "$chart_dir")"
+            if [ "$chart_name" = "common" ]; then
+              continue
+            fi
+            if [ -f "$chart_dir/Chart.yaml" ]; then
+              helm dependency update "$chart_dir"
+            fi
+          done
 
       - name: Publish remaining charts
         env:
