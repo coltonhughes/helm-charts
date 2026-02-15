@@ -2,9 +2,9 @@ apiVersion: v2
 name: prowlarr
 description: A Helm chart for running prowlarr on k8s
 type: application
-version: 2.0.7
+version: 2.0.8
 appVersion: "1.8.1259"
 dependencies:
   - name: common
-    version: 0.3.2
+    version: 0.5.4
     repository: "https://coltonhughes.github.io/helm-charts"
