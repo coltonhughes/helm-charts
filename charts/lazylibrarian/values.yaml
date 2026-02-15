@@ -69,9 +69,9 @@ ingress:
     - secretName: lazylibrarian-tls
       hosts:
         - lazylibrarian.example.com
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+        #  - secretName: chart-example-tls
+        #    hosts:
+        #      - chart-example.local
 # HTTPRoute configuration for Gateway API
 # Please refer to https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.HTTPRoute
 httpRoute:
@@ -116,14 +116,8 @@ resources: {}
 #   cpu: 100m
 #   memory: 128Mi
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
+livenessProbe: {}
+readinessProbe: {}
 initContainers: []
 initContainersTemplate: ""
 extraContainers: []
