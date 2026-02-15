@@ -188,14 +188,8 @@ resources: {}
 #   cpu: 100m
 #   memory: 128Mi
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: pms-web
-readinessProbe:
-  httpGet:
-    path: /
-    port: pms-web
+livenessProbe: {}
+readinessProbe: {}
 initContainers: []
 initContainersTemplate: ""
 extraContainers: []
