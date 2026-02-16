@@ -1,0 +1,178 @@
+# Default values for homepage.
+# This is a YAML-formatted file.
+
+replicaCount: 1
+deploymentStrategy:
+  type: RollingUpdate
+
+image:
+  repository: ghcr.io/gethomepage/homepage
+  pullPolicy: Always
+  tag: "latest"
+
+container:
+  env:
+    HOMEPAGE_ALLOWED_HOSTS: homepage.example.com
+  command: []
+  args: []
+
+containerPorts:
+  - name: http
+    containerPort: 3000
+    protocol: TCP
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+enableRbac: true
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 3000
+  protocol: TCP
+  targetPort: http
+  loadBalancerIP: ""
+  annotations: {}
+  ports: []
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Homepage"
+    gethomepage.dev/description: "Dynamically Detected Homepage"
+    gethomepage.dev/group: "Cluster Management"
+    gethomepage.dev/icon: "homepage.png"
+  hosts:
+    - host: homepage.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# HTTPRoute configuration for Gateway API
+# Please refer to https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.HTTPRoute
+httpRoute:
+  enabled: false
+  annotations: {}
+  labels: {}
+  parentRefs: []
+  hostnames: []
+  rules: []
+
+resources: {}
+livenessProbe: {}
+readinessProbe: {}
+initContainers: []
+initContainersTemplate: ""
+extraContainers: []
+extraContainersTemplate: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes:
+  - name: homepage-config
+    configMap:
+      name: '{{ include "common.fullname" . }}'
+  - name: logs
+    emptyDir: {}
+
+volumeMounts:
+  - mountPath: /app/config/custom.js
+    name: homepage-config
+    subPath: custom.js
+  - mountPath: /app/config/custom.css
+    name: homepage-config
+    subPath: custom.css
+  - mountPath: /app/config/bookmarks.yaml
+    name: homepage-config
+    subPath: bookmarks.yaml
+  - mountPath: /app/config/docker.yaml
+    name: homepage-config
+    subPath: docker.yaml
+  - mountPath: /app/config/kubernetes.yaml
+    name: homepage-config
+    subPath: kubernetes.yaml
+  - mountPath: /app/config/services.yaml
+    name: homepage-config
+    subPath: services.yaml
+  - mountPath: /app/config/settings.yaml
+    name: homepage-config
+    subPath: settings.yaml
+  - mountPath: /app/config/widgets.yaml
+    name: homepage-config
+    subPath: widgets.yaml
+  - mountPath: /app/config/logs
+    name: logs
+
+gpu:
+  enabled: false
+  type: ""
+  runtimeClassName: ""
+  resources: {}
+
+persistence:
+  enabled: false
+  storageClass: ""
+  existingClaim: ""
+  claimName: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  mountPath: /config
+  subPath: ""
+  name: config
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+config:
+  kubernetes:
+    mode: cluster
+  settings: {}
+  customCSS: ""
+  customJS: ""
+  bookmarks:
+    - Developer:
+        - Github:
+            - abbr: GH
+              href: https://github.com/
+  services:
+    - My First Group:
+        - My First Service:
+            href: http://localhost/
+            description: Homepage is awesome
+  widgets:
+    - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: cluster
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+    - search:
+        provider: duckduckgo
+        target: _blank
+  docker: {}

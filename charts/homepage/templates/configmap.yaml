@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "common.fullname" . }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+data:
+  kubernetes.yaml: |
+    {{- if kindIs "string" .Values.config.kubernetes }}
+    {{- .Values.config.kubernetes | nindent 4 }}
+    {{- else }}
+    {{- toYaml .Values.config.kubernetes | nindent 4 }}
+    {{- end }}
+  settings.yaml: |
+    {{- if kindIs "string" .Values.config.settings }}
+    {{- .Values.config.settings | nindent 4 }}
+    {{- else }}
+    {{- toYaml .Values.config.settings | nindent 4 }}
+    {{- end }}
+  custom.css: |
+    {{- .Values.config.customCSS | nindent 4 }}
+  custom.js: |
+    {{- .Values.config.customJS | nindent 4 }}
+  bookmarks.yaml: |
+    {{- if kindIs "string" .Values.config.bookmarks }}
+    {{- .Values.config.bookmarks | nindent 4 }}
+    {{- else }}
+    {{- toYaml .Values.config.bookmarks | nindent 4 }}
+    {{- end }}
+  services.yaml: |
+    {{- if kindIs "string" .Values.config.services }}
+    {{- .Values.config.services | nindent 4 }}
+    {{- else }}
+    {{- toYaml .Values.config.services | nindent 4 }}
+    {{- end }}
+  widgets.yaml: |
+    {{- if kindIs "string" .Values.config.widgets }}
+    {{- .Values.config.widgets | nindent 4 }}
+    {{- else }}
+    {{- toYaml .Values.config.widgets | nindent 4 }}
+    {{- end }}
+  docker.yaml: |
+    {{- if kindIs "string" .Values.config.docker }}
+    {{- .Values.config.docker | nindent 4 }}
+    {{- else }}
+    {{- toYaml .Values.config.docker | nindent 4 }}
+    {{- end }}
