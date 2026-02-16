@@ -774,6 +774,21 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/gha-cache-0.1.0/gha-cache-0.1.0.tgz
     version: 0.1.0
+  homepage:
+  - apiVersion: v2
+    appVersion: 1.8.0
+    created: "2026-02-16T02:38:17.915421422Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.5
+    description: A Helm chart for running Homepage on k8s
+    digest: 76e1f72c8ff4569aba32ffe3173372ac5651eaf909ab09fb3164e4e23dce7f92
+    name: homepage
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/homepage-2.0.0/homepage-2.0.0.tgz
+    version: 2.0.0
   jackett:
   - apiVersion: v2
     appVersion: 0.21.958
@@ -4745,4 +4760,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2026-02-15T16:22:40.834828189Z"
+generated: "2026-02-16T02:38:20.221157374Z"
