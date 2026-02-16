@@ -146,6 +146,7 @@ affinity: {}
 config:
   kubernetes:
     mode: cluster
+    gateway: true
   settings: {}
   customCSS: ""
   customJS: ""
