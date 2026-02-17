@@ -777,6 +777,20 @@ entries:
   homepage:
   - apiVersion: v2
     appVersion: 1.8.0
+    created: "2026-02-17T00:34:57.32743222Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.5
+    description: A Helm chart for running Homepage on k8s
+    digest: 0eb3e4a30f1031cb488c5ce7f76a0c1a30f5d2823369c23152b9450764422e1e
+    name: homepage
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/homepage-3.0.0/homepage-3.0.0.tgz
+    version: 3.0.0
+  - apiVersion: v2
+    appVersion: 1.8.0
     created: "2026-02-16T22:12:39.915377754Z"
     dependencies:
     - name: common
@@ -4788,4 +4802,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2026-02-16T22:12:42.371133676Z"
+generated: "2026-02-17T00:35:00.066272643Z"
