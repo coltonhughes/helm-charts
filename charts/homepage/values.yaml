@@ -150,44 +150,9 @@ config:
   settings: {}
   customCSS: ""
   customJS: ""
-  bookmarks:
-    - Developer:
-        - Github:
-            - abbr: GH
-              href: https://github.com/
-  services:
-    - Plex:
-        icon: plex.png
-        href: https://plex.my.host
-        description: Watch movies and TV shows.
-        server: localhost
-        container: plex
-        widgets:
-          - type: tautulli
-            url: http://172.16.1.1:8181
-            key:
-              secretRef:
-                name: homepage-secrets
-                key: tautulli-api-key
-          - type: uptimekuma
-            url: http://172.16.1.2:8080
-            slug: aaaaaaabbbbb
-  widgets:
-    - kubernetes:
-        cluster:
-          show: true
-          cpu: true
-          memory: true
-          showLabel: true
-          label: cluster
-        nodes:
-          show: true
-          cpu: true
-          memory: true
-          showLabel: true
-    - search:
-        provider: duckduckgo
-        target: _blank
+  bookmarks: []
+  services: []
+  widgets: []
   # Widget fields can reference Secrets with this shape:
   # <field>:
   #   secretRef:

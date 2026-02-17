@@ -27,7 +27,7 @@ Input:
 {{- if eq $decoded "" -}}
 {{- fail (printf "%s references key %q in Secret %s/%s, but the decoded value is empty" $path $key $namespace $name) -}}
 {{- end -}}
-{{- toJson $decoded -}}
+{{- $decoded -}}
 {{- end -}}
 
 {{/*
@@ -48,28 +48,46 @@ Input:
     {{- $out := dict -}}
     {{- range $k, $v := $node -}}
       {{- $childPath := printf "%s.%s" $path $k -}}
-      {{- $resolved := include "homepage.resolveNode" (dict "root" $root "node" $v "path" $childPath) | fromJson -}}
-      {{- $_ := set $out $k $resolved -}}
+      {{- if kindIs "map" $v -}}
+        {{- if and (eq (len $v) 1) (hasKey $v "secretRef") -}}
+          {{- $_ := set $out $k (include "homepage.resolveSecretRefValue" (dict "root" $root "ref" (index $v "secretRef") "path" $childPath)) -}}
+        {{- else -}}
+          {{- $_ := set $out $k (include "homepage.resolveNode" (dict "root" $root "node" $v "path" $childPath) | fromYaml) -}}
+        {{- end -}}
+      {{- else if kindIs "slice" $v -}}
+        {{- $_ := set $out $k (include "homepage.resolveNode" (dict "root" $root "node" $v "path" $childPath) | fromYamlArray) -}}
+      {{- else -}}
+        {{- $_ := set $out $k $v -}}
+      {{- end -}}
     {{- end -}}
-    {{- toJson $out -}}
+    {{- toYaml $out -}}
   {{- end -}}
 {{- else if kindIs "slice" $node -}}
   {{- $out := list -}}
   {{- range $i, $v := $node -}}
     {{- $childPath := printf "%s[%d]" $path $i -}}
-    {{- $resolved := include "homepage.resolveNode" (dict "root" $root "node" $v "path" $childPath) | fromJson -}}
-    {{- $out = append $out $resolved -}}
+    {{- if kindIs "map" $v -}}
+      {{- if and (eq (len $v) 1) (hasKey $v "secretRef") -}}
+        {{- $out = append $out (include "homepage.resolveSecretRefValue" (dict "root" $root "ref" (index $v "secretRef") "path" $childPath)) -}}
+      {{- else -}}
+        {{- $out = append $out (include "homepage.resolveNode" (dict "root" $root "node" $v "path" $childPath) | fromYaml) -}}
+      {{- end -}}
+    {{- else if kindIs "slice" $v -}}
+      {{- $out = append $out (include "homepage.resolveNode" (dict "root" $root "node" $v "path" $childPath) | fromYamlArray) -}}
+    {{- else -}}
+      {{- $out = append $out $v -}}
+    {{- end -}}
   {{- end -}}
-  {{- toJson $out -}}
+  {{- toYaml $out -}}
 {{- else -}}
-  {{- toJson $node -}}
+  {{- toYaml $node -}}
 {{- end -}}
 {{- end -}}
 
 {{- define "homepage.renderWidgets" -}}
-{{- include "homepage.resolveNode" (dict "root" . "node" .Values.config.widgets "path" "config.widgets") | fromJson | toYaml -}}
+{{- include "homepage.resolveNode" (dict "root" . "node" .Values.config.widgets "path" "config.widgets") -}}
 {{- end -}}
 
 {{- define "homepage.renderServices" -}}
-{{- include "homepage.resolveNode" (dict "root" . "node" .Values.config.services "path" "config.services") | fromJson | toYaml -}}
+{{- include "homepage.resolveNode" (dict "root" . "node" .Values.config.services "path" "config.services") -}}
 {{- end -}}
