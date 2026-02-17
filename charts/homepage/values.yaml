@@ -176,4 +176,28 @@ config:
     - search:
         provider: duckduckgo
         target: _blank
+  # Widget fields can reference Secrets with this shape:
+  # <field>:
+  #   secretRef:
+  #     name: homepage-secrets
+  #     key: some-key
+  #     namespace: apps # optional, defaults to .Release.Namespace
+  #
+  # Example widgets using secretRef:
+  # - diskstation:
+  #     type: diskstation
+  #     url: http://diskstation.host.or.ip:port
+  #     username: username
+  #     password:
+  #       secretRef:
+  #         name: homepage-secrets
+  #         key: diskstation-password
+  #     volume: volume_1 # optional
+  # - gitea:
+  #     type: gitea
+  #     url: http://gitea.host.or.ip:port
+  #     key:
+  #       secretRef:
+  #         name: homepage-secrets
+  #         key: gitea-api-token
   docker: {}

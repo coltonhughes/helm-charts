@@ -37,7 +37,7 @@ data:
     {{- if kindIs "string" .Values.config.widgets }}
     {{- .Values.config.widgets | nindent 4 }}
     {{- else }}
-    {{- toYaml .Values.config.widgets | nindent 4 }}
+    {{- include "homepage.renderWidgets" . | nindent 4 }}
     {{- end }}
   docker.yaml: |
     {{- if kindIs "string" .Values.config.docker }}
