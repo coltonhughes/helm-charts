@@ -69,3 +69,7 @@ Input:
 {{- define "homepage.renderWidgets" -}}
 {{- include "homepage.resolveNode" (dict "root" . "node" .Values.config.widgets "path" "config.widgets") | fromJson | toYaml -}}
 {{- end -}}
+
+{{- define "homepage.renderServices" -}}
+{{- include "homepage.resolveNode" (dict "root" . "node" .Values.config.services "path" "config.services") | fromJson | toYaml -}}
+{{- end -}}

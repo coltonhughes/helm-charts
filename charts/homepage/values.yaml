@@ -156,10 +156,22 @@ config:
             - abbr: GH
               href: https://github.com/
   services:
-    - My First Group:
-        - My First Service:
-            href: http://localhost/
-            description: Homepage is awesome
+    - Plex:
+        icon: plex.png
+        href: https://plex.my.host
+        description: Watch movies and TV shows.
+        server: localhost
+        container: plex
+        widgets:
+          - type: tautulli
+            url: http://172.16.1.1:8181
+            key:
+              secretRef:
+                name: homepage-secrets
+                key: tautulli-api-key
+          - type: uptimekuma
+            url: http://172.16.1.2:8080
+            slug: aaaaaaabbbbb
   widgets:
     - kubernetes:
         cluster:
