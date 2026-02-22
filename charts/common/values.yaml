@@ -23,6 +23,11 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+workload:
+  kind: Deployment
+  serviceName: ""
+  updateStrategy: {}
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -56,6 +61,8 @@ service:
   protocol: TCP
   targetPort: ""
   loadBalancerIP: ""
+  ipFamilyPolicy: ""
+  ipFamilies: []
   annotations: {}
   ports: []
 

@@ -61,3 +61,16 @@ Create the name of the service account to use
 {{- default "default" $serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Resolve workload kind. Defaults to Deployment for backwards compatibility.
+*/}}
+{{- define "common.workloadKind" -}}
+{{- $workload := default dict .Values.workload -}}
+{{- $kind := $workload.kind | default "Deployment" -}}
+{{- if eq $kind "StatefulSet" -}}
+StatefulSet
+{{- else -}}
+Deployment
+{{- end -}}
+{{- end }}

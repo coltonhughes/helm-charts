@@ -68,6 +68,26 @@
     "fullnameOverride": {
       "type": "string"
     },
+    "workload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Deployment",
+            "StatefulSet"
+          ]
+        },
+        "serviceName": {
+          "type": "string"
+        },
+        "updateStrategy": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
     "serviceAccount": {
       "type": "object",
       "additionalProperties": false,
@@ -122,6 +142,15 @@
         },
         "loadBalancerIP": {
           "type": "string"
+        },
+        "ipFamilyPolicy": {
+          "type": "string"
+        },
+        "ipFamilies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
         "annotations": {
           "type": "object",

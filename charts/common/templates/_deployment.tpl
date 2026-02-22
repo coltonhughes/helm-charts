@@ -7,8 +7,10 @@
 {{- $podSecurityContext := default dict .Values.podSecurityContext -}}
 {{- $securityContext := default dict .Values.securityContext -}}
 {{- $resources := default dict .Values.resources -}}
+{{- $workload := default dict .Values.workload -}}
+{{- $workloadKind := include "common.workloadKind" . -}}
 apiVersion: apps/v1
-kind: Deployment
+kind: {{ $workloadKind }}
 metadata:
   name: {{ include "common.fullname" . }}
   labels:
@@ -17,9 +19,17 @@ spec:
   {{- if not ($autoscaling.enabled | default false) }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  {{- if eq $workloadKind "Deployment" }}
   {{- with .Values.deploymentStrategy }}
   strategy:
     {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- else }}
+  serviceName: {{ $workload.serviceName | default (include "common.fullname" .) }}
+  {{- with $workload.updateStrategy }}
+  updateStrategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- end }}
   selector:
     matchLabels:

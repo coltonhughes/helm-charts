@@ -1,5 +1,6 @@
 {{- define "common.hpa" -}}
 {{- $autoscaling := default dict .Values.autoscaling }}
+{{- $workloadKind := include "common.workloadKind" . }}
 {{- if $autoscaling.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -10,7 +11,7 @@ metadata:
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: Deployment
+    kind: {{ $workloadKind }}
     name: {{ include "common.fullname" . }}
   minReplicas: {{ $autoscaling.minReplicas }}
   maxReplicas: {{ $autoscaling.maxReplicas }}

@@ -15,6 +15,13 @@ spec:
   {{- if $service.loadBalancerIP }}
   loadBalancerIP: {{ $service.loadBalancerIP }}
   {{- end }}
+  {{- with $service.ipFamilyPolicy }}
+  ipFamilyPolicy: {{ . }}
+  {{- end }}
+  {{- with $service.ipFamilies }}
+  ipFamilies:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   ports:
     {{ if $service.ports }}
     {{ tpl (toYaml $service.ports) $ | nindent 4 }}
