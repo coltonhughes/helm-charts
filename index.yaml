@@ -4224,6 +4224,21 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/secuimage-backend-0.1.0/secuimage-backend-0.1.0.tgz
     version: 0.1.0
+  seerr:
+  - apiVersion: v2
+    appVersion: 3.0.1
+    created: "2026-02-22T22:37:24.559204818Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.6
+    description: A Helm chart for running Seerr on k8s
+    digest: 1a9b6060b210d5ad3a8174e1b65464cac6140b91e28c8ac1f8fe946b323e4f19
+    name: seerr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/seerr-0.1.0/seerr-0.1.0.tgz
+    version: 0.1.0
   sonarr:
   - apiVersion: v2
     appVersion: 3.0.10
@@ -4839,4 +4854,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-0.1.0/tautulli-0.1.0.tgz
     version: 0.1.0
-generated: "2026-02-22T22:35:48.749444629Z"
+generated: "2026-02-22T22:37:24.983255382Z"
