@@ -1,9 +1,9 @@
 apiVersion: v2
-name: prowlarr
-description: A Helm chart for running prowlarr on k8s
+name: seerr
+description: A Helm chart for running Seerr on k8s
 type: application
-version: 2.0.10
-appVersion: "1.8.1259"
+version: 0.1.0
+appVersion: "3.0.1"
 dependencies:
   - name: common
     version: 0.5.6
