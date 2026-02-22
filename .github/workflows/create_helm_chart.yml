@@ -7,14 +7,128 @@ on:
       - v2
   workflow_dispatch:
 
+concurrency:
+  group: release-helm-charts-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  release:
+  discover-consumer-charts:
     runs-on: helm-chart-builder
+    outputs:
+      charts: ${{ steps.discover.outputs.charts }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Discover consumer charts
+        id: discover
+        shell: bash
+        run: |
+          mapfile -t charts < <(
+            find charts -mindepth 2 -maxdepth 2 -name Chart.yaml -print \
+              | sort \
+              | while read -r chart_yaml; do
+                  chart_dir="$(dirname "$chart_yaml")"
+                  chart_name="$(basename "$chart_dir")"
+                  [ "$chart_name" = "common" ] && continue
+                  grep -q 'name: common' "$chart_yaml" || continue
+                  printf '%s\n' "$chart_name"
+                done
+          )
+
+          charts_json="["
+          for chart_name in "${charts[@]}"; do
+            if [ "$charts_json" != "[" ]; then
+              charts_json+=","
+            fi
+            charts_json+="\"$chart_name\""
+          done
+          charts_json+="]"
+
+          echo "charts=$charts_json" >> "$GITHUB_OUTPUT"
+
+  validate-common:
+    runs-on: helm-chart-builder
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Validate common chart
+        run: |
+          helm lint charts/common
+
+  validate-consumer-charts:
+    runs-on: helm-chart-builder
+    needs:
+      - discover-consumer-charts
+      - validate-common
+    strategy:
+      fail-fast: false
+      matrix:
+        chart: ${{ fromJson(needs.discover-consumer-charts.outputs.charts) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Run consumer chart render regression
+        run: ./tests/test-consumer-charts.sh "${{ matrix.chart }}"
+
+  release-common:
+    runs-on: helm-chart-builder
+    needs:
+      - validate-common
+      - validate-consumer-charts
     permissions:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install chart-releaser
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          install_only: true
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Publish common chart
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repo="${GITHUB_REPOSITORY##*/}"
+
+          mkdir -p .cr-release-packages
+          cr package charts/common --package-path .cr-release-packages
+          cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
+          mkdir -p .cr-index
+          cr index --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --pages-branch gh-pages --push
+
+  release-consumer-charts:
+    runs-on: helm-chart-builder
+    needs:
+      - release-common
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
@@ -24,7 +138,7 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install chart-releaser
-        uses: helm/chart-releaser-action@v1.5.0
+        uses: helm/chart-releaser-action@v1.7.0
         with:
           install_only: true
         env:
@@ -37,22 +151,33 @@ jobs:
         run: |
           helm repo add helm-charts https://coltonhughes.github.io/helm-charts
           helm repo update
-          helm dependency update charts/common
+
+          update_chart_deps() {
+            local chart_dir="$1"
+            local max_attempts=6
+            local attempt=1
+
+            while ! helm dependency update "$chart_dir"; do
+              if [ "$attempt" -ge "$max_attempts" ]; then
+                echo "helm dependency update failed for $chart_dir after $max_attempts attempts" >&2
+                return 1
+              fi
+              attempt=$((attempt + 1))
+              echo "Retrying dependency update for $chart_dir in 10s (attempt $attempt/$max_attempts)..."
+              sleep 10
+              helm repo update
+            done
+          }
+
           for chart_dir in charts/*; do
+            chart_name="$(basename "$chart_dir")"
+            if [ "$chart_name" = "common" ]; then
+              continue
+            fi
             if [ -f "$chart_dir/Chart.yaml" ]; then
-              helm dependency update "$chart_dir"
+              update_chart_deps "$chart_dir"
             fi
           done
-
-      - name: Publish common chart
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-        run: |
-          owner="${GITHUB_REPOSITORY%%/*}"
-          repo="${GITHUB_REPOSITORY##*/}"
-
-          cr package charts/common --package-path .cr-release-packages
-          cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
 
       - name: Publish remaining charts
         env:

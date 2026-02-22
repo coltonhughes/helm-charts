@@ -23,6 +23,8 @@ trap cleanup EXIT
 failures=0
 tested=0
 
+requested_charts=("$@")
+
 patch_chart_dependency_to_local_common() {
   local file="$1"
   local tmpfile
@@ -78,6 +80,19 @@ while IFS= read -r chart_yaml; do
     continue
   fi
 
+  if [[ "${#requested_charts[@]}" -gt 0 ]]; then
+    match=0
+    for requested in "${requested_charts[@]}"; do
+      if [[ "$requested" == "$chart_name" ]]; then
+        match=1
+        break
+      fi
+    done
+    if [[ "$match" -eq 0 ]]; then
+      continue
+    fi
+  fi
+
   tested=$((tested + 1))
   workdir="$tmpdir/$chart_name"
   cp -R "$chart_dir" "$workdir"
@@ -121,6 +136,11 @@ done < <(find "$CHARTS_DIR" -mindepth 2 -maxdepth 2 -name Chart.yaml | sort)
 
 echo
 echo "Tested consumer charts: $tested"
+
+if [[ "${#requested_charts[@]}" -gt 0 && "$tested" -eq 0 ]]; then
+  echo "No matching consumer charts found for: ${requested_charts[*]}" >&2
+  exit 1
+fi
 
 if [[ "$failures" -ne 0 ]]; then
   echo "Failures: $failures" >&2
