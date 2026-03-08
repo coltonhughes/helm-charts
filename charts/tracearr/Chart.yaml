@@ -2,7 +2,7 @@ apiVersion: v2
 name: tracearr
 description: A Helm chart for running Tracearr on k8s
 type: application
-version: 0.1.0
+version: 0.1.2
 appVersion: "latest"
 dependencies:
   - name: common

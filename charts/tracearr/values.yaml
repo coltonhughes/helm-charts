@@ -135,6 +135,13 @@ tolerations: []
 affinity: {}
 
 tracearr:
+  # Global image override for Tracearr application in any mode.
+  # Mode-specific values under `tracearr.modes.*.image` take precedence.
+  image:
+    repository: ""
+    pullPolicy: ""
+    tag: ""
+
   # Deployment mode controls how this chart sets up the application.
   # - standard: external PostgreSQL + Valkey-compatible cache and tracearr app container.
   # - supervised: dedicated tracearr supervised container image with embedded services.

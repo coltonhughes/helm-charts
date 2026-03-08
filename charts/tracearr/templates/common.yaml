@@ -5,9 +5,10 @@
 
 {{- $modeValues := default (dict) (get .Values.tracearr.modes $mode) -}}
 {{- $modeImage := default (dict) $modeValues.image -}}
-{{- $imageRepository := default .Values.image.repository $modeImage.repository -}}
-{{- $imagePullPolicy := default .Values.image.pullPolicy $modeImage.pullPolicy -}}
-{{- $imageTag := default .Values.image.tag $modeImage.tag -}}
+{{- $tracearrImage := default (dict) .Values.tracearr.image -}}
+{{- $imageRepository := coalesce $modeImage.repository $tracearrImage.repository .Values.image.repository -}}
+{{- $imagePullPolicy := coalesce $modeImage.pullPolicy $tracearrImage.pullPolicy .Values.image.pullPolicy -}}
+{{- $imageTag := coalesce $modeImage.tag $tracearrImage.tag .Values.image.tag -}}
 
 {{- if and (eq $mode "supervised") (ne $imageTag "supervised") -}}
 {{ fail "supervised mode requires tracearr image tag to be 'supervised'" }}
@@ -65,8 +66,16 @@
   {{- $defaultDatabaseURL := "postgres://tracearr:tracearr@postgres:5432/tracearr" -}}
   {{- $defaultRedisURL := "redis://redis:6379/0" -}}
 
-  {{- $hasExternalDatabaseURL := and (ne $databaseURL "") (ne $databaseURL $defaultDatabaseURL) -}}
-  {{- $hasExternalRedisURL := and (ne $redisURL "") (ne $redisURL $defaultRedisURL) -}}
+  {{- $hasExternalDatabaseURL := ne $databaseURL "" -}}
+  {{- $hasExternalRedisURL := ne $redisURL "" -}}
+
+  {{- if or $legacyPostgresqlEnabled $cnpgEnabled -}}
+    {{- $hasExternalDatabaseURL = and (ne $databaseURL "") (ne $databaseURL $defaultDatabaseURL) -}}
+  {{- end -}}
+
+  {{- if or $legacyValkeyEnabled $legacyRedisAliasEnabled $valkeyDependencyEnabled -}}
+    {{- $hasExternalRedisURL = and (ne $redisURL "") (ne $redisURL $defaultRedisURL) -}}
+  {{- end -}}
 
   {{- $databaseSourceCount := 0 -}}
   {{- if $hasExternalDatabaseURL -}}
@@ -130,7 +139,7 @@
   {{- if $valkeyDependencyEnabled -}}
   {{- $valkeyDependencyHost := default (printf "%s-valkey" .Release.Name) .Values.tracearr.stateful.valkey.serviceName -}}
   {{- $dependencyValkeyPort := int (default .Values.tracearr.stateful.valkey.port .Values.valkey.service.port) | default 6379 -}}
-  {{- $dependencyValkeyPassword := default "" .Values.tracearr.stateful.valkey.password -}}
+  {{- $dependencyValkeyPassword := default (default "" .Values.tracearr.stateful.valkey.password) (default "" .Values.valkey.auth.password) -}}
   {{- if ne $dependencyValkeyPassword "" -}}
   {{- $redisURL = printf "redis://:%s@%s:%d/0" (urlquery $dependencyValkeyPassword) $valkeyDependencyHost $dependencyValkeyPort -}}
   {{- else -}}
