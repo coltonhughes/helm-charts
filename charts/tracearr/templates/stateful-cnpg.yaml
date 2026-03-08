@@ -1,0 +1,82 @@
+{{- if .Values.tracearr.stateful.cnpg.enabled }}
+{{- $fullname := include "common.fullname" . -}}
+{{- $namespace := default .Release.Namespace .Values.tracearr.stateful.cnpg.namespace -}}
+{{- $clusterName := default (printf "%s-cnpg" $fullname) .Values.tracearr.stateful.cnpg.clusterName -}}
+{{- $username := .Values.tracearr.stateful.cnpg.credentials.username | default "tracearr" -}}
+{{- $password := .Values.tracearr.stateful.cnpg.credentials.password | default "tracearr" -}}
+{{- $database := .Values.tracearr.stateful.cnpg.credentials.database | default "tracearr" -}}
+{{- $credentialsSecretName := .Values.tracearr.stateful.cnpg.credentials.secretName -}}
+{{- if and .Values.tracearr.stateful.cnpg.createCredentialsSecret (eq $credentialsSecretName "") -}}
+{{- $credentialsSecretName = printf "%s-cnpg-credentials" $clusterName -}}
+{{- end -}}
+
+{{- if and (not .Values.tracearr.stateful.cnpg.createCredentialsSecret) (eq $credentialsSecretName "") }}
+{{ fail "tracearr.stateful.cnpg.credentials.secretName is required when tracearr.stateful.cnpg.createCredentialsSecret is false" }}
+{{- end -}}
+
+{{- if .Values.tracearr.stateful.cnpg.createCredentialsSecret }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $credentialsSecretName }}
+  namespace: {{ $namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "common.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+type: kubernetes.io/basic-auth
+stringData:
+  username: {{ $username | quote }}
+  password: {{ $password | quote }}
+  # optional compatibility key for CNPG
+  dbname: {{ $database | quote }}
+---
+{{- end }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ $clusterName }}
+  namespace: {{ $namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "common.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  instances: {{ .Values.tracearr.stateful.cnpg.instances | default 1 }}
+  {{- with .Values.tracearr.stateful.cnpg.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  storage:
+    size: {{ .Values.tracearr.stateful.cnpg.storage.size | quote }}
+    {{- with .Values.tracearr.stateful.cnpg.storage.storageClass }}
+    storageClass: {{ . | quote }}
+    {{- end }}
+  bootstrap:
+    initdb:
+      database: {{ $database | quote }}
+      owner: {{ $username | quote }}
+      {{- if and (not .Values.tracearr.stateful.cnpg.createCredentialsSecret) (ne $credentialsSecretName "") }}
+      secret:
+        name: {{ $credentialsSecretName | quote }}
+      {{- else if .Values.tracearr.stateful.cnpg.createCredentialsSecret }}
+      secret:
+        name: {{ $credentialsSecretName | quote }}
+      {{- end }}
+  {{- with .Values.tracearr.stateful.cnpg.affinity }}
+  affinity:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.tracearr.stateful.cnpg.tolerations }}
+  tolerations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.tracearr.stateful.cnpg.nodeSelector }}
+  nodeSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if .Values.tracearr.stateful.cnpg.backup.enabled }}
+  backup:
+    retentionPolicy: {{ .Values.tracearr.stateful.cnpg.backup.retentionPolicy | quote }}
+  {{- end }}
+{{- end }}

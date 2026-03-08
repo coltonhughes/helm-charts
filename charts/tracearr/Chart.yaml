@@ -8,3 +8,7 @@ dependencies:
   - name: common
     version: 0.5.6
     repository: "https://coltonhughes.github.io/helm-charts"
+  - name: valkey
+    version: "0.9.3"
+    repository: "https://valkey.io/valkey-helm/"
+    condition: tracearr.stateful.valkey.useDependency

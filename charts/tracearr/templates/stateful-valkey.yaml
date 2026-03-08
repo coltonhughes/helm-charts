@@ -1,6 +1,6 @@
 {{- $useValkey := default false .Values.tracearr.stateful.valkey.enabled -}}
 {{- $useLegacyValkey := and (not $useValkey) (default false .Values.tracearr.stateful.redis.enabled) -}}
-{{- if or $useValkey $useLegacyValkey }}
+{{- if and (not (default false .Values.tracearr.stateful.valkey.useDependency)) (or $useValkey $useLegacyValkey) }}
 {{- $fullname := include "common.fullname" . -}}
 {{- $statefulValues := .Values.tracearr.stateful.valkey -}}
 {{- if not $useValkey }}

@@ -13,8 +13,26 @@
 {{ fail "supervised mode requires tracearr image tag to be 'supervised'" }}
 {{- end -}}
 
-{{- if and (eq $mode "supervised") (or .Values.tracearr.stateful.postgresql.enabled (or (default false .Values.tracearr.stateful.valkey.enabled) (default false .Values.tracearr.stateful.redis.enabled))) -}}
-{{ fail "stateful postgresql/valkey helpers are only supported for standard mode" }}
+{{- $legacyPostgresqlEnabled := .Values.tracearr.stateful.postgresql.enabled -}}
+{{- $cnpgEnabled := default false .Values.tracearr.stateful.cnpg.enabled -}}
+{{- $legacyValkeyEnabled := default false .Values.tracearr.stateful.valkey.enabled -}}
+{{- $legacyRedisAliasEnabled := default false .Values.tracearr.stateful.redis.enabled -}}
+{{- $valkeyDependencyEnabled := and (default false .Values.tracearr.stateful.valkey.useDependency) (default false .Values.valkey.enabled) -}}
+
+{{- if and (eq $mode "supervised") (or $legacyPostgresqlEnabled $cnpgEnabled (or $legacyValkeyEnabled $legacyRedisAliasEnabled) $valkeyDependencyEnabled) -}}
+{{ fail "stateful dependencies are only supported for standard mode" }}
+{{- end -}}
+
+{{- if and $legacyValkeyEnabled $legacyRedisAliasEnabled -}}
+{{ fail "cannot enable both tracearr.stateful.valkey.enabled and tracearr.stateful.redis.enabled" }}
+{{- end -}}
+
+{{- if and (default false .Values.tracearr.stateful.valkey.useDependency) (not $valkeyDependencyEnabled) -}}
+{{ fail "tracearr.stateful.valkey.useDependency requires valkey.enabled=true for the dependency chart" }}
+{{- end -}}
+
+{{- if and (default false .Values.tracearr.stateful.valkey.useDependency) (or $legacyValkeyEnabled $legacyRedisAliasEnabled) -}}
+{{ fail "tracearr.stateful.valkey.useDependency cannot be used with legacy valkey/redis stateful helper settings" }}
 {{- end -}}
 
 {{- $tracearrEnv := dict -}}
@@ -44,8 +62,52 @@
 {{- if eq $mode "standard" -}}
   {{- $databaseURL := trim (default "" .Values.tracearr.database.url) -}}
   {{- $redisURL := trim (default "" .Values.tracearr.redis.url) -}}
+  {{- $defaultDatabaseURL := "postgres://tracearr:tracearr@postgres:5432/tracearr" -}}
+  {{- $defaultRedisURL := "redis://redis:6379/0" -}}
 
-  {{- if .Values.tracearr.stateful.postgresql.enabled -}}
+  {{- $hasExternalDatabaseURL := and (ne $databaseURL "") (ne $databaseURL $defaultDatabaseURL) -}}
+  {{- $hasExternalRedisURL := and (ne $redisURL "") (ne $redisURL $defaultRedisURL) -}}
+
+  {{- $databaseSourceCount := 0 -}}
+  {{- if $hasExternalDatabaseURL -}}
+    {{- $databaseSourceCount = add $databaseSourceCount 1 -}}
+  {{- end -}}
+  {{- if $legacyPostgresqlEnabled -}}
+    {{- $databaseSourceCount = add $databaseSourceCount 1 -}}
+  {{- end -}}
+  {{- if $cnpgEnabled -}}
+    {{- $databaseSourceCount = add $databaseSourceCount 1 -}}
+  {{- end -}}
+
+  {{- if gt $databaseSourceCount 1 -}}
+{{ fail "standard mode supports only one database source: tracearr.database.url, tracearr.stateful.postgresql.enabled, or tracearr.stateful.cnpg.enabled" }}
+  {{- end -}}
+  {{- if eq $databaseSourceCount 0 -}}
+{{ fail "standard mode requires tracearr.database.url, tracearr.stateful.postgresql.enabled, or tracearr.stateful.cnpg.enabled" }}
+  {{- end -}}
+
+  {{- $valkeySourceCount := 0 -}}
+  {{- if $hasExternalRedisURL -}}
+    {{- $valkeySourceCount = add $valkeySourceCount 1 -}}
+  {{- end -}}
+  {{- if $legacyValkeyEnabled -}}
+    {{- $valkeySourceCount = add $valkeySourceCount 1 -}}
+  {{- end -}}
+  {{- if $legacyRedisAliasEnabled -}}
+    {{- $valkeySourceCount = add $valkeySourceCount 1 -}}
+  {{- end -}}
+  {{- if $valkeyDependencyEnabled -}}
+    {{- $valkeySourceCount = add $valkeySourceCount 1 -}}
+  {{- end -}}
+
+  {{- if gt $valkeySourceCount 1 -}}
+{{ fail "standard mode supports only one Valkey source: tracearr.redis.url, stateful valkey, redis alias, or valkey dependency" }}
+  {{- end -}}
+  {{- if eq $valkeySourceCount 0 -}}
+{{ fail "standard mode requires tracearr.redis.url, tracearr.stateful.valkey.enabled, tracearr.stateful.redis.enabled, or tracearr.stateful.valkey.useDependency with valkey.enabled=true" }}
+  {{- end -}}
+
+  {{- if $legacyPostgresqlEnabled -}}
   {{- $postgresHost := printf "%s-postgresql" (include "common.fullname" .) -}}
   {{- $postgresUser := .Values.tracearr.stateful.postgresql.auth.username | default "tracearr" -}}
   {{- $postgresPassword := .Values.tracearr.stateful.postgresql.auth.password | default "tracearr" -}}
@@ -54,29 +116,48 @@
   {{- $databaseURL = printf "postgres://%s:%s@%s:%d/%s" (urlquery $postgresUser) (urlquery $postgresPassword) $postgresHost $postgresPort $postgresDatabase -}}
   {{- end -}}
 
-  {{- if or (default false .Values.tracearr.stateful.valkey.enabled) (default false .Values.tracearr.stateful.redis.enabled) -}}
-  {{- $redisHost := printf "%s-valkey" (include "common.fullname" .) -}}
-  {{- $redisPassword := "" -}}
-  {{- $redisPort := 6379 -}}
-  {{- if default false .Values.tracearr.stateful.valkey.enabled -}}
-  {{- $redisPassword = .Values.tracearr.stateful.valkey.auth.password | default "" -}}
-  {{- $redisPort = int (default .Values.tracearr.stateful.valkey.port .Values.tracearr.stateful.valkey.service.port) | default 6379 -}}
-  {{- else if default false .Values.tracearr.stateful.redis.enabled -}}
-  {{- $redisPassword = .Values.tracearr.stateful.redis.auth.password | default "" -}}
-  {{- $redisPort = int (default .Values.tracearr.stateful.redis.port .Values.tracearr.stateful.redis.service.port) | default 6379 -}}
+  {{- if $cnpgEnabled -}}
+  {{- $cnpgNamespace := default .Release.Namespace .Values.tracearr.stateful.cnpg.namespace -}}
+  {{- $cnpgClusterName := default (printf "%s-cnpg" (include "common.fullname" .)) .Values.tracearr.stateful.cnpg.clusterName -}}
+  {{- $cnpgPort := 5432 -}}
+  {{- $cnpgDatabase := .Values.tracearr.stateful.cnpg.credentials.database | default "tracearr" -}}
+  {{- $cnpgUser := .Values.tracearr.stateful.cnpg.credentials.username | default "tracearr" -}}
+  {{- $cnpgPassword := .Values.tracearr.stateful.cnpg.credentials.password | default "tracearr" -}}
+  {{- $databaseHost := printf "%s-rw.%s.svc.%s" $cnpgClusterName $cnpgNamespace .Values.tracearr.stateful.cnpg.clusterDomain -}}
+  {{- $databaseURL = printf "postgres://%s:%s@%s:%d/%s" (urlquery $cnpgUser) (urlquery $cnpgPassword) $databaseHost $cnpgPort $cnpgDatabase -}}
   {{- end -}}
-  {{- if ne $redisPassword "" -}}
-  {{- $redisURL = printf "redis://:%s@%s:%d/0" (urlquery $redisPassword) $redisHost $redisPort -}}
+
+  {{- if $valkeyDependencyEnabled -}}
+  {{- $valkeyDependencyHost := default (printf "%s-valkey" .Release.Name) .Values.tracearr.stateful.valkey.serviceName -}}
+  {{- $dependencyValkeyPort := int (default .Values.tracearr.stateful.valkey.port .Values.valkey.service.port) | default 6379 -}}
+  {{- $dependencyValkeyPassword := default "" .Values.tracearr.stateful.valkey.password -}}
+  {{- if ne $dependencyValkeyPassword "" -}}
+  {{- $redisURL = printf "redis://:%s@%s:%d/0" (urlquery $dependencyValkeyPassword) $valkeyDependencyHost $dependencyValkeyPort -}}
   {{- else -}}
-  {{- $redisURL = printf "redis://%s:%d/0" $redisHost $redisPort -}}
+  {{- $redisURL = printf "redis://%s:%d/0" $valkeyDependencyHost $dependencyValkeyPort -}}
   {{- end -}}
   {{- end -}}
 
-  {{- if eq $databaseURL "" }}
-{{ fail "standard mode requires tracearr.database.url unless tracearr.stateful.postgresql.enabled is true" }}
+  {{- if $legacyValkeyEnabled -}}
+  {{- $legacyValkeyHost := printf "%s-valkey" (include "common.fullname" .) -}}
+  {{- $legacyValkeyPort := int (default .Values.tracearr.stateful.valkey.port .Values.tracearr.stateful.valkey.service.port) | default 6379 -}}
+  {{- $legacyValkeyPassword := .Values.tracearr.stateful.valkey.auth.password | default "" -}}
+  {{- if ne $legacyValkeyPassword "" -}}
+  {{- $redisURL = printf "redis://:%s@%s:%d/0" (urlquery $legacyValkeyPassword) $legacyValkeyHost $legacyValkeyPort -}}
+  {{- else -}}
+  {{- $redisURL = printf "redis://%s:%d/0" $legacyValkeyHost $legacyValkeyPort -}}
   {{- end -}}
-  {{- if eq $redisURL "" }}
-{{ fail "standard mode requires tracearr.redis.url unless tracearr.stateful.valkey.enabled is true" }}
+  {{- end -}}
+
+  {{- if $legacyRedisAliasEnabled -}}
+  {{- $legacyRedisHost := printf "%s-valkey" (include "common.fullname" .) -}}
+  {{- $legacyRedisPort := int (default .Values.tracearr.stateful.redis.port .Values.tracearr.stateful.redis.service.port) | default 6379 -}}
+  {{- $legacyRedisPassword := .Values.tracearr.stateful.redis.auth.password | default "" -}}
+  {{- if ne $legacyRedisPassword "" -}}
+  {{- $redisURL = printf "redis://:%s@%s:%d/0" (urlquery $legacyRedisPassword) $legacyRedisHost $legacyRedisPort -}}
+  {{- else -}}
+  {{- $redisURL = printf "redis://%s:%d/0" $legacyRedisHost $legacyRedisPort -}}
+  {{- end -}}
   {{- end -}}
 
   {{- if not (hasKey $tracearrEnv "DATABASE_URL") }}

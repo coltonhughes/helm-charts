@@ -105,6 +105,31 @@ persistence:
   subPath: ""
   name: data
 
+valkey:
+  # Default values passed through to the valkey dependency chart.
+  enabled: false
+  global:
+    image:
+      repository: docker.io/valkey/valkey
+      tag: "8"
+      pullPolicy: IfNotPresent
+  auth:
+    enabled: false
+    password: ""
+  dataStorage:
+    enabled: true
+    size: 4Gi
+  resources:
+    requests: {}
+    limits: {}
+  service:
+    type: ClusterIP
+    port: 6379
+    annotations: {}
+    labels: {}
+  readinessProbe:
+    enabled: false
+
 nodeSelector: {}
 tolerations: []
 affinity: {}
@@ -141,6 +166,7 @@ tracearr:
   stateful:
     postgresql:
       enabled: false
+      # Deprecated: prefer tracearr.stateful.cnpg.enabled for PostgreSQL in this chart.
       port: 5432
       image:
         repository: docker.io/library/postgres
@@ -166,8 +192,42 @@ tracearr:
       tolerations: []
       affinity: {}
 
-    valkey:
+    cnpg:
       enabled: false
+      clusterName: ""
+      namespace: ""
+      clusterDomain: "cluster.local"
+      createCredentialsSecret: true
+      credentials:
+        secretName: ""
+        username: tracearr
+        password: tracearr
+        database: tracearr
+      instances: 1
+      storage:
+        size: 8Gi
+        storageClass: ""
+
+      # Optional overrides merged with chart defaults.
+      affinity: {}
+      tolerations: []
+      nodeSelector: {}
+      resources: {}
+      backup:
+        enabled: false
+        retentionPolicy: 7d
+
+    valkey:
+      # Backward-compatible built-in stateful Valkey helper.
+      # Set useDependency=true to render the valkey Helm dependency instead.
+      enabled: false
+      useDependency: false
+      password: ""
+      # Service DNS override for dependency mode (for example when using custom
+      # release names in the dependency chart). Defaults to
+      # "<release-name>-valkey" when not set.
+      serviceName: ""
+      # These settings are used only when useDependency=false (legacy mode).
       port: 6379
       image:
         repository: docker.io/valkey/valkey
