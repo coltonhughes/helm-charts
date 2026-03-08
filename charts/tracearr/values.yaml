@@ -1,0 +1,222 @@
+# Default values for tracearr.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+deploymentStrategy:
+  type: Recreate
+
+image:
+  repository: ghcr.io/connorgallopo/tracearr
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+container:
+  env:
+    TZ: America/Chicago
+    LOG_LEVEL: "info"
+  command: []
+  args: []
+
+containerPorts:
+  - name: http
+    containerPort: 3000
+    protocol: TCP
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 3000
+  protocol: TCP
+  targetPort: http
+  loadBalancerIP: ""
+  ipFamilyPolicy: ""
+  ipFamilies: []
+  annotations: {}
+  ports: []
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: tracearr.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+httpRoute:
+  enabled: false
+  annotations: {}
+  labels: {}
+  parentRefs: []
+  hostnames: []
+  rules: []
+
+resources: {}
+
+livenessProbe: {}
+readinessProbe: {}
+
+initContainers: []
+initContainersTemplate: ""
+extraContainers: []
+extraContainersTemplate: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+volumeMounts: []
+
+gpu:
+  enabled: false
+  type: ""
+  runtimeClassName: ""
+  resources: {}
+
+persistence:
+  enabled: true
+  storageClass: ""
+  existingClaim: ""
+  claimName: ""
+  accessMode: ReadWriteOnce
+  size: 2Gi
+  mountPath: /config
+  subPath: ""
+  name: data
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+tracearr:
+  # Deployment mode controls how this chart sets up the application.
+  # - standard: external PostgreSQL + Valkey-compatible cache and tracearr app container.
+  # - supervised: dedicated tracearr supervised container image with embedded services.
+  mode: "standard"
+
+  claimCode: ""
+  sessionSecret: ""
+
+  database:
+    # Required when mode=standard unless postgresql is managed by this chart.
+    url: "postgres://tracearr:tracearr@postgres:5432/tracearr"
+
+  redis:
+    # Required when mode=standard unless Valkey is managed by this chart.
+    url: "redis://redis:6379/0"
+
+  modes:
+    standard:
+      image:
+        repository: ghcr.io/connorgallopo/tracearr
+        pullPolicy: Always
+        tag: "latest"
+    supervised:
+      image:
+        repository: ghcr.io/connorgallopo/tracearr
+        pullPolicy: Always
+        tag: "supervised"
+
+  stateful:
+    postgresql:
+      enabled: false
+      port: 5432
+      image:
+        repository: docker.io/library/postgres
+        pullPolicy: IfNotPresent
+        tag: "16"
+      auth:
+        username: tracearr
+        password: tracearr
+        database: tracearr
+      service:
+        port: 5432
+      persistence:
+        enabled: true
+        storageClass: ""
+        claimName: ""
+        accessMode: ReadWriteOnce
+        size: 8Gi
+        mountPath: /var/lib/postgresql/data
+        subPath: ""
+        name: tracearr-postgresql
+      resources: {}
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+
+    valkey:
+      enabled: false
+      port: 6379
+      image:
+        repository: docker.io/valkey/valkey
+        pullPolicy: IfNotPresent
+        tag: "8"
+      auth:
+        password: ""
+      service:
+        port: 6379
+      persistence:
+        enabled: true
+        storageClass: ""
+        claimName: ""
+        accessMode: ReadWriteOnce
+        size: 4Gi
+        mountPath: /data
+        subPath: ""
+        name: tracearr-valkey
+      resources: {}
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+
+    # Backwards-compatibility alias for prior versions that used tracearr.stateful.redis.
+    # Explicitly setting both valkey and redis blocks is not recommended.
+    redis:
+      enabled: false
+      port: 6379
+      image:
+        repository: docker.io/valkey/valkey
+        pullPolicy: IfNotPresent
+        tag: "8"
+      auth:
+        password: ""
+      service:
+        port: 6379
+      persistence:
+        enabled: true
+        storageClass: ""
+        claimName: ""
+        accessMode: ReadWriteOnce
+        size: 4Gi
+        mountPath: /data
+        subPath: ""
+        name: tracearr-redis
+      resources: {}
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+
+  container:
+    env: {}

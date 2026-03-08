@@ -1,0 +1,113 @@
+{{- $mode := .Values.tracearr.mode | default "standard" -}}
+{{- if not (or (eq $mode "standard") (eq $mode "supervised")) -}}
+{{ fail (printf "tracearr.mode must be either 'standard' or 'supervised', got %q" $mode) }}
+{{- end -}}
+
+{{- $modeValues := default (dict) (get .Values.tracearr.modes $mode) -}}
+{{- $modeImage := default (dict) $modeValues.image -}}
+{{- $imageRepository := default .Values.image.repository $modeImage.repository -}}
+{{- $imagePullPolicy := default .Values.image.pullPolicy $modeImage.pullPolicy -}}
+{{- $imageTag := default .Values.image.tag $modeImage.tag -}}
+
+{{- if and (eq $mode "supervised") (ne $imageTag "supervised") -}}
+{{ fail "supervised mode requires tracearr image tag to be 'supervised'" }}
+{{- end -}}
+
+{{- if and (eq $mode "supervised") (or .Values.tracearr.stateful.postgresql.enabled (or (default false .Values.tracearr.stateful.valkey.enabled) (default false .Values.tracearr.stateful.redis.enabled))) -}}
+{{ fail "stateful postgresql/valkey helpers are only supported for standard mode" }}
+{{- end -}}
+
+{{- $tracearrEnv := dict -}}
+{{- range $key, $value := .Values.container.env }}
+{{- $_ := set $tracearrEnv $key $value }}
+{{- end -}}
+{{- range $key, $value := .Values.tracearr.container.env }}
+{{- $_ := set $tracearrEnv $key $value }}
+{{- end -}}
+
+{{- if not (hasKey $tracearrEnv "PORT") -}}
+{{- $_ := set $tracearrEnv "PORT" (printf "%v" (int .Values.service.port)) -}}
+{{- end -}}
+
+{{- if hasKey .Values.tracearr "claimCode" -}}
+{{- if ne (default "" .Values.tracearr.claimCode) "" -}}
+{{- $_ := set $tracearrEnv "CLAIM_CODE" .Values.tracearr.claimCode -}}
+{{- end -}}
+{{- end -}}
+
+{{- if hasKey .Values.tracearr "sessionSecret" -}}
+{{- if ne (default "" .Values.tracearr.sessionSecret) "" -}}
+{{- $_ := set $tracearrEnv "SESSION_SECRET" .Values.tracearr.sessionSecret -}}
+{{- end -}}
+{{- end -}}
+
+{{- if eq $mode "standard" -}}
+  {{- $databaseURL := trim (default "" .Values.tracearr.database.url) -}}
+  {{- $redisURL := trim (default "" .Values.tracearr.redis.url) -}}
+
+  {{- if .Values.tracearr.stateful.postgresql.enabled -}}
+  {{- $postgresHost := printf "%s-postgresql" (include "common.fullname" .) -}}
+  {{- $postgresUser := .Values.tracearr.stateful.postgresql.auth.username | default "tracearr" -}}
+  {{- $postgresPassword := .Values.tracearr.stateful.postgresql.auth.password | default "tracearr" -}}
+  {{- $postgresDatabase := .Values.tracearr.stateful.postgresql.auth.database | default "tracearr" -}}
+  {{- $postgresPort := int (default .Values.tracearr.stateful.postgresql.port .Values.tracearr.stateful.postgresql.service.port) | default 5432 -}}
+  {{- $databaseURL = printf "postgres://%s:%s@%s:%d/%s" (urlquery $postgresUser) (urlquery $postgresPassword) $postgresHost $postgresPort $postgresDatabase -}}
+  {{- end -}}
+
+  {{- if or (default false .Values.tracearr.stateful.valkey.enabled) (default false .Values.tracearr.stateful.redis.enabled) -}}
+  {{- $redisHost := printf "%s-valkey" (include "common.fullname" .) -}}
+  {{- $redisPassword := "" -}}
+  {{- $redisPort := 6379 -}}
+  {{- if default false .Values.tracearr.stateful.valkey.enabled -}}
+  {{- $redisPassword = .Values.tracearr.stateful.valkey.auth.password | default "" -}}
+  {{- $redisPort = int (default .Values.tracearr.stateful.valkey.port .Values.tracearr.stateful.valkey.service.port) | default 6379 -}}
+  {{- else if default false .Values.tracearr.stateful.redis.enabled -}}
+  {{- $redisPassword = .Values.tracearr.stateful.redis.auth.password | default "" -}}
+  {{- $redisPort = int (default .Values.tracearr.stateful.redis.port .Values.tracearr.stateful.redis.service.port) | default 6379 -}}
+  {{- end -}}
+  {{- if ne $redisPassword "" -}}
+  {{- $redisURL = printf "redis://:%s@%s:%d/0" (urlquery $redisPassword) $redisHost $redisPort -}}
+  {{- else -}}
+  {{- $redisURL = printf "redis://%s:%d/0" $redisHost $redisPort -}}
+  {{- end -}}
+  {{- end -}}
+
+  {{- if eq $databaseURL "" }}
+{{ fail "standard mode requires tracearr.database.url unless tracearr.stateful.postgresql.enabled is true" }}
+  {{- end -}}
+  {{- if eq $redisURL "" }}
+{{ fail "standard mode requires tracearr.redis.url unless tracearr.stateful.valkey.enabled is true" }}
+  {{- end -}}
+
+  {{- if not (hasKey $tracearrEnv "DATABASE_URL") }}
+  {{- $_ := set $tracearrEnv "DATABASE_URL" $databaseURL -}}
+  {{- end -}}
+  {{- if not (hasKey $tracearrEnv "REDIS_URL") }}
+  {{- $_ := set $tracearrEnv "REDIS_URL" $redisURL -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $deploymentValues := deepCopy .Values -}}
+{{- $_ := set $deploymentValues "image" (dict "repository" $imageRepository "pullPolicy" $imagePullPolicy "tag" $imageTag) -}}
+{{- $_ := set $deploymentValues "container" (dict "env" $tracearrEnv "command" .Values.container.command "args" .Values.container.args) -}}
+
+{{- $deploymentContext := dict
+  "Values" $deploymentValues
+  "Chart" .Chart
+  "Release" .Release
+  "Files" .Files
+  "Capabilities" .Capabilities
+  "Template" .Template
+ }}
+
+{{ include "common.deployment" $deploymentContext }}
+---
+{{ include "common.serviceAccount" . }}
+---
+{{ include "common.service" . }}
+---
+{{ include "common.ingress" . }}
+---
+{{ include "common.pvc" . }}
+---
+{{ include "common.hpa" . }}
