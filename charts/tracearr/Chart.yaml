@@ -11,4 +11,4 @@ dependencies:
   - name: valkey
     version: "0.9.3"
     repository: "https://valkey.io/valkey-helm/"
-    condition: tracearr.stateful.valkey.useDependency
+    condition: valkey.enabled

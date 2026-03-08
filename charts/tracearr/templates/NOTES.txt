@@ -23,16 +23,12 @@
 
 {{ if eq .Values.tracearr.mode "standard" }}
 Current mode: standard
-{{- if .Values.tracearr.stateful.postgresql.enabled }}
-DATABASE_URL: managed by chart
-{{- else if .Values.tracearr.stateful.cnpg.enabled }}
+{{- if .Values.tracearr.stateful.cnpg.enabled }}
 DATABASE_URL: managed by chart (CNPG Cluster)
 {{- else }}
 DATABASE_URL: {{ .Values.tracearr.database.url | default "(not set)" }}
 {{- end }}
-{{- if or (default false .Values.tracearr.stateful.valkey.enabled) (default false .Values.tracearr.stateful.redis.enabled) }}
-REDIS_URL: managed by chart (Valkey)
-{{- else if default false .Values.tracearr.stateful.valkey.useDependency }}
+{{- if default false .Values.valkey.enabled }}
 REDIS_URL: managed by chart (Valkey dependency)
 {{- else }}
 REDIS_URL: {{ .Values.tracearr.redis.url | default "(not set)" }}

@@ -151,11 +151,11 @@ tracearr:
   sessionSecret: ""
 
   database:
-    # Required when mode=standard unless postgresql is managed by this chart.
+    # Required when mode=standard unless CNPG is managed by this chart.
     url: "postgres://tracearr:tracearr@postgres:5432/tracearr"
 
   redis:
-    # Required when mode=standard unless Valkey is managed by this chart.
+    # Required when mode=standard unless Valkey dependency is managed by this chart.
     url: "redis://redis:6379/0"
 
   modes:
@@ -171,34 +171,6 @@ tracearr:
         tag: "supervised"
 
   stateful:
-    postgresql:
-      enabled: false
-      # Deprecated: prefer tracearr.stateful.cnpg.enabled for PostgreSQL in this chart.
-      port: 5432
-      image:
-        repository: docker.io/library/postgres
-        pullPolicy: IfNotPresent
-        tag: "16"
-      auth:
-        username: tracearr
-        password: tracearr
-        database: tracearr
-      service:
-        port: 5432
-      persistence:
-        enabled: true
-        storageClass: ""
-        claimName: ""
-        accessMode: ReadWriteOnce
-        size: 8Gi
-        mountPath: /var/lib/postgresql/data
-        subPath: ""
-        name: tracearr-postgresql
-      resources: {}
-      nodeSelector: {}
-      tolerations: []
-      affinity: {}
-
     cnpg:
       enabled: false
       clusterName: ""
@@ -223,67 +195,6 @@ tracearr:
       backup:
         enabled: false
         retentionPolicy: 7d
-
-    valkey:
-      # Backward-compatible built-in stateful Valkey helper.
-      # Set useDependency=true to render the valkey Helm dependency instead.
-      enabled: false
-      useDependency: false
-      password: ""
-      # Service DNS override for dependency mode (for example when using custom
-      # release names in the dependency chart). Defaults to
-      # "<release-name>-valkey" when not set.
-      serviceName: ""
-      # These settings are used only when useDependency=false (legacy mode).
-      port: 6379
-      image:
-        repository: docker.io/valkey/valkey
-        pullPolicy: IfNotPresent
-        tag: "8"
-      auth:
-        password: ""
-      service:
-        port: 6379
-      persistence:
-        enabled: true
-        storageClass: ""
-        claimName: ""
-        accessMode: ReadWriteOnce
-        size: 4Gi
-        mountPath: /data
-        subPath: ""
-        name: tracearr-valkey
-      resources: {}
-      nodeSelector: {}
-      tolerations: []
-      affinity: {}
-
-    # Backwards-compatibility alias for prior versions that used tracearr.stateful.redis.
-    # Explicitly setting both valkey and redis blocks is not recommended.
-    redis:
-      enabled: false
-      port: 6379
-      image:
-        repository: docker.io/valkey/valkey
-        pullPolicy: IfNotPresent
-        tag: "8"
-      auth:
-        password: ""
-      service:
-        port: 6379
-      persistence:
-        enabled: true
-        storageClass: ""
-        claimName: ""
-        accessMode: ReadWriteOnce
-        size: 4Gi
-        mountPath: /data
-        subPath: ""
-        name: tracearr-redis
-      resources: {}
-      nodeSelector: {}
-      tolerations: []
-      affinity: {}
 
   container:
     env: {}
