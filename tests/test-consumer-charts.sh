@@ -101,8 +101,9 @@ while IFS= read -r chart_yaml; do
   patch_chart_dependency_to_local_common "$workdir/Chart.yaml"
 
   echo "==> Testing $chart_name"
-  if ! helm dependency build "$workdir" >/dev/null 2>&1; then
+  if ! helm_dependency_output="$(helm dependency build "$workdir" 2>&1)"; then
     echo "FAILED: helm dependency build for $chart_name" >&2
+    echo "$helm_dependency_output" >&2
     failures=$((failures + 1))
     continue
   fi

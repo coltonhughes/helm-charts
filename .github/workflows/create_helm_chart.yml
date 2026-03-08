@@ -150,6 +150,7 @@ jobs:
       - name: Configure Helm repo cache
         run: |
           helm repo add helm-charts https://coltonhughes.github.io/helm-charts
+          helm repo add valkey https://valkey.io/valkey-helm/
           helm repo update
 
           update_chart_deps() {
