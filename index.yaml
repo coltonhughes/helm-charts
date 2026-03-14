@@ -4857,6 +4857,24 @@ entries:
   tracearr:
   - apiVersion: v2
     appVersion: latest
+    created: "2026-03-14T04:31:10.602206364Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.6
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://valkey.io/valkey-helm/
+      version: 0.9.3
+    description: A Helm chart for running Tracearr on k8s
+    digest: 6ba6b8d207d7b90611d4cab9a0925eaf7203746cc3ed1b05628f9a3709fe08d5
+    name: tracearr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/tracearr-0.1.4/tracearr-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: latest
     created: "2026-03-08T04:19:16.721108069Z"
     dependencies:
     - name: common
@@ -4887,4 +4905,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tracearr-0.1.0/tracearr-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-08T04:19:16.721356923Z"
+generated: "2026-03-14T04:31:10.603099912Z"
