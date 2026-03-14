@@ -2171,6 +2171,21 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/overseerr-0.1.0/overseerr-0.1.0.tgz
     version: 0.1.0
+  pinchflat:
+  - apiVersion: v2
+    appVersion: 2025.9.26
+    created: "2026-03-14T16:30:38.855240531Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.6
+    description: A Helm chart for Kubernetes
+    digest: 54f89751c758650045ce52ecc6616fc45b16612b6dc1cb2cc149f58641f87d05
+    name: pinchflat
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/pinchflat-0.1.0/pinchflat-0.1.0.tgz
+    version: 0.1.0
   plex:
   - apiVersion: v2
     appVersion: 1.32.8
@@ -4905,4 +4920,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tracearr-0.1.0/tracearr-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-14T04:31:10.603099912Z"
+generated: "2026-03-14T16:30:40.742357643Z"
