@@ -1,0 +1,117 @@
+# Default values for pinchflat.
+# This is a YAML-formatted file.
+
+replicaCount: 1
+deploymentStrategy:
+  type: Recreate
+
+image:
+  repository: ghcr.io/kieraneglin/pinchflat
+  pullPolicy: Always
+  tag: ""
+
+container:
+  env:
+    TZ: America/New_York
+  command: []
+  args: []
+
+containerPorts:
+  - name: http
+    containerPort: 8945
+    protocol: TCP
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 8945
+  protocol: TCP
+  targetPort: http
+  loadBalancerIP: ""
+  annotations: {}
+  ports: []
+
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: pinchflat.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+httpRoute:
+  enabled: false
+  annotations: {}
+  labels: {}
+  parentRefs: []
+  hostnames: []
+  rules: []
+
+resources: {}
+livenessProbe: {}
+readinessProbe: {}
+initContainers: []
+initContainersTemplate: ""
+extraContainers: []
+extraContainersTemplate: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes:
+  - name: downloads
+    persistentVolumeClaim:
+      claimName: '{{ .Values.downloadsPersistence.existingClaim | default (.Values.downloadsPersistence.claimName | default (printf "%s-downloads" (include "common.fullname" .))) }}'
+
+volumeMounts:
+  - name: downloads
+    mountPath: /downloads
+
+gpu:
+  enabled: false
+  type: ""
+  runtimeClassName: ""
+  resources: {}
+
+persistence:
+  enabled: true
+  storageClass: ""
+  existingClaim: ""
+  claimName: ""
+  accessMode: ReadWriteOnce
+  size: 2Gi
+  mountPath: /config
+  subPath: ""
+  name: config
+
+downloadsPersistence:
+  enabled: true
+  storageClass: ""
+  existingClaim: ""
+  claimName: ""
+  accessMode: ReadWriteOnce
+  size: 20Gi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
