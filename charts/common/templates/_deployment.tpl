@@ -87,11 +87,16 @@ spec:
           args:
             {{- tpl (toYaml .) $ | nindent 12 }}
           {{- end }}
-          {{- with $container.env }}
+          {{- $envMap := $container.env }}
+          {{- $envList := $container.envList }}
+          {{- if or $envMap $envList }}
           env:
-            {{- range $key, $value := . }}
+            {{- range $key, $value := $envMap }}
             - name: {{ $key }}
               value: {{ $value | quote }}
+            {{- end }}
+            {{- with $envList }}
+            {{- tpl (toYaml .) $ | nindent 12 }}
             {{- end }}
           {{- end }}
           ports:

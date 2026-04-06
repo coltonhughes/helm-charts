@@ -1,0 +1,124 @@
+# Default values for ha-mcp.
+# This chart keeps the compose-equivalent environment variables, but uses
+# FastMCP HTTP transport by default so it can run behind a Kubernetes Service.
+
+replicaCount: 1
+
+deploymentStrategy:
+  type: Recreate
+
+image:
+  repository: homeassistant-ai/ha-mcp
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+container:
+  env:
+    HOMEASSISTANT_URL: http://homeassistant:8123
+    BACKUP_HINT: normal
+  envList:
+    - name: HOMEASSISTANT_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: ha-mcp
+          key: HOMEASSISTANT_TOKEN
+          optional: false
+  command:
+    - fastmcp
+  args:
+    - run
+    - fastmcp-http.json
+
+containerPorts:
+  - name: http
+    containerPort: 8086
+    protocol: TCP
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 8086
+  protocol: TCP
+  targetPort: http
+  loadBalancerIP: ""
+  annotations: {}
+  ports: []
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: ha-mcp.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+httpRoute:
+  enabled: false
+  annotations: {}
+  labels: {}
+  parentRefs: []
+  hostnames: []
+  rules: []
+
+resources: {}
+
+livenessProbe:
+  tcpSocket:
+    port: http
+
+readinessProbe:
+  tcpSocket:
+    port: http
+
+initContainers: []
+initContainersTemplate: ""
+extraContainers: []
+extraContainersTemplate: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+volumeMounts: []
+
+gpu:
+  enabled: false
+  type: ""
+  runtimeClassName: ""
+  resources: {}
+
+persistence:
+  enabled: false
+  storageClass: ""
+  existingClaim: ""
+  claimName: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  mountPath: /config
+  subPath: ""
+  name: config
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
