@@ -795,6 +795,20 @@ entries:
   ha-mcp:
   - apiVersion: v2
     appVersion: latest
+    created: "2026-04-07T02:29:32.198418817Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.7
+    description: A Helm chart for running the Home Assistant MCP server on Kubernetes
+    digest: 97f335f5919903cc1bd5be12fd3366abefc33a741a42032b8ae48327211ba140
+    name: ha-mcp
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/ha-mcp-0.1.1/ha-mcp-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: latest
     created: "2026-04-06T21:34:21.827249645Z"
     dependencies:
     - name: common
@@ -4944,4 +4958,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tracearr-0.1.0/tracearr-0.1.0.tgz
     version: 0.1.0
-generated: "2026-04-06T21:34:24.929745362Z"
+generated: "2026-04-07T02:29:35.035007271Z"
