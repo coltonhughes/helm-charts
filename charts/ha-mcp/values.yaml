@@ -8,7 +8,7 @@ deploymentStrategy:
   type: Recreate
 
 image:
-  repository: homeassistant-ai/ha-mcp
+  repository: ghcr.io/homeassistant-ai/ha-mcp
   pullPolicy: IfNotPresent
   tag: "latest"
 
