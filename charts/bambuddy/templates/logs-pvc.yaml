@@ -1,0 +1,18 @@
+{{- $logs := .Values.logsPersistence -}}
+{{- if and $logs.enabled (not $logs.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $logs.claimName | default (printf "%s-logs" (include "common.fullname" .)) }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ $logs.accessMode | quote }}
+  {{- if $logs.storageClass }}
+  storageClassName: {{ $logs.storageClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ $logs.size | quote }}
+{{- end }}

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: bambuddy
+description: A Helm chart for running Bambuddy on Kubernetes
+type: application
+version: 0.1.0
+appVersion: "0.2.4.8"
+dependencies:
+  - name: common
+    version: 0.5.7
+    repository: "https://coltonhughes.github.io/helm-charts"

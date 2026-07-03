@@ -19,6 +19,7 @@ container:
   args: []
 
 containerPorts: []
+containerPortsTemplate: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -47,6 +48,9 @@ podSecurityContext:
   {}
   # fsGroup: 2000
 
+hostNetwork: false
+dnsPolicy: ""
+
 securityContext:
   {}
   # capabilities:
@@ -66,6 +70,7 @@ service:
   ipFamilies: []
   annotations: {}
   ports: []
+  portsTemplate: ""
 
 ingress:
   enabled: false
@@ -180,6 +185,17 @@ persistence:
   mountPath: /config
   subPath: ""
   name: config
+
+extraPersistence: []
+# - enabled: true
+#   storageClass: ""
+#   existingClaim: ""
+#   claimName: ""
+#   accessMode: ReadWriteOnce
+#   size: 1Gi
+#   mountPath: /data
+#   subPath: ""
+#   name: data
 
 nodeSelector: {}
 

@@ -1,0 +1,313 @@
+# Default values for bambuddy.
+# This is a YAML-formatted file.
+
+replicaCount: 1
+
+deploymentStrategy:
+  type: Recreate
+
+image:
+  repository: ghcr.io/maziggy/bambuddy
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+container:
+  env:
+    TZ: America/Chicago
+    PUID: "1000"
+    PGID: "1000"
+    PORT: "8000"
+  envList: []
+  command: []
+  args: []
+
+database:
+  # Leave url empty to keep Bambuddy's default local database behavior.
+  # Set url for an existing PostgreSQL instance, or enable cnpg below to
+  # have this chart create a CloudNativePG Cluster CR and wire DATABASE_URL.
+  url: ""
+  cnpg:
+    enabled: false
+    clusterName: ""
+    namespace: ""
+    clusterDomain: "cluster.local"
+    createCredentialsSecret: true
+    credentials:
+      secretName: ""
+      username: bambuddy
+      password: bambuddy
+      database: bambuddy
+    instances: 1
+    storage:
+      size: 8Gi
+      storageClass: ""
+    affinity: {}
+    tolerations: []
+    nodeSelector: {}
+    resources: {}
+    backup:
+      enabled: false
+      retentionPolicy: 7d
+
+containerPorts:
+  - name: http
+    containerPort: 8000
+    protocol: TCP
+  - name: vp-bind
+    containerPort: 3000
+    protocol: TCP
+  - name: vp-bind-tls
+    containerPort: 3002
+    protocol: TCP
+  - name: vp-rtsps
+    containerPort: 322
+    protocol: TCP
+  - name: vp-ftps
+    containerPort: 990
+    protocol: TCP
+  - name: vp-file
+    containerPort: 6000
+    protocol: TCP
+  - name: vp-mqtt
+    containerPort: 8883
+    protocol: TCP
+  - name: vp-aux-2024
+    containerPort: 2024
+    protocol: TCP
+  - name: vp-aux-2025
+    containerPort: 2025
+    protocol: TCP
+  - name: vp-aux-2026
+    containerPort: 2026
+    protocol: TCP
+containerPortsTemplate: |
+  {{- if .Values.virtualPrinter.passivePortSlicing.enabled }}
+  {{- $start := int .Values.virtualPrinter.passivePortSlicing.startPort }}
+  {{- $count := mul (int .Values.virtualPrinter.passivePortSlicing.sliceCount) (int .Values.virtualPrinter.passivePortSlicing.portsPerSlice) }}
+  {{- range $offset := until (int $count) }}
+  - name: vp-p{{ printf "%02d" $offset }}
+    containerPort: {{ add $start $offset }}
+    protocol: TCP
+  {{- end }}
+  {{- end }}
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+
+hostNetwork: false
+# Enable on bare-metal clusters if you need upstream-style SSDP discovery.
+# When enabled, set dnsPolicy: ClusterFirstWithHostNet if you still want cluster DNS.
+dnsPolicy: ""
+
+securityContext: {}
+# Example if you expose virtual printer FTPS/RTSPS directly from the pod:
+# securityContext:
+#   capabilities:
+#     add:
+#       - NET_BIND_SERVICE
+
+service:
+  type: ClusterIP
+  port: 8000
+  protocol: TCP
+  targetPort: http
+  loadBalancerIP: ""
+  ipFamilyPolicy: ""
+  ipFamilies: []
+  annotations: {}
+  ports: []
+  portsTemplate: |
+    - name: http
+      protocol: {{ .Values.service.protocol | default "TCP" }}
+      port: {{ .Values.service.port | default 8000 }}
+      targetPort: {{ .Values.service.targetPort | default "http" }}
+    {{- if .Values.virtualPrinter.service.exposeCorePorts }}
+    - name: vp-bind
+      protocol: TCP
+      port: 3000
+      targetPort: vp-bind
+    - name: vp-bind-tls
+      protocol: TCP
+      port: 3002
+      targetPort: vp-bind-tls
+    - name: vp-rtsps
+      protocol: TCP
+      port: 322
+      targetPort: vp-rtsps
+    - name: vp-ftps
+      protocol: TCP
+      port: 990
+      targetPort: vp-ftps
+    - name: vp-file
+      protocol: TCP
+      port: 6000
+      targetPort: vp-file
+    - name: vp-mqtt
+      protocol: TCP
+      port: 8883
+      targetPort: vp-mqtt
+    - name: vp-aux-2024
+      protocol: TCP
+      port: 2024
+      targetPort: vp-aux-2024
+    - name: vp-aux-2025
+      protocol: TCP
+      port: 2025
+      targetPort: vp-aux-2025
+    - name: vp-aux-2026
+      protocol: TCP
+      port: 2026
+      targetPort: vp-aux-2026
+    {{- end }}
+    {{- if and .Values.virtualPrinter.service.exposePassivePortSlice .Values.virtualPrinter.passivePortSlicing.enabled }}
+    {{- $start := int .Values.virtualPrinter.passivePortSlicing.startPort }}
+    {{- $count := mul (int .Values.virtualPrinter.passivePortSlicing.sliceCount) (int .Values.virtualPrinter.passivePortSlicing.portsPerSlice) }}
+    {{- range $offset := until (int $count) }}
+    - name: vp-p{{ printf "%02d" $offset }}
+      protocol: TCP
+      port: {{ add $start $offset }}
+      targetPort: vp-p{{ printf "%02d" $offset }}
+    {{- end }}
+    {{- end }}
+  # Example when exposing virtual printer features from the Service:
+  # virtualPrinter:
+  #   service:
+  #     exposeCorePorts: true
+  #     exposePassivePortSlice: true
+
+virtualPrinter:
+  service:
+    exposeCorePorts: false
+    exposePassivePortSlice: false
+  passivePortSlicing:
+    enabled: true
+    startPort: 50000
+    sliceCount: 3
+    portsPerSlice: 10
+  # Non-proxy virtual printers consume a 10-port passive FTP slice per VP.
+  # Defaults match the upstream compose bridge-mode example: 3 VPs => 50000-50029.
+  # Increase sliceCount to widen the range, or disable exposePassivePortSlice above
+  # if you only want the HTTP UI exposed through the Kubernetes Service.
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: bambuddy.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+httpRoute:
+  enabled: false
+  annotations: {}
+  labels: {}
+  parentRefs: []
+  hostnames: []
+  rules: []
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 20
+  periodSeconds: 30
+  timeoutSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 15
+  timeoutSeconds: 5
+
+initContainers: []
+initContainersTemplate: ""
+extraContainers: []
+extraContainersTemplate: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+volumeMounts: []
+# Example mounts:
+# volumes:
+#   - name: tailscale-socket
+#     hostPath:
+#       path: /var/run/tailscale/tailscaled.sock
+#       type: Socket
+#   - name: custom-ca
+#     secret:
+#       secretName: bambuddy-custom-ca
+#   - name: external-library
+#     persistentVolumeClaim:
+#       claimName: bambuddy-library
+# volumeMounts:
+#   - name: tailscale-socket
+#     mountPath: /var/run/tailscale/tailscaled.sock
+#   - name: custom-ca
+#     mountPath: /usr/local/share/ca-certificates
+#     readOnly: true
+#   - name: external-library
+#     mountPath: /external/library
+#     readOnly: true
+
+gpu:
+  enabled: false
+  type: ""
+  runtimeClassName: ""
+  resources: {}
+
+persistence:
+  enabled: true
+  storageClass: ""
+  existingClaim: ""
+  claimName: ""
+  accessMode: ReadWriteOnce
+  size: 20Gi
+  mountPath: /app/data
+  subPath: ""
+  name: data
+
+logsPersistence:
+  enabled: true
+  storageClass: ""
+  existingClaim: ""
+  claimName: ""
+  accessMode: ReadWriteOnce
+  size: 5Gi
+  mountPath: /app/logs
+  subPath: ""
+  name: logs
+
+extraPersistence:
+  - enabled: '{{ .Values.logsPersistence.enabled }}'
+    existingClaim: '{{ .Values.logsPersistence.existingClaim }}'
+    claimName: '{{ .Values.logsPersistence.claimName }}'
+    mountPath: '{{ .Values.logsPersistence.mountPath }}'
+    subPath: '{{ .Values.logsPersistence.subPath }}'
+    name: logs
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

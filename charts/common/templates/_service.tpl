@@ -1,5 +1,7 @@
 {{- define "common.service" -}}
 {{- $service := default dict .Values.service -}}
+{{- $ports := $service.ports -}}
+{{- $portsTemplate := $service.portsTemplate | default "" -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -23,14 +25,19 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   ports:
-    {{ if $service.ports }}
-    {{ tpl (toYaml $service.ports) $ | nindent 4 }}
-    {{ else }}
+    {{- if or $ports $portsTemplate }}
+    {{- with $ports }}
+    {{ tpl (toYaml .) $ | nindent 4 }}
+    {{- end }}
+    {{- with $portsTemplate }}
+    {{ tpl . $ | nindent 4 }}
+    {{- end }}
+    {{- else }}
     - port: {{ $service.port | default 80 }}
       targetPort: {{ $service.targetPort | default "http" }}
       protocol: {{ $service.protocol | default "TCP" }}
       name: http
-    {{ end }}
+    {{- end }}
   selector:
     {{- include "common.selectorLabels" . | nindent 4 }}
 {{- end }}

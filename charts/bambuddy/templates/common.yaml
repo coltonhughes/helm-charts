@@ -1,0 +1,68 @@
+{{- $bambuddyEnv := dict -}}
+{{- range $key, $value := .Values.container.env }}
+{{- $_ := set $bambuddyEnv $key $value }}
+{{- end -}}
+
+{{- $databaseURL := trim (default "" .Values.database.url) -}}
+{{- $cnpgEnabled := default false .Values.database.cnpg.enabled -}}
+{{- $defaultDatabaseURL := "postgres://bambuddy:bambuddy@postgres:5432/bambuddy" -}}
+{{- $hasExternalDatabaseURL := ne $databaseURL "" -}}
+
+{{- if $cnpgEnabled -}}
+  {{- $hasExternalDatabaseURL = and (ne $databaseURL "") (ne $databaseURL $defaultDatabaseURL) -}}
+{{- end -}}
+
+{{- $databaseSourceCount := 0 -}}
+{{- if $hasExternalDatabaseURL -}}
+  {{- $databaseSourceCount = add $databaseSourceCount 1 -}}
+{{- end -}}
+{{- if $cnpgEnabled -}}
+  {{- $databaseSourceCount = add $databaseSourceCount 1 -}}
+{{- end -}}
+
+{{- if gt $databaseSourceCount 1 -}}
+{{ fail "bambuddy supports only one PostgreSQL source: database.url or database.cnpg.enabled" }}
+{{- end -}}
+
+{{- if $cnpgEnabled -}}
+{{- $cnpgNamespace := default .Release.Namespace .Values.database.cnpg.namespace -}}
+{{- $cnpgClusterName := default (printf "%s-cnpg" (include "common.fullname" .)) .Values.database.cnpg.clusterName -}}
+{{- $cnpgDatabase := .Values.database.cnpg.credentials.database | default "bambuddy" -}}
+{{- $cnpgUser := .Values.database.cnpg.credentials.username | default "bambuddy" -}}
+{{- $cnpgPassword := .Values.database.cnpg.credentials.password | default "bambuddy" -}}
+{{- $databaseHost := printf "%s-rw.%s.svc.%s" $cnpgClusterName $cnpgNamespace .Values.database.cnpg.clusterDomain -}}
+{{- $databaseURL = printf "postgres://%s:%s@%s:%d/%s" (urlquery $cnpgUser) (urlquery $cnpgPassword) $databaseHost 5432 $cnpgDatabase -}}
+{{- end -}}
+
+{{- if and (not (hasKey $bambuddyEnv "DATABASE_URL")) (ne $databaseURL "") -}}
+{{- $_ := set $bambuddyEnv "DATABASE_URL" $databaseURL -}}
+{{- end -}}
+
+{{- $deploymentValues := deepCopy .Values -}}
+{{- $_ := set $deploymentValues "container" (dict
+  "env" $bambuddyEnv
+  "envList" .Values.container.envList
+  "command" .Values.container.command
+  "args" .Values.container.args
+) -}}
+
+{{- $deploymentContext := dict
+  "Values" $deploymentValues
+  "Chart" .Chart
+  "Release" .Release
+  "Files" .Files
+  "Capabilities" .Capabilities
+  "Template" .Template
+ }}
+
+{{ include "common.deployment" $deploymentContext }}
+---
+{{ include "common.serviceAccount" . }}
+---
+{{ include "common.service" . }}
+---
+{{ include "common.ingress" . }}
+---
+{{ include "common.pvc" . }}
+---
+{{ include "common.hpa" . }}

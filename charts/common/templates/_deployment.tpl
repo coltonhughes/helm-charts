@@ -2,6 +2,7 @@
 {{- $autoscaling := default dict .Values.autoscaling -}}
 {{- $service := default dict .Values.service -}}
 {{- $persistence := default dict .Values.persistence -}}
+{{- $extraPersistence := default list .Values.extraPersistence -}}
 {{- $container := default dict .Values.container -}}
 {{- $gpu := default dict .Values.gpu -}}
 {{- $podSecurityContext := default dict .Values.podSecurityContext -}}
@@ -60,6 +61,12 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "common.serviceAccountName" . }}
+      {{- if .Values.hostNetwork }}
+      hostNetwork: true
+      {{- end }}
+      {{- with .Values.dnsPolicy }}
+      dnsPolicy: {{ . }}
+      {{- end }}
       securityContext:
         {{- toYaml $podSecurityContext | nindent 8 }}
       {{- $initContainers := .Values.initContainers }}
@@ -100,13 +107,20 @@ spec:
             {{- end }}
           {{- end }}
           ports:
-            {{ if .Values.containerPorts }}
-            {{ tpl (toYaml .Values.containerPorts) $ | nindent 12 }}
-            {{ else }}
+            {{- $containerPorts := .Values.containerPorts }}
+            {{- $containerPortsTemplate := .Values.containerPortsTemplate | default "" }}
+            {{- if or $containerPorts $containerPortsTemplate }}
+            {{- with $containerPorts }}
+            {{ tpl (toYaml .) $ | nindent 12 }}
+            {{- end }}
+            {{- with $containerPortsTemplate }}
+            {{ tpl . $ | nindent 12 }}
+            {{- end }}
+            {{- else }}
             - name: http
               containerPort: {{ $service.port | default 80 }}
               protocol: TCP
-            {{ end }}
+            {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
@@ -135,8 +149,15 @@ spec:
             {{ toYaml $resources | nindent 12 }}
           {{- end }}
           {{- $hasPersistence := $persistence.enabled }}
+          {{- $hasExtraPersistence := false }}
+          {{- range $extraPersistence }}
+          {{- $enabled := eq (lower (tpl (printf "%v" .enabled) $)) "true" }}
+          {{- if $enabled }}
+          {{- $hasExtraPersistence = true }}
+          {{- end }}
+          {{- end }}
           {{- $hasVolumeMounts := .Values.volumeMounts }}
-          {{- if or $hasPersistence $hasVolumeMounts }}
+          {{- if or $hasPersistence $hasExtraPersistence $hasVolumeMounts }}
           volumeMounts:
             {{ if $hasPersistence }}
             - name: {{ $persistence.name }}
@@ -145,6 +166,18 @@ spec:
               subPath: {{ $persistence.subPath }}
               {{- end }}
             {{ end }}
+            {{- range $extraPersistence }}
+            {{- $enabled := eq (lower (tpl (printf "%v" .enabled) $)) "true" }}
+            {{- if $enabled }}
+            - name: {{ .name }}
+              {{- $mountPath := tpl .mountPath $ }}
+              {{- $subPath := tpl (.subPath | default "") $ }}
+              mountPath: {{ $mountPath }}
+              {{- if $subPath }}
+              subPath: {{ $subPath }}
+              {{- end }}
+            {{- end }}
+            {{- end }}
             {{ with .Values.volumeMounts }}
             {{ tpl (toYaml .) $ | nindent 12 }}
             {{ end }}
@@ -156,9 +189,9 @@ spec:
         {{- end }}
         {{- if $extraContainersTemplate }}
         {{- tpl $extraContainersTemplate $ | nindent 8 }}
-        {{- end }}
+      {{- end }}
       {{- $hasVolumes := .Values.volumes }}
-      {{- if or $persistence.enabled $hasVolumes }}
+      {{- if or $persistence.enabled $hasExtraPersistence $hasVolumes }}
       volumes:
         {{ if $persistence.enabled }}
         - name: {{ $persistence.name }}
@@ -170,6 +203,16 @@ spec:
             claimName: {{ $persistence.claimName | default (include "common.fullname" .) }}
           {{- end }}
         {{ end }}
+        {{- range $extraPersistence }}
+        {{- $enabled := eq (lower (tpl (printf "%v" .enabled) $)) "true" }}
+        {{- if $enabled }}
+        - name: {{ .name }}
+          {{- $existingClaim := tpl (.existingClaim | default "") $ }}
+          {{- $claimName := tpl (.claimName | default "") $ }}
+          persistentVolumeClaim:
+            claimName: {{ $existingClaim | default ($claimName | default (printf "%s-%s" (include "common.fullname" $) .name)) }}
+        {{- end }}
+        {{- end }}
         {{ with .Values.volumes }}
         {{ tpl (toYaml .) $ | nindent 8 }}
         {{ end }}
