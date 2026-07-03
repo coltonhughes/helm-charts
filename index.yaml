@@ -227,6 +227,21 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/audiobookshelf-0.1.0/audiobookshelf-0.1.0.tgz
     version: 0.1.0
+  bambuddy:
+  - apiVersion: v2
+    appVersion: 0.2.4.8
+    created: "2026-07-03T12:04:40.456960707Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.7
+    description: A Helm chart for running Bambuddy on Kubernetes
+    digest: 731089eae7cee0beaaafded37983823cfcff147ab3db8f6eed76258a6e43dc81
+    name: bambuddy
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/bambuddy-0.1.0/bambuddy-0.1.0.tgz
+    version: 0.1.0
   bazarr:
   - apiVersion: v2
     appVersion: v1.4.3
@@ -4958,4 +4973,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tracearr-0.1.0/tracearr-0.1.0.tgz
     version: 0.1.0
-generated: "2026-04-07T02:29:35.035007271Z"
+generated: "2026-07-03T12:04:45.302365713Z"
