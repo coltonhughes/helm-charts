@@ -2,19 +2,31 @@
 {{- $fullname := include "common.fullname" . -}}
 {{- $namespace := default .Release.Namespace .Values.database.cnpg.namespace -}}
 {{- $clusterName := default (printf "%s-cnpg" $fullname) .Values.database.cnpg.clusterName -}}
+{{- $existingCredentialsSecret := default dict .Values.database.cnpg.existingCredentialsSecret -}}
+{{- $useExistingCredentialsSecret := default false $existingCredentialsSecret.enabled -}}
+{{- $existingCredentialsSecretName := default "" $existingCredentialsSecret.name -}}
 {{- $username := .Values.database.cnpg.credentials.username | default "bambuddy" -}}
 {{- $password := .Values.database.cnpg.credentials.password | default "bambuddy" -}}
 {{- $database := .Values.database.cnpg.credentials.database | default "bambuddy" -}}
 {{- $credentialsSecretName := .Values.database.cnpg.credentials.secretName -}}
+{{- if and $useExistingCredentialsSecret (eq $existingCredentialsSecretName "") -}}
+{{ fail "database.cnpg.existingCredentialsSecret.name is required when existingCredentialsSecret.enabled is true" }}
+{{- end -}}
+{{- if and $useExistingCredentialsSecret (or .Values.database.cnpg.createCredentialsSecret (ne $credentialsSecretName "")) -}}
+{{ fail "database.cnpg.existingCredentialsSecret.enabled cannot be combined with createCredentialsSecret or credentials.secretName" }}
+{{- end -}}
 {{- if and .Values.database.cnpg.createCredentialsSecret (eq $credentialsSecretName "") -}}
 {{- $credentialsSecretName = printf "%s-cnpg-credentials" $clusterName -}}
 {{- end -}}
+{{- if $useExistingCredentialsSecret -}}
+{{- $credentialsSecretName = $existingCredentialsSecretName -}}
+{{- end -}}
 
-{{- if and (not .Values.database.cnpg.createCredentialsSecret) (eq $credentialsSecretName "") }}
+{{- if and (not .Values.database.cnpg.createCredentialsSecret) (not $useExistingCredentialsSecret) (eq $credentialsSecretName "") }}
 {{ fail "database.cnpg.credentials.secretName is required when database.cnpg.createCredentialsSecret is false" }}
 {{- end -}}
 
-{{- if .Values.database.cnpg.createCredentialsSecret }}
+{{- if and .Values.database.cnpg.createCredentialsSecret (not $useExistingCredentialsSecret) }}
 apiVersion: v1
 kind: Secret
 metadata:

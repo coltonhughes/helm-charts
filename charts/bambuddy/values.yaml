@@ -26,12 +26,23 @@ database:
   # Set url for an existing PostgreSQL instance, or enable cnpg below to
   # have this chart create a CloudNativePG Cluster CR and wire DATABASE_URL.
   url: ""
+  secret:
+    enabled: false
+    create: false
+    name: ""
+    key: DATABASE_URL
   cnpg:
     enabled: false
     clusterName: ""
     namespace: ""
     clusterDomain: "cluster.local"
     createCredentialsSecret: true
+    existingCredentialsSecret:
+      enabled: false
+      name: ""
+      usernameKey: username
+      passwordKey: password
+      databaseKey: dbname
     credentials:
       secretName: ""
       username: bambuddy

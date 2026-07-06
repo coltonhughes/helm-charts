@@ -5,6 +5,14 @@
 
 {{- $databaseURL := trim (default "" .Values.database.url) -}}
 {{- $cnpgEnabled := default false .Values.database.cnpg.enabled -}}
+{{- $databaseSecret := default dict .Values.database.secret -}}
+{{- $databaseSecretEnabled := default false $databaseSecret.enabled -}}
+{{- $databaseSecretCreate := default false $databaseSecret.create -}}
+{{- $databaseSecretName := default "" $databaseSecret.name -}}
+{{- $databaseSecretKey := default "DATABASE_URL" $databaseSecret.key -}}
+{{- $existingCredentialsSecret := default dict .Values.database.cnpg.existingCredentialsSecret -}}
+{{- $useExistingCredentialsSecret := default false $existingCredentialsSecret.enabled -}}
+{{- $existingCredentialsSecretName := default "" $existingCredentialsSecret.name -}}
 {{- $defaultDatabaseURL := "postgres://bambuddy:bambuddy@postgres:5432/bambuddy" -}}
 {{- $hasExternalDatabaseURL := ne $databaseURL "" -}}
 
@@ -24,24 +32,75 @@
 {{ fail "bambuddy supports only one PostgreSQL source: database.url or database.cnpg.enabled" }}
 {{- end -}}
 
+{{- if and $databaseSecretEnabled (eq $databaseSourceCount 0) -}}
+{{ fail "database.secret.enabled requires either database.url or database.cnpg.enabled" }}
+{{- end -}}
+
 {{- if $cnpgEnabled -}}
 {{- $cnpgNamespace := default .Release.Namespace .Values.database.cnpg.namespace -}}
 {{- $cnpgClusterName := default (printf "%s-cnpg" (include "common.fullname" .)) .Values.database.cnpg.clusterName -}}
 {{- $cnpgDatabase := .Values.database.cnpg.credentials.database | default "bambuddy" -}}
 {{- $cnpgUser := .Values.database.cnpg.credentials.username | default "bambuddy" -}}
 {{- $cnpgPassword := .Values.database.cnpg.credentials.password | default "bambuddy" -}}
+{{- if $useExistingCredentialsSecret -}}
+  {{- if eq $existingCredentialsSecretName "" -}}
+{{ fail "database.cnpg.existingCredentialsSecret.name is required when existingCredentialsSecret.enabled is true" }}
+  {{- end -}}
+  {{- $usernameKey := default "username" $existingCredentialsSecret.usernameKey -}}
+  {{- $passwordKey := default "password" $existingCredentialsSecret.passwordKey -}}
+  {{- $databaseKey := default "dbname" $existingCredentialsSecret.databaseKey -}}
+  {{- $existingSecret := lookup "v1" "Secret" $cnpgNamespace $existingCredentialsSecretName -}}
+  {{- if not $existingSecret -}}
+{{ fail (printf "database.cnpg.existingCredentialsSecret %q was not found in namespace %q" $existingCredentialsSecretName $cnpgNamespace) }}
+  {{- end -}}
+  {{- $secretData := default dict $existingSecret.data -}}
+  {{- $encodedUser := get $secretData $usernameKey -}}
+  {{- $encodedPassword := get $secretData $passwordKey -}}
+  {{- $encodedDatabase := get $secretData $databaseKey -}}
+  {{- if or (eq (default "" $encodedUser) "") (eq (default "" $encodedPassword) "") -}}
+{{ fail (printf "database.cnpg.existingCredentialsSecret %q must contain %q and %q" $existingCredentialsSecretName $usernameKey $passwordKey) }}
+  {{- end -}}
+  {{- $cnpgUser = b64dec $encodedUser -}}
+  {{- $cnpgPassword = b64dec $encodedPassword -}}
+  {{- if ne (default "" $encodedDatabase) "" -}}
+    {{- $cnpgDatabase = b64dec $encodedDatabase -}}
+  {{- end -}}
+{{- end -}}
 {{- $databaseHost := printf "%s-rw.%s.svc.%s" $cnpgClusterName $cnpgNamespace .Values.database.cnpg.clusterDomain -}}
 {{- $databaseURL = printf "postgres://%s:%s@%s:%d/%s" (urlquery $cnpgUser) (urlquery $cnpgPassword) $databaseHost 5432 $cnpgDatabase -}}
 {{- end -}}
 
-{{- if and (not (hasKey $bambuddyEnv "DATABASE_URL")) (ne $databaseURL "") -}}
+{{- if and $databaseSecretEnabled (eq $databaseSecretName "") -}}
+  {{- if and $cnpgEnabled $databaseSecretCreate -}}
+    {{- $databaseSecretName = printf "%s-database" (include "common.fullname" .) -}}
+  {{- else -}}
+{{ fail "database.secret.name is required when database.secret.enabled is true and the chart is not creating the secret" }}
+  {{- end -}}
+{{- end -}}
+
+{{- $bambuddyEnvList := list -}}
+{{- range .Values.container.envList }}
+{{- $bambuddyEnvList = append $bambuddyEnvList . -}}
+{{- end -}}
+
+{{- if and (not (hasKey $bambuddyEnv "DATABASE_URL")) $databaseSecretEnabled -}}
+{{- $bambuddyEnvList = append $bambuddyEnvList (dict
+  "name" "DATABASE_URL"
+  "valueFrom" (dict
+    "secretKeyRef" (dict
+      "name" $databaseSecretName
+      "key" $databaseSecretKey
+    )
+  )
+) -}}
+{{- else if and (not (hasKey $bambuddyEnv "DATABASE_URL")) (ne $databaseURL "") -}}
 {{- $_ := set $bambuddyEnv "DATABASE_URL" $databaseURL -}}
 {{- end -}}
 
 {{- $deploymentValues := deepCopy .Values -}}
 {{- $_ := set $deploymentValues "container" (dict
   "env" $bambuddyEnv
-  "envList" .Values.container.envList
+  "envList" $bambuddyEnvList
   "command" .Values.container.command
   "args" .Values.container.args
 ) -}}

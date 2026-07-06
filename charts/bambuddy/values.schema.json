@@ -1,0 +1,213 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "database": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "secret": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "create": {
+              "type": "boolean"
+            },
+            "name": {
+              "type": "string"
+            },
+            "key": {
+              "type": "string"
+            }
+          }
+        },
+        "cnpg": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "clusterName": {
+              "type": "string"
+            },
+            "namespace": {
+              "type": "string"
+            },
+            "clusterDomain": {
+              "type": "string"
+            },
+            "createCredentialsSecret": {
+              "type": "boolean"
+            },
+            "existingCredentialsSecret": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "usernameKey": {
+                  "type": "string"
+                },
+                "passwordKey": {
+                  "type": "string"
+                },
+                "databaseKey": {
+                  "type": "string"
+                }
+              }
+            },
+            "credentials": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "secretName": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "database": {
+                  "type": "string"
+                }
+              }
+            },
+            "instances": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "storage": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "size": {
+                  "type": "string"
+                },
+                "storageClass": {
+                  "type": "string"
+                }
+              }
+            },
+            "affinity": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "tolerations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "nodeSelector": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "resources": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "backup": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "retentionPolicy": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "virtualPrinter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "service": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "exposeCorePorts": {
+              "type": "boolean"
+            },
+            "exposePassivePortSlice": {
+              "type": "boolean"
+            }
+          }
+        },
+        "passivePortSlicing": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "startPort": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "sliceCount": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "portsPerSlice": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "logsPersistence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "storageClass": {
+          "type": "string"
+        },
+        "existingClaim": {
+          "type": "string"
+        },
+        "claimName": {
+          "type": "string"
+        },
+        "accessMode": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string"
+        },
+        "mountPath": {
+          "type": "string"
+        },
+        "subPath": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
