@@ -2,6 +2,7 @@
 {{- range $key, $value := .Values.container.env }}
 {{- $_ := set $bambuddyEnv $key $value }}
 {{- end -}}
+{{- $fullname := include "common.fullname" . -}}
 
 {{- $databaseURL := trim (default "" .Values.database.url) -}}
 {{- $databaseScheme := default "postgresql+asyncpg" .Values.database.scheme -}}
@@ -99,12 +100,87 @@
 {{- end -}}
 
 {{- $deploymentValues := deepCopy .Values -}}
+{{- $generatedVolumes := list -}}
+{{- $generatedExtraContainers := list -}}
+{{- $slicerAPI := default dict .Values.slicerApi -}}
+{{- range $name, $config := dict "orca" ($slicerAPI.orca | default dict) "bambu" ($slicerAPI.bambu | default dict) }}
+  {{- if ($config.enabled | default false) -}}
+    {{- $volumeName := printf "slicer-api-%s-data" $name -}}
+    {{- $persistence := default dict $config.persistence -}}
+    {{- if ($persistence.enabled | default true) -}}
+      {{- $claimName := "" -}}
+      {{- if $persistence.existingClaim -}}
+        {{- $claimName = $persistence.existingClaim -}}
+      {{- else -}}
+        {{- $claimName = $persistence.claimName | default (printf "%s-%s-data" $fullname $name) -}}
+      {{- end -}}
+      {{- $generatedVolumes = append $generatedVolumes (dict
+        "name" $volumeName
+        "persistentVolumeClaim" (dict "claimName" $claimName)
+      ) -}}
+    {{- else -}}
+      {{- $generatedVolumes = append $generatedVolumes (dict
+        "name" $volumeName
+        "emptyDir" dict
+      ) -}}
+    {{- end -}}
+    {{- $sidecarEnv := list (dict "name" "PORT" "value" (printf "%v" (int ($config.port | default 3000)))) -}}
+    {{- range $envName, $envValue := (default dict $config.env) }}
+      {{- $sidecarEnv = append $sidecarEnv (dict "name" $envName "value" (printf "%v" $envValue)) -}}
+    {{- end -}}
+    {{- $volumeMount := dict "name" $volumeName "mountPath" (($persistence.mountPath | default "/app/data")) -}}
+    {{- if $persistence.subPath -}}
+      {{- $_ := set $volumeMount "subPath" $persistence.subPath -}}
+    {{- end -}}
+    {{- $generatedExtraContainers = append $generatedExtraContainers (dict
+      "name" (printf "%s-slicer-api" $name)
+      "image" (printf "%s:%s" $config.image.repository ($config.image.tag | default "latest"))
+      "imagePullPolicy" ($config.image.pullPolicy | default "IfNotPresent")
+      "env" $sidecarEnv
+      "ports" (list (dict
+        "name" (printf "%s-api" $name)
+        "containerPort" (int ($config.port | default 3000))
+        "protocol" "TCP"
+      ))
+      "livenessProbe" (dict
+        "httpGet" (dict "path" "/health" "port" (int ($config.port | default 3000)))
+        "initialDelaySeconds" 10
+        "periodSeconds" 30
+        "timeoutSeconds" 5
+      )
+      "readinessProbe" (dict
+        "httpGet" (dict "path" "/health" "port" (int ($config.port | default 3000)))
+        "initialDelaySeconds" 5
+        "periodSeconds" 15
+        "timeoutSeconds" 5
+      )
+      "resources" ($config.resources | default dict)
+      "volumeMounts" (list $volumeMount)
+    ) -}}
+  {{- end -}}
+{{- end -}}
+{{- $mergedVolumes := list -}}
+{{- range .Values.volumes }}
+{{- $mergedVolumes = append $mergedVolumes . -}}
+{{- end -}}
+{{- range $generatedVolumes }}
+{{- $mergedVolumes = append $mergedVolumes . -}}
+{{- end -}}
+{{- $mergedExtraContainers := list -}}
+{{- range .Values.extraContainers }}
+{{- $mergedExtraContainers = append $mergedExtraContainers . -}}
+{{- end -}}
+{{- range $generatedExtraContainers }}
+{{- $mergedExtraContainers = append $mergedExtraContainers . -}}
+{{- end -}}
 {{- $_ := set $deploymentValues "container" (dict
   "env" $bambuddyEnv
   "envList" $bambuddyEnvList
   "command" .Values.container.command
   "args" .Values.container.args
 ) -}}
+{{- $_ := set $deploymentValues "volumes" $mergedVolumes -}}
+{{- $_ := set $deploymentValues "extraContainers" $mergedExtraContainers -}}
 
 {{- $deploymentContext := dict
   "Values" $deploymentValues

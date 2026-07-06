@@ -1,0 +1,23 @@
+{{- $fullname := include "common.fullname" . -}}
+{{- $slicerAPI := default dict .Values.slicerApi -}}
+{{- range $name, $config := dict "orca" ($slicerAPI.orca | default dict) "bambu" ($slicerAPI.bambu | default dict) }}
+{{- $persistence := default dict $config.persistence -}}
+{{- if and ($config.enabled | default false) ($persistence.enabled | default true) (not $persistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $persistence.claimName | default (printf "%s-%s-data" $fullname $name) }}
+  labels:
+    {{- include "common.labels" $ | nindent 4 }}
+spec:
+  accessModes:
+    - {{ $persistence.accessMode | default "ReadWriteOnce" | quote }}
+  {{- if $persistence.storageClass }}
+  storageClassName: {{ $persistence.storageClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ $persistence.size | default "5Gi" | quote }}
+---
+{{- end }}
+{{- end }}

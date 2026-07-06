@@ -61,6 +61,50 @@ database:
       enabled: false
       retentionPolicy: 7d
 
+slicerApi:
+  # Optional in-pod slicer sidecars for server-side slicing.
+  # Configure Bambuddy to use http://127.0.0.1:3003 for OrcaSlicer
+  # and/or http://127.0.0.1:3001 for Bambu Studio.
+  # Upstream sidecar images are linux/amd64-only as of July 6, 2026.
+  orca:
+    enabled: false
+    image:
+      repository: ghcr.io/maziggy/orca-slicer-api
+      pullPolicy: IfNotPresent
+      tag: "latest"
+    port: 3003
+    env:
+      NODE_ENV: production
+    resources: {}
+    persistence:
+      enabled: true
+      existingClaim: ""
+      claimName: ""
+      storageClass: ""
+      accessMode: ReadWriteOnce
+      size: 5Gi
+      mountPath: /app/data
+      subPath: ""
+  bambu:
+    enabled: false
+    image:
+      repository: ghcr.io/maziggy/bambu-studio-api
+      pullPolicy: IfNotPresent
+      tag: "latest"
+    port: 3001
+    env:
+      NODE_ENV: production
+    resources: {}
+    persistence:
+      enabled: true
+      existingClaim: ""
+      claimName: ""
+      storageClass: ""
+      accessMode: ReadWriteOnce
+      size: 5Gi
+      mountPath: /app/data
+      subPath: ""
+
 containerPorts:
   - name: http
     containerPort: 8000

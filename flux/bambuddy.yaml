@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: bambuddy
-      version: "0.1.1"
+      version: "0.1.3"
       sourceRef:
         kind: HelmRepository
         name: colton-helm-charts
@@ -49,6 +49,9 @@ spec:
         startPort: 50000
         sliceCount: 3
         portsPerSlice: 10
+    slicerApi:
+      orca:
+        enabled: true
     httpRoute:
       enabled: true
       parentRefs:

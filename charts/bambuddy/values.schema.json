@@ -211,6 +211,144 @@
           "type": "string"
         }
       }
+    },
+    "slicerApi": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "orca": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "image": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "repository": {
+                  "type": "string"
+                },
+                "pullPolicy": {
+                  "type": "string"
+                },
+                "tag": {
+                  "type": "string"
+                }
+              }
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "env": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "resources": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "persistence": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "existingClaim": {
+                  "type": "string"
+                },
+                "claimName": {
+                  "type": "string"
+                },
+                "storageClass": {
+                  "type": "string"
+                },
+                "accessMode": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "string"
+                },
+                "mountPath": {
+                  "type": "string"
+                },
+                "subPath": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "bambu": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "image": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "repository": {
+                  "type": "string"
+                },
+                "pullPolicy": {
+                  "type": "string"
+                },
+                "tag": {
+                  "type": "string"
+                }
+              }
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "env": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "resources": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "persistence": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "existingClaim": {
+                  "type": "string"
+                },
+                "claimName": {
+                  "type": "string"
+                },
+                "storageClass": {
+                  "type": "string"
+                },
+                "accessMode": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "string"
+                },
+                "mountPath": {
+                  "type": "string"
+                },
+                "subPath": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
