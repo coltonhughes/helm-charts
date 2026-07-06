@@ -230,6 +230,20 @@ entries:
   bambuddy:
   - apiVersion: v2
     appVersion: 0.2.4.8
+    created: "2026-07-06T19:58:00.342064529Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.7
+    description: A Helm chart for running Bambuddy on Kubernetes
+    digest: ebecc1aa8372e9dbbf5dd34124f7eb10c063638a6a445d24c81cd3100cd7ef44
+    name: bambuddy
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/bambuddy-0.1.1/bambuddy-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 0.2.4.8
     created: "2026-07-03T12:04:40.456960707Z"
     dependencies:
     - name: common
@@ -4973,4 +4987,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tracearr-0.1.0/tracearr-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-03T12:04:45.302365713Z"
+generated: "2026-07-06T19:58:05.186226536Z"
