@@ -10,6 +10,9 @@
         "url": {
           "type": "string"
         },
+        "scheme": {
+          "type": "string"
+        },
         "secret": {
           "type": "object",
           "additionalProperties": false,

@@ -4,6 +4,7 @@
 {{- end -}}
 
 {{- $databaseURL := trim (default "" .Values.database.url) -}}
+{{- $databaseScheme := default "postgresql+asyncpg" .Values.database.scheme -}}
 {{- $cnpgEnabled := default false .Values.database.cnpg.enabled -}}
 {{- $databaseSecret := default dict .Values.database.secret -}}
 {{- $databaseSecretEnabled := default false $databaseSecret.enabled -}}
@@ -13,7 +14,7 @@
 {{- $existingCredentialsSecret := default dict .Values.database.cnpg.existingCredentialsSecret -}}
 {{- $useExistingCredentialsSecret := default false $existingCredentialsSecret.enabled -}}
 {{- $existingCredentialsSecretName := default "" $existingCredentialsSecret.name -}}
-{{- $defaultDatabaseURL := "postgres://bambuddy:bambuddy@postgres:5432/bambuddy" -}}
+{{- $defaultDatabaseURL := printf "%s://bambuddy:bambuddy@postgres:5432/bambuddy" $databaseScheme -}}
 {{- $hasExternalDatabaseURL := ne $databaseURL "" -}}
 
 {{- if $cnpgEnabled -}}
@@ -67,7 +68,7 @@
   {{- end -}}
 {{- end -}}
 {{- $databaseHost := printf "%s-rw.%s.svc.%s" $cnpgClusterName $cnpgNamespace .Values.database.cnpg.clusterDomain -}}
-{{- $databaseURL = printf "postgres://%s:%s@%s:%d/%s" (urlquery $cnpgUser) (urlquery $cnpgPassword) $databaseHost 5432 $cnpgDatabase -}}
+{{- $databaseURL = printf "%s://%s:%s@%s:%d/%s" $databaseScheme (urlquery $cnpgUser) (urlquery $cnpgPassword) $databaseHost 5432 $cnpgDatabase -}}
 {{- end -}}
 
 {{- if and $databaseSecretEnabled (eq $databaseSecretName "") -}}

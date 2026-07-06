@@ -26,6 +26,7 @@ database:
   # Set url for an existing PostgreSQL instance, or enable cnpg below to
   # have this chart create a CloudNativePG Cluster CR and wire DATABASE_URL.
   url: ""
+  scheme: postgresql+asyncpg
   secret:
     enabled: false
     create: false
