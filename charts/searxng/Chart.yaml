@@ -1,0 +1,10 @@
+apiVersion: v2
+name: searxng
+description: A Helm chart for running SearXNG on Kubernetes
+type: application
+version: 0.1.0
+appVersion: "latest"
+dependencies:
+  - name: common
+    version: 0.5.7
+    repository: "https://coltonhughes.github.io/helm-charts"

@@ -1,0 +1,159 @@
+# Default values for SearXNG.
+
+replicaCount: 1
+
+deploymentStrategy: {}
+
+image:
+  repository: searxng/searxng
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+container:
+  env: {}
+  envList: []
+  command: []
+  args: []
+
+containerPorts:
+  - name: http
+    containerPort: 8080
+    protocol: TCP
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+workload:
+  kind: Deployment
+  serviceName: ""
+  updateStrategy: {}
+
+serviceAccount:
+  create: true
+  automount: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  fsGroup: 977
+  fsGroupChangePolicy: OnRootMismatch
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  privileged: false
+  readOnlyRootFilesystem: false
+  runAsGroup: 977
+  runAsNonRoot: true
+  runAsUser: 977
+  seccompProfile:
+    type: RuntimeDefault
+
+service:
+  type: ClusterIP
+  port: 8080
+  protocol: TCP
+  targetPort: http
+  loadBalancerIP: ""
+  ipFamilyPolicy: ""
+  ipFamilies: []
+  annotations: {}
+  ports: []
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: searxng.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+httpRoute:
+  enabled: false
+  annotations: {}
+  labels: {}
+  parentRefs: []
+  hostnames: []
+  rules: []
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+
+initContainers: []
+initContainersTemplate: ""
+extraContainers: []
+extraContainersTemplate: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+# The configuration ConfigMap is always mounted at SearXNG's standard path.
+volumes:
+  - name: settings
+    configMap:
+      name: '{{ include "common.fullname" . }}-settings'
+volumeMounts:
+  - name: settings
+    mountPath: /etc/searxng/settings.yml
+    subPath: settings.yml
+    readOnly: true
+
+gpu:
+  enabled: false
+  type: ""
+  runtimeClassName: ""
+  resources: {}
+
+# Enable only if a plugin or other customization needs writable state.
+persistence:
+  enabled: false
+  storageClass: ""
+  existingClaim: ""
+  claimName: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  mountPath: /var/cache/searxng
+  subPath: ""
+  name: cache
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Supply server.secret_key before exposing SearXNG publicly. A string value is
+# accepted for settings.yml when full control over the upstream configuration is
+# preferred.
+settings:
+  use_default_settings: true
+  general:
+    instance_name: SearXNG
+  server:
+    bind_address: 0.0.0.0
+    port: 8080
+    secret_key: "change-me-before-exposing-this-instance"
+    limiter: false
+  search:
+    safe_search: 0
+    autocomplete: ""
+  ui:
+    static_use_hash: true

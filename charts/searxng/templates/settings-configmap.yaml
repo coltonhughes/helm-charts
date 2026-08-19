@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "common.fullname" . }}-settings
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+data:
+  settings.yml: |
+    {{- if kindIs "string" .Values.settings }}
+    {{- .Values.settings | nindent 4 }}
+    {{- else }}
+    {{- toYaml .Values.settings | nindent 4 }}
+    {{- end }}
