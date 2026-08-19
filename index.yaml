@@ -4233,6 +4233,21 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/sabnzbd-0.1.2/sabnzbd-0.1.2.tgz
     version: 0.1.2
+  searxng:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-08-19T17:36:55.329082119Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.7
+    description: A Helm chart for running SearXNG on Kubernetes
+    digest: 79eb051689ee22670cc2125ce8c03a74791256298b762190ac750e506b4f7ddd
+    name: searxng
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/searxng-0.1.0/searxng-0.1.0.tgz
+    version: 0.1.0
   secuimage-backend:
   - apiVersion: v2
     appVersion: 2.8.3
@@ -5015,4 +5030,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tracearr-0.1.0/tracearr-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-06T20:28:25.864485607Z"
+generated: "2026-08-19T17:36:56.673106065Z"
