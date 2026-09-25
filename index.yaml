@@ -1985,6 +1985,21 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/lazylibrarian-0.1.0/lazylibrarian-0.1.0.tgz
     version: 0.1.0
+  mini-hf:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-09-25T20:33:52.662009116Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.7
+    description: A Helm chart for running Mini-HF on Kubernetes
+    digest: a0abdf02703881bd8d7127f1300b93354f7ec79b5e869b2c036cb06d70a6ea6a
+    name: mini-hf
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/mini-hf-0.1.0/mini-hf-0.1.0.tgz
+    version: 0.1.0
   overseerr:
   - apiVersion: v2
     appVersion: 1.33.2
@@ -5030,4 +5045,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tracearr-0.1.0/tracearr-0.1.0.tgz
     version: 0.1.0
-generated: "2026-08-19T17:36:56.673106065Z"
+generated: "2026-09-25T20:33:56.321892866Z"
