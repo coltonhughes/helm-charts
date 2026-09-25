@@ -1,0 +1,152 @@
+# S3-compatible storage is external and required for useful operation.
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  backend:
+    repository: ghcr.io/coltonhughes/mini-hf/backend
+    pullPolicy: IfNotPresent
+    tag: ""
+  frontend:
+    repository: ghcr.io/coltonhughes/mini-hf/frontend
+    pullPolicy: IfNotPresent
+    tag: ""
+
+timezone: America/Chicago
+
+frontend:
+  replicaCount: 1
+  emailDomain: mini-hf.com
+  resources: {}
+
+# URLs must be reachable by browser clients. When HTTPRoutes are enabled,
+# configure these URLs to match their hostnames and TLS scheme.
+publicURLs:
+  management: http://localhost:9800/api/v1
+  hf: http://localhost:9801
+  modelscope: http://localhost:9802
+
+mgmtServer:
+  replicaCount: 1
+  resources: {}
+  incompleteFilePath: /tmp/mini-hf
+  scratch:
+    existingClaim: ""
+    sizeLimit: ""
+
+hfServer:
+  replicaCount: 1
+  resources: {}
+
+msServer:
+  replicaCount: 1
+  resources: {}
+
+workers:
+  general:
+    replicaCount: 1
+    resources: {}
+    scratch:
+      existingClaim: ""
+      sizeLimit: ""
+  small:
+    replicaCount: 1
+    maxRepoStorageGB: 50
+    resources: {}
+    scratch:
+      existingClaim: ""
+      sizeLimit: ""
+
+admin:
+  email: admin@example.com
+  # Empty generates a random password retained across Helm upgrades.
+  password: ""
+
+security:
+  # Empty generates a random JWT key retained across Helm upgrades.
+  jwtSecretKey: ""
+  accessTokenExpireMinutes: 60
+  configEncryptionKey: ""
+
+database:
+  cnpg:
+    enabled: true
+    name: ""
+    namespace: ""
+    clusterDomain: cluster.local
+    instances: 1
+    storage:
+      size: 8Gi
+      storageClass: ""
+    resources: {}
+    credentials:
+      username: mini_hf
+      password: ""
+      database: mini_hf
+    backup:
+      enabled: false
+      retentionPolicy: 7d
+
+valkey:
+  enabled: true
+  name: ""
+  namespace: ""
+  # The official operator implements cluster mode; Mini-HF must use a
+  # cluster-aware Valkey client. This service is the initial cluster seed.
+  serviceHost: ""
+  clusterDomain: cluster.local
+  shards: 3
+  replicas: 0
+  workloadType: Deployment
+
+redis:
+  # Optional override for an external Valkey/Redis-compatible endpoint.
+  url: ""
+
+s3:
+  endpoint: ""
+  accessKey: ""
+  secretKey: ""
+  bucket: ""
+  region: us-east-1
+  useSSL: false
+  verifySSL: false
+  presignedURLExpiration: 300
+
+routes:
+  ui:
+    enabled: false
+    annotations: {}
+    labels: {}
+    parentRefs: []
+    hostnames: []
+  management:
+    enabled: false
+    annotations: {}
+    labels: {}
+    parentRefs: []
+    hostnames: []
+  hf:
+    enabled: false
+    annotations: {}
+    labels: {}
+    parentRefs: []
+    hostnames: []
+  modelscope:
+    enabled: false
+    annotations: {}
+    labels: {}
+    parentRefs: []
+    hostnames: []
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

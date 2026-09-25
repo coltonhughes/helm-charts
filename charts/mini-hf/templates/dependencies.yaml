@@ -1,0 +1,53 @@
+{{- if not .Values.database.cnpg.enabled -}}
+{{- fail "Mini-HF requires database.cnpg.enabled=true; external PostgreSQL configuration is not supported by this chart" -}}
+{{- end -}}
+{{- if and .Values.database.cnpg.namespace (ne .Values.database.cnpg.namespace .Release.Namespace) -}}
+{{- fail "database.cnpg.namespace must match the Helm release namespace so Mini-HF workloads can read the CNPG credentials Secret" -}}
+{{- end -}}
+{{- if and (not .Values.valkey.enabled) (eq .Values.redis.url "") -}}
+{{- fail "Set redis.url when valkey.enabled is false" -}}
+{{- end -}}
+{{ include "common.serviceAccount" . }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "mini-hf.databaseClusterName" . }}
+  namespace: {{ default .Release.Namespace .Values.database.cnpg.namespace }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  instances: {{ .Values.database.cnpg.instances }}
+  {{- with .Values.database.cnpg.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  storage:
+    size: {{ .Values.database.cnpg.storage.size | quote }}
+    {{- with .Values.database.cnpg.storage.storageClass }}
+    storageClass: {{ . | quote }}
+    {{- end }}
+  bootstrap:
+    initdb:
+      database: {{ .Values.database.cnpg.credentials.database | quote }}
+      owner: {{ .Values.database.cnpg.credentials.username | quote }}
+      secret:
+        name: {{ include "mini-hf.databaseSecretName" . | quote }}
+  {{- if .Values.database.cnpg.backup.enabled }}
+  backup:
+    retentionPolicy: {{ .Values.database.cnpg.backup.retentionPolicy | quote }}
+  {{- end }}
+---
+{{ if .Values.valkey.enabled }}
+apiVersion: valkey.io/v1alpha1
+kind: ValkeyCluster
+metadata:
+  name: {{ include "mini-hf.valkeyName" . }}
+  namespace: {{ default .Release.Namespace .Values.valkey.namespace }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  shards: {{ .Values.valkey.shards }}
+  replicas: {{ .Values.valkey.replicas }}
+  workloadType: {{ .Values.valkey.workloadType | quote }}
+{{- end }}
