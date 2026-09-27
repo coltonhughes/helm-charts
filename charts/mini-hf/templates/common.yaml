@@ -28,7 +28,7 @@
 {{- $backendEnv := concat $backendSecretEnv $databaseEnv (list
   (dict "name" "TZ" "value" .Values.timezone)
   (dict "name" "REDIS_URL" "value" $redisURL)
-  (dict "name" "APP_HF_SERVER_URL" "value" .Values.publicURLs.hf)
+  (dict "name" "HF_SERVER_URL" "value" .Values.publicURLs.hf)
   (dict "name" "MS_SERVER_URL" "value" .Values.publicURLs.modelscope)
   (dict "name" "DEFAULT_ADMIN_EMAIL" "value" .Values.admin.email)
   (dict "name" "JWT_ACCESS_TOKEN_EXPIRE_MINUTES" "value" (printf "%v" .Values.security.accessTokenExpireMinutes))
@@ -55,8 +55,15 @@
 -}}
 {{- $_ := set (index $components 1) "scratch" .Values.mgmtServer.scratch -}}
 {{- $_ := set (index $components 1) "incompletePath" .Values.mgmtServer.incompleteFilePath -}}
+{{- $_ := set (index $components 2) "incompletePath" .Values.mgmtServer.incompleteFilePath -}}
+{{- $_ := set (index $components 3) "incompletePath" .Values.mgmtServer.incompleteFilePath -}}
+{{- $_ := set (index $components 4) "incompletePath" "/tmp/mini-hf" -}}
+{{- $_ := set (index $components 5) "incompletePath" "/tmp/mini-hf" -}}
 {{- range $component := $components -}}
   {{- $container := dict "env" dict "envList" $component.env "command" (default list $component.command) "args" (default list $component.args) -}}
+  {{- if $component.incompletePath -}}
+    {{- $_ := set $container "envList" (append $container.envList (dict "name" "INCOMPLETE_FILE_PATH" "value" $component.incompletePath)) -}}
+  {{- end -}}
   {{- $service := dict "type" "ClusterIP" "port" $component.port "targetPort" "http" -}}
   {{- $readinessProbe := dict -}}
   {{- $livenessProbe := dict -}}
@@ -79,7 +86,6 @@
     {{- $volumes = append $volumes $volume -}}
     {{- $incompletePath := default "/tmp/mini-hf" $component.incompletePath -}}
     {{- $volumeMounts = append $volumeMounts (dict "name" "scratch" "mountPath" $incompletePath) -}}
-    {{- $container = mergeOverwrite $container (dict "envList" (append $component.env (dict "name" "INCOMPLETE_FILE_PATH" "value" $incompletePath))) -}}
   {{- end -}}
   {{- $routeConfig := default dict $component.route -}}
   {{- $route := dict "enabled" false -}}
