@@ -1988,6 +1988,20 @@ entries:
   mini-hf:
   - apiVersion: v2
     appVersion: latest
+    created: "2026-09-27T21:30:33.059814166Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.7
+    description: A Helm chart for running Mini-HF on Kubernetes
+    digest: 2e0bd274f49265d0be4727c76b72352d9fac7e879c64b22f68404e6bd87253f8
+    name: mini-hf
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/mini-hf-0.1.1/mini-hf-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: latest
     created: "2026-09-25T20:33:52.662009116Z"
     dependencies:
     - name: common
@@ -5045,4 +5059,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tracearr-0.1.0/tracearr-0.1.0.tgz
     version: 0.1.0
-generated: "2026-09-25T20:33:56.321892866Z"
+generated: "2026-09-27T21:30:36.008637806Z"
