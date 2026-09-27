@@ -16,14 +16,22 @@ jobs:
     runs-on: helm-chart-builder
     outputs:
       charts: ${{ steps.discover.outputs.charts }}
+      common_changed: ${{ steps.discover.outputs.common_changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Discover consumer charts
         id: discover
         shell: bash
+        env:
+          PUSH_BEFORE: ${{ github.event.before }}
         run: |
+          changed_files=()
+          common_changed=false
+
           mapfile -t charts < <(
             find charts -mindepth 2 -maxdepth 2 -name Chart.yaml -print \
               | sort \
@@ -36,8 +44,33 @@ jobs:
                 done
           )
 
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || [ -z "${PUSH_BEFORE:-}" ] || [ "$PUSH_BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            common_changed=true
+            changed_charts=("${charts[@]}")
+          else
+            mapfile -t changed_files < <(git diff --name-only "$PUSH_BEFORE" "$GITHUB_SHA")
+            for changed_file in "${changed_files[@]}"; do
+              case "$changed_file" in
+                charts/common/*) common_changed=true ;;
+              esac
+            done
+
+            changed_charts=()
+            if [ "$common_changed" = true ]; then
+              changed_charts=("${charts[@]}")
+            else
+              for chart_name in "${charts[@]}"; do
+                for changed_file in "${changed_files[@]}"; do
+                  case "$changed_file" in
+                    "charts/$chart_name"/*) changed_charts+=("$chart_name"); break ;;
+                  esac
+                done
+              done
+            fi
+          fi
+
           charts_json="["
-          for chart_name in "${charts[@]}"; do
+          for chart_name in "${changed_charts[@]}"; do
             if [ "$charts_json" != "[" ]; then
               charts_json+=","
             fi
@@ -46,6 +79,7 @@ jobs:
           charts_json+="]"
 
           echo "charts=$charts_json" >> "$GITHUB_OUTPUT"
+          echo "common_changed=$common_changed" >> "$GITHUB_OUTPUT"
 
   validate-common:
     runs-on: helm-chart-builder
@@ -80,8 +114,10 @@ jobs:
         run: ./tests/test-consumer-charts.sh "${{ matrix.chart }}"
 
   release-common:
+    if: needs.discover-consumer-charts.outputs.common_changed == 'true'
     runs-on: helm-chart-builder
     needs:
+      - discover-consumer-charts
       - validate-common
       - validate-consumer-charts
     permissions:
@@ -121,8 +157,13 @@ jobs:
           cr index --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --pages-branch gh-pages --push
 
   release-consumer-charts:
+    if: >-
+      always() &&
+      (needs.release-common.result == 'success' || needs.release-common.result == 'skipped') &&
+      needs.discover-consumer-charts.outputs.charts != '[]'
     runs-on: helm-chart-builder
     needs:
+      - discover-consumer-charts
       - release-common
     permissions:
       contents: write
@@ -170,14 +211,8 @@ jobs:
             done
           }
 
-          for chart_dir in charts/*; do
-            chart_name="$(basename "$chart_dir")"
-            if [ "$chart_name" = "common" ]; then
-              continue
-            fi
-            if [ -f "$chart_dir/Chart.yaml" ]; then
-              update_chart_deps "$chart_dir"
-            fi
+          for chart_name in $(echo '${{ needs.discover-consumer-charts.outputs.charts }}' | jq -r '.[]'); do
+            update_chart_deps "charts/$chart_name"
           done
 
       - name: Publish remaining charts
@@ -187,14 +222,9 @@ jobs:
           owner="${GITHUB_REPOSITORY%%/*}"
           repo="${GITHUB_REPOSITORY##*/}"
 
-          for chart_dir in charts/*; do
-            chart_name="$(basename "$chart_dir")"
-            if [ "$chart_name" = "common" ]; then
-              continue
-            fi
-            if [ -f "$chart_dir/Chart.yaml" ]; then
-              cr package "$chart_dir" --package-path .cr-release-packages
-            fi
+          mkdir -p .cr-release-packages
+          for chart_name in $(echo '${{ needs.discover-consumer-charts.outputs.charts }}' | jq -r '.[]'); do
+            cr package "charts/$chart_name" --package-path .cr-release-packages
           done
           cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
           mkdir -p .cr-index
