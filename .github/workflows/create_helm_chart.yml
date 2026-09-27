@@ -160,11 +160,15 @@ jobs:
     if: >-
       always() &&
       (needs.release-common.result == 'success' || needs.release-common.result == 'skipped') &&
+      needs.validate-common.result == 'success' &&
+      needs.validate-consumer-charts.result == 'success' &&
       needs.discover-consumer-charts.outputs.charts != '[]'
     runs-on: helm-chart-builder
     needs:
       - discover-consumer-charts
       - release-common
+      - validate-common
+      - validate-consumer-charts
     permissions:
       contents: write
     steps:
@@ -189,6 +193,8 @@ jobs:
         uses: azure/setup-helm@v4
 
       - name: Configure Helm repo cache
+        env:
+          CHARTS_JSON: ${{ needs.discover-consumer-charts.outputs.charts }}
         run: |
           helm repo add helm-charts https://coltonhughes.github.io/helm-charts
           helm repo add valkey https://valkey.io/valkey-helm/
@@ -211,19 +217,22 @@ jobs:
             done
           }
 
-          for chart_name in $(echo '${{ needs.discover-consumer-charts.outputs.charts }}' | jq -r '.[]'); do
+          mapfile -t changed_charts < <(jq -r '.[]' <<< "$CHARTS_JSON")
+          for chart_name in "${changed_charts[@]}"; do
             update_chart_deps "charts/$chart_name"
           done
 
       - name: Publish remaining charts
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CHARTS_JSON: ${{ needs.discover-consumer-charts.outputs.charts }}
         run: |
           owner="${GITHUB_REPOSITORY%%/*}"
           repo="${GITHUB_REPOSITORY##*/}"
 
           mkdir -p .cr-release-packages
-          for chart_name in $(echo '${{ needs.discover-consumer-charts.outputs.charts }}' | jq -r '.[]'); do
+          mapfile -t changed_charts < <(jq -r '.[]' <<< "$CHARTS_JSON")
+          for chart_name in "${changed_charts[@]}"; do
             cr package "charts/$chart_name" --package-path .cr-release-packages
           done
           cr upload --owner "$owner" --git-repo "$repo" --package-path .cr-release-packages --skip-existing
