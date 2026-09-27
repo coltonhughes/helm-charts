@@ -18,6 +18,7 @@
 {{- $_ := set $values "serviceAccount" (dict "create" false "name" (include "common.serviceAccountName" $root)) -}}
 {{- $_ := set $values "image" .image -}}
 {{- $_ := set $values "container" .container -}}
+{{- $_ := set $values "initContainers" (default list .initContainers) -}}
 {{- $_ := set $values "service" .service -}}
 {{- $_ := set $values "replicaCount" .replicas -}}
 {{- $_ := set $values "resources" .resources -}}

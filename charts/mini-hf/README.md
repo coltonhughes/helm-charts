@@ -92,6 +92,11 @@ routes:
 helm install mini-hf ./charts/mini-hf -n mini-hf --create-namespace -f values.yaml
 ```
 
+When installing with Flux, set `spec.install.disableWait: true` on the
+`HelmRelease`. The chart's post-install migration Job must run before the
+backend Deployments are ready; backend pods wait for the Alembic version row
+before starting their application containers.
+
 Management-server and worker scratch files use per-pod `emptyDir` volumes by
 default. Set each workload's `scratch.existingClaim` to mount a pre-created PVC,
 or `scratch.sizeLimit` to cap an `emptyDir`. Use storage large enough for the

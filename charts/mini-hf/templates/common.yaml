@@ -100,7 +100,45 @@
     {{- $_ := set $podAnnotations "checksum/mini-hf-secrets" $appSecretChecksum -}}
     {{- $_ := set $podAnnotations "checksum/database-credentials" $dbSecretChecksum -}}
   {{- end -}}
-  {{- $ctx := include "mini-hf.componentContext" (dict "root" $root "component" $component.name "image" $component.image "container" $container "service" $service "replicas" $component.replicas "resources" $component.resources "podAnnotations" $podAnnotations "route" $route "readinessProbe" $readinessProbe "livenessProbe" $livenessProbe "volumes" $volumes "volumeMounts" $volumeMounts) | fromYaml -}}
+  {{- $initContainers := list -}}
+  {{- if ne $component.name "ui" -}}
+    {{- $migrationGate := printf `import asyncio, os, time
+import asyncpg
+
+async def main():
+    deadline = time.monotonic() + 1800
+    while time.monotonic() < deadline:
+        connection = None
+        try:
+            connection = await asyncpg.connect(
+                host=os.environ["PG_HOST"],
+                port=int(os.environ.get("PG_PORT", "5432")),
+                user=os.environ["PG_USERNAME"],
+                password=os.environ["PG_PASSWORD"],
+                database=os.environ["PG_DATABASE"],
+                timeout=5,
+            )
+            has_version = await connection.fetchval(
+                "SELECT to_regclass('public.alembic_version') IS NOT NULL"
+            )
+            if has_version:
+                version = await connection.fetchval(
+                    "SELECT version_num FROM public.alembic_version LIMIT 1"
+                )
+                if version:
+                    return
+        except Exception:
+            pass
+        finally:
+            if connection:
+                await connection.close()
+        await asyncio.sleep(5)
+    raise TimeoutError("Timed out waiting for Mini-HF database migrations")
+
+asyncio.run(main())` -}}
+    {{- $initContainers = list (dict "name" "wait-for-database-migrations" "image" (printf "%s:%s" $component.image.repository $component.image.tag) "imagePullPolicy" $component.image.pullPolicy "command" (list "uv" "run" "python" "-c") "args" (list $migrationGate) "env" $backendEnv) -}}
+  {{- end -}}
+  {{- $ctx := include "mini-hf.componentContext" (dict "root" $root "component" $component.name "image" $component.image "container" $container "initContainers" $initContainers "service" $service "replicas" $component.replicas "resources" $component.resources "podAnnotations" $podAnnotations "route" $route "readinessProbe" $readinessProbe "livenessProbe" $livenessProbe "volumes" $volumes "volumeMounts" $volumeMounts) | fromYaml -}}
 ---
 {{ include "common.deployment" $ctx }}
 {{ if not (hasPrefix "worker" $component.name) }}
