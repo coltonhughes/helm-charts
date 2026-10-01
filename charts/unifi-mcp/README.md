@@ -1,7 +1,7 @@
 # unifi-mcp
 
 Deploys [enuno/unifi-mcp-server](https://github.com/enuno/unifi-mcp-server) in
-streamable HTTP mode. The MCP endpoint is available at `/mcp` and is protected
+HTTP mode. The MCP endpoint is available at `/mcp` and is protected
 by the server's bearer token authentication.
 
 ## Prerequisites
@@ -37,4 +37,6 @@ httpRoute:
 Clients connect to `https://unifi-mcp.example.com/mcp` and send
 `Authorization: Bearer <MCP_AUTH_TOKEN>`. Terminate TLS at the Gateway. The
 chart defaults to `UNIFI_READ_ONLY=true`; switch it off only for a deliberately
-write-capable deployment.
+write-capable deployment. The default uses `MCP_SERVER_TRANSPORT=http` because
+the upstream `0.2.6` image crashes with its documented `streamable_http` value.
+Override it once an upstream image with that regression fixed is released.

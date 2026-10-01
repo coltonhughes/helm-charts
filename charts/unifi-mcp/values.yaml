@@ -1,4 +1,4 @@
-# UniFi MCP Server is exposed with the streamable HTTP transport. The server
+# UniFi MCP Server is exposed with the HTTP transport. The server
 # requires both credentials below for any network-accessible transport.
 
 replicaCount: 1
@@ -17,8 +17,9 @@ container:
     UNIFI_LOCAL_PORT: "443"
     UNIFI_LOCAL_VERIFY_SSL: "true"
     UNIFI_DEFAULT_SITE: default
-    # Streamable HTTP is the upstream-recommended network transport.
-    MCP_SERVER_TRANSPORT: streamable_http
+    # Upstream 0.2.6 has a streamable_http startup regression. Use its
+    # supported HTTP transport until a fixed upstream image is released.
+    MCP_SERVER_TRANSPORT: http
     MCP_SERVER_HOST: 0.0.0.0
     MCP_SERVER_PORT: "3000"
     MCP_LOG_LEVEL: INFO

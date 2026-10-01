@@ -1,8 +1,8 @@
 apiVersion: v2
 name: unifi-mcp
-description: UniFi Network Controller API MCP server exposed over streamable HTTP
+description: UniFi Network Controller API MCP server exposed over HTTP
 type: application
-version: 0.1.1
+version: 0.1.2
 appVersion: "0.2.6"
 dependencies:
   - name: common
