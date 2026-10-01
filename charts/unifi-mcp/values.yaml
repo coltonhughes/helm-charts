@@ -6,8 +6,7 @@ replicaCount: 1
 image:
   repository: ghcr.io/enuno/unifi-mcp-server
   pullPolicy: IfNotPresent
-  # The upstream release tag includes the v prefix.
-  tag: v0.2.6
+  tag: 0.2.6
 
 container:
   env:
