@@ -58,6 +58,19 @@ patch_chart_dependency_to_local_common() {
   mv "$tmpfile" "$file"
 }
 
+unpack_dependencies() {
+  local chart_dir="$1"
+  local archive
+
+  # Helm 4 writes dependency archives but does not load them while rendering a
+  # directory chart. Unpack the archives so this render regression test works
+  # with both Helm 3 and Helm 4.
+  while IFS= read -r -d '' archive; do
+    tar -xzf "$archive" -C "$chart_dir/charts"
+    rm -f "$archive"
+  done < <(find "$chart_dir/charts" -maxdepth 1 -type f -name '*.tgz' -print0)
+}
+
 assert_contains() {
   local haystack="$1"
   local needle="$2"
@@ -104,6 +117,13 @@ while IFS= read -r chart_yaml; do
   if ! helm_dependency_output="$(helm dependency build "$workdir" 2>&1)"; then
     echo "FAILED: helm dependency build for $chart_name" >&2
     echo "$helm_dependency_output" >&2
+    failures=$((failures + 1))
+    continue
+  fi
+
+  if ! dependency_unpack_output="$(unpack_dependencies "$workdir" 2>&1)"; then
+    echo "FAILED: unpacking dependencies for $chart_name" >&2
+    echo "$dependency_unpack_output" >&2
     failures=$((failures + 1))
     continue
   fi
