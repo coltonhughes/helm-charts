@@ -6,7 +6,7 @@ version: 0.1.4
 appVersion: "latest"
 dependencies:
   - name: common
-    version: 0.5.6
+    version: 0.5.8
     repository: "https://coltonhughes.github.io/helm-charts"
   - name: valkey
     version: "0.9.3"

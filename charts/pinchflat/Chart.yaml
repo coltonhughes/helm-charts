@@ -6,5 +6,5 @@ version: 0.1.0
 appVersion: "2025.9.26"
 dependencies:
   - name: common
-    version: 0.5.6
+    version: 0.5.8
     repository: "https://coltonhughes.github.io/helm-charts"

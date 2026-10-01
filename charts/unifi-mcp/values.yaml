@@ -1,0 +1,158 @@
+# UniFi MCP Server is exposed with the streamable HTTP transport. The server
+# requires both credentials below for any network-accessible transport.
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/enuno/unifi-mcp-server
+  pullPolicy: IfNotPresent
+  # The upstream release tag includes the v prefix.
+  tag: v0.2.6
+
+container:
+  env:
+    # Use local mode for full UniFi Network API support. Set UNIFI_LOCAL_HOST
+    # to the controller or gateway address reachable from the cluster.
+    UNIFI_API_TYPE: local
+    UNIFI_LOCAL_HOST: ""
+    UNIFI_LOCAL_PORT: "443"
+    UNIFI_LOCAL_VERIFY_SSL: "true"
+    UNIFI_DEFAULT_SITE: default
+    # Streamable HTTP is the upstream-recommended network transport.
+    MCP_SERVER_TRANSPORT: streamable_http
+    MCP_SERVER_HOST: 0.0.0.0
+    MCP_SERVER_PORT: "3000"
+    MCP_LOG_LEVEL: INFO
+    # Start with a non-mutating tool surface. Set to "false" only when writes
+    # are intentionally required.
+    UNIFI_READ_ONLY: "true"
+    UNIFI_PROFILE: network
+    UNIFI_REQUEST_TIMEOUT: "30"
+    UNIFI_MAX_RETRIES: "3"
+  envList:
+    - name: UNIFI_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: "{{ .Values.auth.existingSecret }}"
+          key: "{{ .Values.auth.apiKeyKey }}"
+          optional: false
+    - name: MCP_AUTH_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: "{{ .Values.auth.existingSecret }}"
+          key: "{{ .Values.auth.mcpAuthTokenKey }}"
+          optional: false
+
+auth:
+  # The chart does not create credentials. The Secret must contain both keys.
+  existingSecret: unifi-mcp
+  apiKeyKey: UNIFI_API_KEY
+  mcpAuthTokenKey: MCP_AUTH_TOKEN
+
+containerPorts:
+  - name: http
+    containerPort: 3000
+    protocol: TCP
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  runAsGroup: 1000
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 3000
+  protocol: TCP
+  targetPort: http
+  annotations: {}
+  ports: []
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: unifi-mcp.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Gateway API HTTPRoute configuration. When enabled, parentRefs is required.
+httpRoute:
+  enabled: false
+  annotations: {}
+  labels: {}
+  parentRefs: []
+  hostnames: []
+  # With no rules, the shared template forwards all paths to the service.
+  rules: []
+
+resources: {}
+
+# TCP probes avoid an unauthenticated HTTP request to an MCP endpoint.
+livenessProbe:
+  tcpSocket:
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  tcpSocket:
+    port: http
+  initialDelaySeconds: 2
+  periodSeconds: 5
+
+initContainers: []
+initContainersTemplate: ""
+extraContainers: []
+extraContainersTemplate: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+volumeMounts: []
+
+gpu:
+  enabled: false
+  type: ""
+  runtimeClassName: ""
+  resources: {}
+
+persistence:
+  enabled: false
+  storageClass: ""
+  existingClaim: ""
+  claimName: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  mountPath: /config
+  subPath: ""
+  name: config
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
