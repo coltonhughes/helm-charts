@@ -3,6 +3,20 @@ entries:
   audiobookshelf:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2026-10-01T14:50:10.430278588Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for Kubernetes
+    digest: a3a302edd764c681e73af1995ea1cff5cd6d381044b250b68fc3016e5354066f
+    name: audiobookshelf
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/audiobookshelf-2.0.7/audiobookshelf-2.0.7.tgz
+    version: 2.0.7
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2026-02-15T07:46:48.498537595Z"
     dependencies:
     - name: common
@@ -230,6 +244,20 @@ entries:
   bambuddy:
   - apiVersion: v2
     appVersion: 0.2.4.8
+    created: "2026-10-01T14:50:10.844704881Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for running Bambuddy on Kubernetes
+    digest: 817182d83e20d0bc61b4d9bd588635bdececcc6399812bc7857901965ceb8000
+    name: bambuddy
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/bambuddy-0.1.4/bambuddy-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: 0.2.4.8
     created: "2026-07-06T20:28:20.87436581Z"
     dependencies:
     - name: common
@@ -285,6 +313,20 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/bambuddy-0.1.0/bambuddy-0.1.0.tgz
     version: 0.1.0
   bazarr:
+  - apiVersion: v2
+    appVersion: v1.4.3
+    created: "2026-10-01T14:50:11.151592366Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for bazarr
+    digest: ad327d7142a7c780170987555e954c0fce1d62f9a13002f0769c75d5b07209cb
+    name: bazarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/bazarr-2.0.7/bazarr-2.0.7.tgz
+    version: 2.0.7
   - apiVersion: v2
     appVersion: v1.4.3
     created: "2026-02-15T07:46:48.728828025Z"
@@ -760,6 +802,20 @@ entries:
   gha-cache:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2026-10-01T14:50:11.442163555Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: Installs GHA cache server
+    digest: 5507b03ff7f2cadae177c5d04e87d0e8fef99b6f09774863da0ae30d35b8a5d4
+    name: gha-cache
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/gha-cache-2.0.7/gha-cache-2.0.7.tgz
+    version: 2.0.7
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2026-02-15T07:46:48.999913868Z"
     dependencies:
     - name: common
@@ -861,6 +917,20 @@ entries:
   ha-mcp:
   - apiVersion: v2
     appVersion: latest
+    created: "2026-10-01T14:50:11.654430026Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for running the Home Assistant MCP server on Kubernetes
+    digest: d5509ff608c52b678a6703c16b38b3af2fb8ba5525f0ff1f07cf239e92e280b6
+    name: ha-mcp
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/ha-mcp-0.1.2/ha-mcp-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: latest
     created: "2026-04-07T02:29:32.198418817Z"
     dependencies:
     - name: common
@@ -888,6 +958,20 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/ha-mcp-0.1.0/ha-mcp-0.1.0.tgz
     version: 0.1.0
   homepage:
+  - apiVersion: v2
+    appVersion: 1.8.0
+    created: "2026-10-01T14:50:11.927138105Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for running Homepage on k8s
+    digest: 9a5a08aceddd432725d806408b6ba5f6d28201b308117b5ee3c328f5fc84135f
+    name: homepage
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/homepage-3.0.3/homepage-3.0.3.tgz
+    version: 3.0.3
   - apiVersion: v2
     appVersion: 1.8.0
     created: "2026-02-17T02:21:31.598101362Z"
@@ -973,6 +1057,20 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/homepage-2.0.0/homepage-2.0.0.tgz
     version: 2.0.0
   jackett:
+  - apiVersion: v2
+    appVersion: 0.21.958
+    created: "2026-10-01T14:50:12.147566854Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for running Jackett on k8s
+    digest: 3981ed1fec742da9b155ae080479bdb0fd3d4527c24192e994bf2a0b518d54ae
+    name: jackett
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/jackett-2.0.7/jackett-2.0.7.tgz
+    version: 2.0.7
   - apiVersion: v2
     appVersion: 0.21.958
     created: "2026-02-15T07:46:49.130260128Z"
@@ -1220,6 +1318,20 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/jackett-0.1.0/jackett-0.1.0.tgz
     version: 0.1.0
   jellyfin:
+  - apiVersion: v2
+    appVersion: "2025070705"
+    created: "2026-10-01T14:50:12.320369644Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for Kubernetes
+    digest: 5e78e583ec03f21a77709159bce335180d689c0ed31c9623cb194291c96bbfe4
+    name: jellyfin
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/jellyfin-2.0.8/jellyfin-2.0.8.tgz
+    version: 2.0.8
   - apiVersion: v2
     appVersion: "2025070705"
     created: "2026-02-15T16:22:38.703137178Z"
@@ -1527,6 +1639,20 @@ entries:
   johnbot:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2026-10-01T14:50:12.605170022Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for Kubernetes
+    digest: 5f82e1ac103065754fb9acb4978e76ed90013a01cc8622478906eb43592d333c
+    name: johnbot
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/johnbot-2.0.6/johnbot-2.0.6.tgz
+    version: 2.0.6
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2026-02-15T07:46:49.446694211Z"
     dependencies:
     - name: common
@@ -1728,6 +1854,20 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/johnbot-0.1.1/johnbot-0.1.1.tgz
     version: 0.1.1
   lazylibrarian:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2026-10-01T14:50:12.896780703Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: Helm chart to install lazylibrarian
+    digest: 67411806d9164aac4819cc33e5cfa7a6ba574a822dcf128d7e7566fa5ff7e91a
+    name: lazylibrarian
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/lazylibrarian-2.0.7/lazylibrarian-2.0.7.tgz
+    version: 2.0.7
   - apiVersion: v2
     appVersion: 1.0.0
     created: "2026-02-15T07:46:49.597989168Z"
@@ -2040,6 +2180,20 @@ entries:
   overseerr:
   - apiVersion: v2
     appVersion: 1.33.2
+    created: "2026-10-01T14:50:13.140866997Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for running overseerr on k8s
+    digest: 8e18bd36dc68a915637f90901df958166511f6db3e948bc398e47d5d81737929
+    name: overseerr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/overseerr-2.0.7/overseerr-2.0.7.tgz
+    version: 2.0.7
+  - apiVersion: v2
+    appVersion: 1.33.2
     created: "2026-02-15T07:46:49.729810175Z"
     dependencies:
     - name: common
@@ -2321,6 +2475,20 @@ entries:
   pinchflat:
   - apiVersion: v2
     appVersion: 2025.9.26
+    created: "2026-10-01T14:50:13.322636862Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for Kubernetes
+    digest: fa52ec1c07d25d925de8b01611882574b5f696446a542595d813e0bc7762d49d
+    name: pinchflat
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/pinchflat-0.1.1/pinchflat-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 2025.9.26
     created: "2026-03-14T16:30:38.855240531Z"
     dependencies:
     - name: common
@@ -2334,6 +2502,20 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/pinchflat-0.1.0/pinchflat-0.1.0.tgz
     version: 0.1.0
   plex:
+  - apiVersion: v2
+    appVersion: 1.32.8
+    created: "2026-10-01T14:50:13.598176378Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for running plex on k8s
+    digest: 172169baf48a5a799233b491d5c30298f0d87b70b6ce82b7a23635c7313306ca
+    name: plex
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/plex-2.0.10/plex-2.0.10.tgz
+    version: 2.0.10
   - apiVersion: v2
     appVersion: 1.32.8
     created: "2026-02-15T07:46:49.886049257Z"
@@ -2649,6 +2831,20 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/plex-0.0.1/plex-0.0.1.tgz
     version: 0.0.1
   prowlarr:
+  - apiVersion: v2
+    appVersion: 1.8.1259
+    created: "2026-10-01T14:50:13.900520072Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for running prowlarr on k8s
+    digest: 7f304d64bc88d7878002db6c3a28c1338a4e45f946c41ce137650359554471ca
+    name: prowlarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/prowlarr-2.0.11/prowlarr-2.0.11.tgz
+    version: 2.0.11
   - apiVersion: v2
     appVersion: 1.8.1259
     created: "2026-02-15T07:46:50.049238382Z"
@@ -2982,6 +3178,20 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/prowlarr-0.1.0/prowlarr-0.1.0.tgz
     version: 0.1.0
   qbittorrent:
+  - apiVersion: v2
+    appVersion: 5.0.4
+    created: "2026-10-01T14:50:14.114558719Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for Kubernetes
+    digest: 9266652408d0ff9e1af57ab34285e1919fdff1a3463907d64dea026f25ccc23b
+    name: qbittorrent
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/qbittorrent-2.0.7/qbittorrent-2.0.7.tgz
+    version: 2.0.7
   - apiVersion: v2
     appVersion: 5.0.4
     created: "2026-02-15T07:46:50.221373986Z"
@@ -3471,6 +3681,20 @@ entries:
   radarr:
   - apiVersion: v2
     appVersion: 4.5.2
+    created: "2026-10-01T14:50:14.369683297Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for running Radarr on k8s
+    digest: 91ee68d91be5008ff3d8d7a432c3db28ac67160be8a127376f5abebc472b08c3
+    name: radarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/radarr-2.0.7/radarr-2.0.7.tgz
+    version: 2.0.7
+  - apiVersion: v2
+    appVersion: 4.5.2
     created: "2026-02-15T07:46:50.382192928Z"
     dependencies:
     - name: common
@@ -3738,6 +3962,20 @@ entries:
   readarr:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2026-10-01T14:50:14.649784513Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for Kubernetes
+    digest: 3ed4fb0dc2f20548ca71540a08bb9b49e129a6a10dc651b7273deeff5d29d7aa
+    name: readarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/readarr-2.0.7/readarr-2.0.7.tgz
+    version: 2.0.7
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2026-02-15T07:46:50.548482265Z"
     dependencies:
     - name: common
@@ -3973,6 +4211,20 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/readarr-0.1.0/readarr-0.1.0.tgz
     version: 0.1.0
   sabnzbd:
+  - apiVersion: v2
+    appVersion: 4.1.0
+    created: "2026-10-01T14:50:14.941677555Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for running sabnzbd on k8s
+    digest: 3407c3f9d3d52ee3d42c853cb692f57af891306bb676e12e99e5c1d69d20d6ea
+    name: sabnzbd
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/sabnzbd-2.0.7/sabnzbd-2.0.7.tgz
+    version: 2.0.7
   - apiVersion: v2
     appVersion: 4.1.0
     created: "2026-02-15T07:46:50.689283152Z"
@@ -4288,6 +4540,20 @@ entries:
   searxng:
   - apiVersion: v2
     appVersion: latest
+    created: "2026-10-01T14:50:15.119280281Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for running SearXNG on Kubernetes
+    digest: 9b16c5e32d4176a12f6bf1b00b28bb38bfe300455d3072dd33aade79a683d2b9
+    name: searxng
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/searxng-0.1.1/searxng-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: latest
     created: "2026-08-19T17:36:55.329082119Z"
     dependencies:
     - name: common
@@ -4301,6 +4567,20 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/searxng-0.1.0/searxng-0.1.0.tgz
     version: 0.1.0
   secuimage-backend:
+  - apiVersion: v2
+    appVersion: 2.8.3
+    created: "2026-10-01T14:50:15.351533177Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: Deploys secuimage-backend
+    digest: 6f00a6bb4ce1f71d6030aeee51fcc49eaccc4ab164982e4e56d804cf379c492d
+    name: secuimage-backend
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/secuimage-backend-2.0.7/secuimage-backend-2.0.7.tgz
+    version: 2.0.7
   - apiVersion: v2
     appVersion: 2.8.3
     created: "2026-02-15T07:46:50.840254747Z"
@@ -4404,6 +4684,20 @@ entries:
   seerr:
   - apiVersion: v2
     appVersion: 3.0.1
+    created: "2026-10-01T14:50:15.567067563Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for running Seerr on k8s
+    digest: 354cebe49a9dfbd967fd748e73cdbe89ebd016a30887dad6926ede9cf4a8d5b4
+    name: seerr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/seerr-0.1.1/seerr-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 3.0.1
     created: "2026-02-22T22:37:24.559204818Z"
     dependencies:
     - name: common
@@ -4417,6 +4711,20 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/seerr-0.1.0/seerr-0.1.0.tgz
     version: 0.1.0
   sonarr:
+  - apiVersion: v2
+    appVersion: 3.0.10
+    created: "2026-10-01T14:50:15.844845873Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for running Sonarr on k8s
+    digest: 9111df4b677f9c98a63ae797e84ff4017fc1db9bcd1dabcbd1c43023096a2fc0
+    name: sonarr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/sonarr-2.0.7/sonarr-2.0.7.tgz
+    version: 2.0.7
   - apiVersion: v2
     appVersion: 3.0.10
     created: "2026-02-15T07:46:51.009218595Z"
@@ -4706,6 +5014,20 @@ entries:
   tabbyml:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2026-10-01T14:50:16.112959672Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for Kubernetes
+    digest: d9827aeac1cba7fbc9e2fb11bbd814a7bbdcb51e3174c5b4cc19a7bbd1498b30
+    name: tabbyml
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/tabbyml-2.0.7/tabbyml-2.0.7.tgz
+    version: 2.0.7
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2026-02-15T07:46:51.164924255Z"
     dependencies:
     - name: common
@@ -4805,6 +5127,20 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/tabbyml-0.1.0/tabbyml-0.1.0.tgz
     version: 0.1.0
   tautulli:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-10-01T14:50:16.370229294Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: A Helm chart for Kubernetes
+    digest: 56bab94a8da76bf2e9f92c3a1e7fff6ea1ce100bd22a2c77e5d928dc4f832a4e
+    name: tautulli
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/tautulli-2.0.7/tautulli-2.0.7.tgz
+    version: 2.0.7
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2026-02-15T07:46:51.338318843Z"
@@ -5034,6 +5370,24 @@ entries:
   tracearr:
   - apiVersion: v2
     appVersion: latest
+    created: "2026-10-01T14:50:16.581339854Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://valkey.io/valkey-helm/
+      version: 0.9.3
+    description: A Helm chart for running Tracearr on k8s
+    digest: 3851b6305deedbcee12f9fe638618bc803cd44fcf9f22d8d10c0ff0590d85756
+    name: tracearr
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/tracearr-0.1.5/tracearr-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
+    appVersion: latest
     created: "2026-03-14T04:31:10.602206364Z"
     dependencies:
     - name: common
@@ -5082,4 +5436,19 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tracearr-0.1.0/tracearr-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-01T14:43:24.024004103Z"
+  unifi-mcp:
+  - apiVersion: v2
+    appVersion: 0.2.6
+    created: "2026-10-01T14:50:16.862267821Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: UniFi Network Controller API MCP server exposed over streamable HTTP
+    digest: 6d9025cf2ead35a7828d4b28cf9536c29ab36e9be9833ba3a2d0c3bbc095c04a
+    name: unifi-mcp
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/unifi-mcp-0.1.0/unifi-mcp-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-10-01T14:50:16.866197805Z"
