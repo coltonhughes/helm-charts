@@ -5439,6 +5439,20 @@ entries:
   unifi-mcp:
   - apiVersion: v2
     appVersion: 0.2.6
+    created: "2026-10-01T17:56:14.758023902Z"
+    dependencies:
+    - name: common
+      repository: https://coltonhughes.github.io/helm-charts
+      version: 0.5.8
+    description: UniFi Network Controller API MCP server exposed over HTTP
+    digest: e868d6e9b48f016d4b62eb4c22d1c2983402b6bc47f92799464b743b2b7dfb93
+    name: unifi-mcp
+    type: application
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/unifi-mcp-0.1.2/unifi-mcp-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 0.2.6
     created: "2026-10-01T16:57:25.698512815Z"
     dependencies:
     - name: common
@@ -5465,4 +5479,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/unifi-mcp-0.1.0/unifi-mcp-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-01T16:57:25.699619991Z"
+generated: "2026-10-01T17:56:14.75876481Z"
