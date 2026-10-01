@@ -69,6 +69,31 @@ jobs:
             fi
           fi
 
+          # A failed run must not strand a chart version indefinitely. Reconcile
+          # the chart versions in the checkout with the release tags, selecting
+          # every chart whose current version has not been published yet.
+          common_version="$(awk '$1 == "version:" { gsub(/"/, "", $2); print $2; exit }' charts/common/Chart.yaml)"
+          if ! git rev-parse --verify --quiet "refs/tags/common-$common_version" >/dev/null; then
+            common_changed=true
+          fi
+
+          declare -A selected_charts=()
+          for chart_name in "${changed_charts[@]}"; do
+            selected_charts["$chart_name"]=1
+          done
+
+          for chart_name in "${charts[@]}"; do
+            chart_version="$(awk '$1 == "version:" { gsub(/"/, "", $2); print $2; exit }' "charts/$chart_name/Chart.yaml")"
+            if ! git rev-parse --verify --quiet "refs/tags/$chart_name-$chart_version" >/dev/null; then
+              selected_charts["$chart_name"]=1
+            fi
+          done
+
+          changed_charts=()
+          if [ "${#selected_charts[@]}" -gt 0 ]; then
+            mapfile -t changed_charts < <(printf '%s\n' "${!selected_charts[@]}" | sort)
+          fi
+
           charts_json="["
           for chart_name in "${changed_charts[@]}"; do
             if [ "$charts_json" != "[" ]; then
@@ -80,6 +105,7 @@ jobs:
 
           echo "charts=$charts_json" >> "$GITHUB_OUTPUT"
           echo "common_changed=$common_changed" >> "$GITHUB_OUTPUT"
+          echo "Selected charts: $charts_json"
 
   validate-common:
     runs-on: helm-chart-builder
