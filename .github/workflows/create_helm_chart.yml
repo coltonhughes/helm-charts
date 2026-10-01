@@ -95,6 +95,7 @@ jobs:
           helm lint charts/common
 
   validate-consumer-charts:
+    if: needs.discover-consumer-charts.outputs.charts != '[]'
     runs-on: helm-chart-builder
     needs:
       - discover-consumer-charts
