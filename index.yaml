@@ -603,6 +603,15 @@ entries:
     - https://github.com/coltonhughes/helm-charts/releases/download/common-1.0.0/common-1.0.0.tgz
     version: 1.0.0
   - apiVersion: v2
+    created: "2026-10-01T14:43:24.022922839Z"
+    description: Base library chart for shared templates and standard values.
+    digest: 359ee094e713bb6d433595bedac2f5e4596d4a20a18eb89e961924a91d74f261
+    name: common
+    type: library
+    urls:
+    - https://github.com/coltonhughes/helm-charts/releases/download/common-0.5.8/common-0.5.8.tgz
+    version: 0.5.8
+  - apiVersion: v2
     created: "2026-04-06T21:33:14.147531607Z"
     description: Base library chart for shared templates and standard values.
     digest: 4f5f2604dde22994ff57fed18417569f23d114a2ae5b583e40b7416151683b96
@@ -5073,4 +5082,4 @@ entries:
     urls:
     - https://github.com/coltonhughes/helm-charts/releases/download/tracearr-0.1.0/tracearr-0.1.0.tgz
     version: 0.1.0
-generated: "2026-09-27T23:15:28.308225751Z"
+generated: "2026-10-01T14:43:24.024004103Z"
